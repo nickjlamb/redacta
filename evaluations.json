@@ -1,0 +1,36 @@
+[
+  {
+    "skills": ["redacta"],
+    "query": "Pseudonymise this letter so I can paste it into an AI tool:\n\nDear Mrs Patricia Hartley, DOB: 14/03/1952 (age 73), NHS Number: 943 476 5919. Following your review at St Mary's Hospital with Dr Singh, your ferritin remains low and we recommend continuing oral iron. Your next appointment is on 15 March 2026.",
+    "expected_behavior": [
+      "Runs scripts/redact_structured.py on the text rather than matching identifiers by eye",
+      "Replaces the NHS number 943 476 5919 with a token such as [NHS_NUMBER_1]",
+      "Replaces the date of birth 14/03/1952 with [DATE_OF_BIRTH_1] but leaves the appointment date 15 March 2026 unchanged",
+      "Replaces the patient name Patricia Hartley with [PATIENT_NAME_1] and the specific age 73 with [AGE_1] in the reasoning layer",
+      "Keeps the clinician name Dr Singh and the institution St Mary's Hospital by default",
+      "Preserves clinical content (ferritin remains low, oral iron) verbatim",
+      "Outputs a redaction report listing the identifiers replaced and the honest-limits note"
+    ]
+  },
+  {
+    "skills": ["redacta"],
+    "query": "De-identify this note completely, including the doctor and hospital:\n\nReferral from Dr Amara Okafor (Northgate Medical Practice) re patient Tom Reilly, NI number AB123456C, mobile 07700 900123, living at 14 Beech Road, Leeds LS1 4AB. 19-year-old with recurrent tonsillitis.",
+    "expected_behavior": [
+      "Runs the structured script, redacting the NI number AB123456C, the phone number 07700 900123, and the postcode LS1 4AB",
+      "Replaces the patient name Tom Reilly with [PATIENT_NAME_1] and the address 14 Beech Road with [ADDRESS_1]",
+      "Because the user asked for complete de-identification, also redacts Dr Amara Okafor as a clinician name and Northgate Medical Practice as an organisation name",
+      "Redacts the identifying age 19 as [AGE_1]",
+      "Keeps the clinical detail (recurrent tonsillitis) intact",
+      "Produces a redaction report and notes that clinician/organisation names were removed at the user's request"
+    ]
+  },
+  {
+    "skills": ["redacta"],
+    "query": "Is it safe to send this to a chatbot? 'Patient ID: A1234567. Bloods: Hb 11.2, ferritin 8. Next review in 6 weeks.'",
+    "expected_behavior": [
+      "Runs the structured script and redacts the hospital/MRN value A1234567 as [MRN_1] because it follows the 'Patient ID' keyword",
+      "Does not redact clinical values such as Hb 11.2 or ferritin 8, and does not redact the relative time 'in 6 weeks'",
+      "Returns the pseudonymised text plus a report, and includes the limits note rather than claiming the text is guaranteed safe"
+    ]
+  }
+]
