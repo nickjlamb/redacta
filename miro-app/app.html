@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redacta</title>
+    <script src="https://miro.com/app/static/sdk/v2/miro.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/mirotone/dist/styles.css" />
+    <style>
+      body { padding: 16px; }
+      .field { margin-bottom: 16px; }
+      .field label.section { display: block; font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+      .radio-row { display: flex; gap: 16px; font-size: 13px; }
+      .actions { display: flex; gap: 8px; margin: 20px 0 16px; }
+      .status { font-size: 13px; margin-bottom: 10px; }
+      .status.ok { color: #0a7d4f; }
+      .status.warn { color: #b45309; }
+      .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+      .report-table th, .report-table td { text-align: left; padding: 4px 6px; border-bottom: 1px solid #e8e8e8; }
+      .report-table code { font-size: 11px; }
+      .hint { font-size: 11px; color: #777; margin-top: 8px; line-height: 1.5; }
+      .privacy { font-size: 11px; color: #777; border-top: 1px solid #e8e8e8; padding-top: 10px; margin-top: 20px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <h3 style="margin-bottom: 4px;">Redacta</h3>
+    <p class="hint" style="margin-bottom: 16px;">
+      Replace patient identifiers and PII on this board with labelled tokens —
+      <code>[NHS_NUMBER_1]</code>, <code>[EMAIL_1]</code>, … — before sharing or AI processing.
+    </p>
+
+    <div class="field">
+      <label class="section" for="mode">Detection mode</label>
+      <select id="mode" class="select select-small">
+        <option value="both" selected>Clinical + general PII</option>
+        <option value="clinical">Clinical (UK/US healthcare)</option>
+        <option value="general">General PII</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="section">Scope</label>
+      <div class="radio-row">
+        <label><input type="radio" name="scope" value="selection" checked /> Selected items</label>
+        <label><input type="radio" name="scope" value="board" /> Entire board</label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="scan" class="button button-secondary button-small" type="button">Scan</button>
+      <button id="redact" class="button button-primary button-small" type="button">Redact</button>
+    </div>
+
+    <div id="report"></div>
+
+    <p class="privacy">
+      <strong>Privacy by design:</strong> all detection runs locally in this panel.
+      Board content is never sent to a server. Deterministic patterns only —
+      always review the result before sharing.
+      Built by <a href="https://www.pharmatools.ai/redacta" target="_blank" rel="noopener">PharmaTools.AI</a>.
+    </p>
+
+    <script type="module" src="/src/panel.ts"></script>
+  </body>
+</html>

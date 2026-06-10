@@ -1,0 +1,23 @@
+{
+  "name": "redacta-for-miro",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Redact patient identifiers and PII on Miro boards — client-side, nothing leaves the board.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "start": "serve dist -l tcp://0.0.0.0:${PORT:-3000}"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "@mirohq/websdk-types": "^2.9.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
+  }
+}

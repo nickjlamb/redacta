@@ -1,0 +1,12 @@
+# Paste into the "App manifest" editor at https://miro.com/app/settings/user-profile/apps
+# after creating the app. Update sdkUri when you deploy (e.g. to Vercel).
+appName: Redacta
+sdkVersion: SDK_V2
+sdkUri: http://localhost:3000
+boardPicker:
+  allowedTypes: []
+icons:
+  toolbar: http://localhost:3000/icon.svg  # after deploy: https://<your-url>/icon.svg
+scopes:
+  - boards:read
+  - boards:write

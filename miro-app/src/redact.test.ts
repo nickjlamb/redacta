@@ -1,0 +1,137 @@
+import { describe, expect, it } from "vitest";
+import { Redactor, isValidLuhn, isValidNhs, isValidNi } from "./redact";
+
+const clinical = () => new Redactor(["clinical"]);
+const general = () => new Redactor(["general"]);
+const both = () => new Redactor(["clinical", "general"]);
+
+describe("validators", () => {
+  it("accepts a valid NHS number and rejects an invalid one", () => {
+    expect(isValidNhs("9434765919")).toBe(true);
+    expect(isValidNhs("9434765918")).toBe(false);
+    expect(isValidNhs("1111111111")).toBe(false);
+  });
+
+  it("applies NI prefix rules", () => {
+    expect(isValidNi("AB")).toBe(true);
+    expect(isValidNi("BG")).toBe(false); // forbidden pair
+    expect(isValidNi("DA")).toBe(false); // bad first letter
+    expect(isValidNi("AO")).toBe(false); // bad second letter
+  });
+
+  it("validates Luhn card numbers", () => {
+    expect(isValidLuhn("4111111111111111")).toBe(true);
+    expect(isValidLuhn("4111111111111112")).toBe(false);
+  });
+});
+
+describe("clinical mode", () => {
+  it("redacts a valid NHS number but not an invalid 10-digit number", () => {
+    const r = clinical();
+    expect(r.redactText("NHS Number: 943 476 5919").text).toContain("[NHS_NUMBER_1]");
+    const r2 = clinical();
+    expect(r2.redactText("ref 123 456 7890").text).toContain("123 456 7890");
+  });
+
+  it("redacts DOB but preserves appointment dates", () => {
+    const r = clinical();
+    const { text } = r.redactText(
+      "DOB: 14/03/1952. Your next appointment is on 15 March 2026."
+    );
+    expect(text).toContain("[DATE_OF_BIRTH_1]");
+    expect(text).toContain("15 March 2026");
+  });
+
+  it("redacts NI numbers, postcodes, emails and UK phones", () => {
+    const r = clinical();
+    const { text } = r.redactText(
+      "NI: AB 12 34 56 C, Leeds LS6 3PJ, jo@example.com, tel 0113 278 4532"
+    );
+    expect(text).toContain("[NI_NUMBER_1]");
+    expect(text).toContain("[POSTCODE_1]");
+    expect(text).toContain("[EMAIL_1]");
+    expect(text).toContain("[PHONE_1]");
+  });
+
+  it("redacts keyword-anchored MRN and SSN", () => {
+    const r = clinical();
+    const { text } = r.redactText("Hospital Number: RXH-2847561, SSN: 123-45-6789");
+    expect(text).toContain("[MRN_1]");
+    expect(text).toContain("[SSN_1]");
+  });
+
+  it("gives the same value the same token everywhere", () => {
+    const r = clinical();
+    const a = r.redactText("Contact jo@example.com").text;
+    const b = r.redactText("Email jo@example.com again").text;
+    expect(a).toContain("[EMAIL_1]");
+    expect(b).toContain("[EMAIL_1]");
+  });
+
+  it("does not redact general-only patterns", () => {
+    const r = clinical();
+    const input = "Visit https://example.com from 192.168.1.1";
+    expect(r.redactText(input).text).toBe(input);
+  });
+});
+
+describe("general mode", () => {
+  it("redacts URLs, IPs and vehicle regs", () => {
+    const r = general();
+    const { text } = r.redactText(
+      "See https://example.com/page from 192.168.1.1, car AB12 CDE"
+    );
+    expect(text).toContain("[URL_1]");
+    expect(text).toContain("[IP_ADDRESS_1]");
+    expect(text).toContain("[VEHICLE_REG_1]");
+  });
+
+  it("redacts Luhn-valid card numbers but not invalid ones", () => {
+    const r = general();
+    const { text } = r.redactText("Card 4111 1111 1111 1111, order 4111111111111112");
+    expect(text).toContain("[CARD_NUMBER_1]");
+    expect(text).toContain("4111111111111112");
+  });
+
+  it("redacts IBANs and keyword-anchored account numbers", () => {
+    const r = general();
+    const { text } = r.redactText(
+      "IBAN GB29 NWBK 6016 1331 9268 19, Member ID: ZX-99812"
+    );
+    expect(text).toContain("[IBAN_1]");
+    expect(text).toContain("[ACCOUNT_NUMBER_1]");
+  });
+});
+
+describe("combined mode and reporting", () => {
+  it("handles the full sample letter", () => {
+    const r = both();
+    const { text, changed } = r.redactText(
+      "Dear Mrs Patricia Hartley, DOB: 14/03/1952, NHS Number: 943 476 5919. " +
+        "Address: 14 Oakfield Road, Leeds LS6 3PJ. Tel: 0113 278 4532. " +
+        "Portal: https://myhealth.example.com"
+    );
+    expect(changed).toBe(true);
+    expect(text).toContain("[DATE_OF_BIRTH_1]");
+    expect(text).toContain("[NHS_NUMBER_1]");
+    expect(text).toContain("[POSTCODE_1]");
+    expect(text).toContain("[PHONE_1]");
+    expect(text).toContain("[URL_1]");
+    const report = r.report;
+    expect(report.NHS_NUMBER).toBe(1);
+    expect(report.URL).toBe(1);
+  });
+
+  it("exposes a token map for re-identification", () => {
+    const r = both();
+    r.redactText("NHS Number: 943 476 5919");
+    expect(r.tokenMap["[NHS_NUMBER_1]"]).toBe("943 476 5919");
+  });
+
+  it("reports unchanged text correctly", () => {
+    const r = both();
+    const { changed } = r.redactText("The quick brown fox.");
+    expect(changed).toBe(false);
+    expect(Object.keys(r.report)).toHaveLength(0);
+  });
+});
