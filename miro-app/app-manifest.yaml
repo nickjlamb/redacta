@@ -1,11 +1,8 @@
 # Paste into the "App manifest" editor at https://miro.com/app/settings/user-profile/apps
+# Toolbar icon: upload public/icon.svg via the app settings form (not part of the manifest).
 appName: Redacta
 sdkVersion: SDK_V2
 sdkUri: https://miro.pharmatools.ai
-boardPicker:
-  allowedTypes: []
-icons:
-  toolbar: https://miro.pharmatools.ai/icon.svg
 scopes:
   - boards:read
   - boards:write
