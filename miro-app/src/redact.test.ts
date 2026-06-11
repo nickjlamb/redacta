@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { Redactor, isValidLuhn, isValidNhs, isValidNi, selfCheck } from "./redact";
+import {
+  Redactor,
+  isValidLuhn,
+  isValidNhs,
+  isValidNi,
+  isValidTokenMap,
+  reinstate,
+  selfCheck,
+} from "./redact";
 
 const clinical = () => new Redactor(["clinical"]);
 const general = () => new Redactor(["general"]);
@@ -189,6 +197,49 @@ describe("self-check", () => {
       "NHS Number: 943 476 5919, email p.hartley@example.com"
     );
     expect(selfCheck(text)).toHaveLength(0);
+  });
+});
+
+describe("re-identification", () => {
+  it("restores original values from a token map", () => {
+    const map = {
+      "[NHS_NUMBER_1]": "943 476 5919",
+      "[PATIENT_NAME_1]": "Patricia Hartley",
+    };
+    const { text, changed } = reinstate(
+      "Dear [PATIENT_NAME_1], your NHS number is [NHS_NUMBER_1].",
+      map
+    );
+    expect(text).toBe("Dear Patricia Hartley, your NHS number is 943 476 5919.");
+    expect(changed).toBe(true);
+  });
+
+  it("round-trips: redact then reinstate returns the original", () => {
+    const original =
+      "Dear Mrs Patricia Hartley, NHS Number: 943 476 5919, email p.hartley@example.com";
+    const r = new Redactor(["clinical", "general"]);
+    const redacted = r.redactText(original).text;
+    expect(reinstate(redacted, r.tokenMap).text).toBe(original);
+  });
+
+  it("does not confuse [NAME_1] with [NAME_10]", () => {
+    const map = { "[PATIENT_NAME_1]": "Anna", "[PATIENT_NAME_10]": "Zoe" };
+    expect(reinstate("[PATIENT_NAME_10] and [PATIENT_NAME_1]", map).text).toBe(
+      "Zoe and Anna"
+    );
+  });
+
+  it("reports no change when there are no tokens", () => {
+    expect(reinstate("nothing here", { "[EMAIL_1]": "x@y.com" }).changed).toBe(false);
+  });
+
+  it("validates token maps", () => {
+    expect(isValidTokenMap({ "[NHS_NUMBER_1]": "943 476 5919" })).toBe(true);
+    expect(isValidTokenMap({})).toBe(false);
+    expect(isValidTokenMap({ foo: "bar" })).toBe(false);
+    expect(isValidTokenMap({ "[NHS_NUMBER_1]": 123 })).toBe(false);
+    expect(isValidTokenMap(null)).toBe(false);
+    expect(isValidTokenMap([])).toBe(false);
   });
 });
 

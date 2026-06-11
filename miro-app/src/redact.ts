@@ -308,8 +308,12 @@ const redactRelative: Pass = (text, tok) =>
 const redactName: Pass = (text, tok) => {
   const nameToken = (raw: string) =>
     tok.tokenFor("PATIENT_NAME", raw.trim(), raw.trim().toLowerCase().replace(/\s+/g, " "));
-  // Courtesy-titled names first, so the title is absorbed into the token.
-  let out = text.replace(NAME_TITLE_RE, (_m, name: string) => nameToken(name));
+  // Courtesy-titled names first. Store the full match (title + name) as the
+  // original so re-identification restores "Mrs Patricia Hartley" verbatim,
+  // but key on the name alone so the same person dedupes across contexts.
+  let out = text.replace(NAME_TITLE_RE, (m, name: string) =>
+    tok.tokenFor("PATIENT_NAME", m.trim(), name.trim().toLowerCase().replace(/\s+/g, " "))
+  );
   // Salutations without a courtesy title (clinical titles already excluded).
   out = out.replace(NAME_SALUTATION_RE, (_m, dear: string, name: string) =>
     `${dear} ${nameToken(name)}`
@@ -425,6 +429,35 @@ export class Redactor {
  * finding per distinct sample (deduplicated, capped). A clean result is not a
  * guarantee — it's a second pair of eyes, not a proof.
  */
+/**
+ * Re-identification: replace tokens with their original values, using a token
+ * map produced by an earlier redaction. The inverse of redaction — for putting
+ * real data back into AI output before it returns to the board.
+ *
+ * Tokens always end in "]", so "[NAME_1]" never matches inside "[NAME_10]";
+ * plain string replacement is safe.
+ */
+export function reinstate(
+  text: string,
+  tokenMap: Record<string, string>
+): RedactionResult {
+  let out = text;
+  for (const [token, original] of Object.entries(tokenMap)) {
+    if (token) out = out.split(token).join(original);
+  }
+  return { text: out, changed: out !== text };
+}
+
+/** Validate that a parsed object is a usable token map ([TOKEN] -> string). */
+export function isValidTokenMap(value: unknown): value is Record<string, string> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0) return false;
+  return entries.every(
+    ([k, v]) => /^\[[A-Z_]+_\d+\]$/.test(k) && typeof v === "string"
+  );
+}
+
 export function selfCheck(redactedText: string): ResidualFinding[] {
   const seen = new Set<string>();
   const findings: ResidualFinding[] = [];

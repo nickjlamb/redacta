@@ -27,6 +27,12 @@ deterministic patterns with checksum validation, consistent tokens (the same
 value gets the same token across the whole board), and a token map you can
 download for local re-identification.
 
+**Re-identify (restore originals).** The panel's "Re-identify" section takes a
+token map you downloaded earlier and swaps the tokens back to their real values
+on the board — for putting data back after running redacted text through an AI
+tool. The map is read locally and never uploaded. Redact → share/process →
+re-identify is a complete round trip.
+
 Supported items: sticky notes, text, shapes, cards.
 
 ## Development setup

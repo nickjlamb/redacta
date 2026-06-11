@@ -1,6 +1,13 @@
 /// <reference types="@mirohq/websdk-types" />
 
-import { Category, Redactor, ResidualFinding, selfCheck } from "./redact";
+import {
+  Category,
+  Redactor,
+  ResidualFinding,
+  isValidTokenMap,
+  reinstate,
+  selfCheck,
+} from "./redact";
 
 type RedactableItem = {
   id: string;
@@ -174,5 +181,66 @@ document.getElementById("redact")!.addEventListener("click", async () => {
     renderReport(await run(true), true);
   } finally {
     setBusy(false);
+  }
+});
+
+// === Re-identification ======================================================
+
+let loadedTokenMap: Record<string, string> | null = null;
+
+const fileInput = document.getElementById("token-map-file") as HTMLInputElement;
+const reinstateBtn = document.getElementById("reinstate") as HTMLButtonElement;
+const reinstateStatus = document.getElementById("reinstate-status")!;
+
+fileInput.addEventListener("change", async () => {
+  const file = fileInput.files?.[0];
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    if (!isValidTokenMap(parsed)) {
+      loadedTokenMap = null;
+      reinstateBtn.disabled = true;
+      reinstateStatus.innerHTML = `<span class="status warn">⚠ Not a valid Redacta token map.</span>`;
+      return;
+    }
+    loadedTokenMap = parsed;
+    reinstateBtn.disabled = false;
+    const n = Object.keys(parsed).length;
+    reinstateStatus.innerHTML = `<span class="status ok">✓ Loaded ${n} token(s) from ${escapeHtml(file.name)}.</span>`;
+  } catch {
+    loadedTokenMap = null;
+    reinstateBtn.disabled = true;
+    reinstateStatus.innerHTML = `<span class="status warn">⚠ Couldn't read that file as JSON.</span>`;
+  }
+});
+
+reinstateBtn.addEventListener("click", async () => {
+  if (!loadedTokenMap) return;
+  reinstateBtn.disabled = true;
+  try {
+    const items = await collectItems(selectedScope());
+    let changed = 0;
+    for (const item of items) {
+      let itemChanged = false;
+      for (const field of fieldsFor(item)) {
+        const value = item[field];
+        if (typeof value !== "string" || !value) continue;
+        const { text, changed: c } = reinstate(value, loadedTokenMap);
+        if (c) {
+          item[field] = text;
+          itemChanged = true;
+        }
+      }
+      if (itemChanged) {
+        changed++;
+        await item.sync();
+      }
+    }
+    reinstateStatus.innerHTML =
+      changed > 0
+        ? `<span class="status ok">✓ Restored original values in ${changed} item(s).</span>`
+        : `<span class="status">No matching tokens found in ${items.length} item(s).</span>`;
+  } finally {
+    reinstateBtn.disabled = false;
   }
 });

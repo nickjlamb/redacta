@@ -25,6 +25,10 @@
       .selfcheck-list li span { color: #777; }
       .selfcheck-list code { font-size: 11px; }
       .selfcheck-clean { margin-top: 12px; }
+      .reidentify { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
+      .reidentify summary { font-size: 13px; font-weight: 600; cursor: pointer; }
+      .reidentify input[type="file"] { font-size: 12px; margin-top: 10px; }
+      #reinstate-status { font-size: 12px; }
       .privacy { font-size: 11px; color: #777; border-top: 1px solid #e8e8e8; padding-top: 10px; margin-top: 20px; line-height: 1.5; }
     </style>
   </head>
@@ -58,6 +62,22 @@
     </div>
 
     <div id="report"></div>
+
+    <details class="reidentify">
+      <summary>Re-identify (restore originals)</summary>
+      <p class="hint">
+        Load a token map you downloaded earlier to put real values back —
+        e.g. after running redacted text through an AI tool. Processed locally;
+        the map is never uploaded.
+      </p>
+      <input type="file" id="token-map-file" accept="application/json,.json" />
+      <div class="actions" style="margin: 12px 0 8px;">
+        <button id="reinstate" class="button button-secondary button-small" type="button" disabled>
+          Restore on board
+        </button>
+      </div>
+      <div id="reinstate-status"></div>
+    </details>
 
     <p class="privacy">
       <strong>Privacy by design:</strong> all detection runs locally in this panel.
