@@ -1,0 +1,7 @@
+# Not part of the Redacta skill bundle published to ClawHub.
+miro-app/
+redacta-portfolio.md
+__pycache__/
+*.pyc
+.git/
+.gitignore
