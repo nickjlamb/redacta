@@ -166,6 +166,19 @@ const NAME_LABEL_RE = new RegExp(
   "gi"
 );
 
+// Relatives and carers: a relationship word followed by a name. HIPAA Safe
+// Harbor treats relatives' names as identifiers, so "her daughter Sarah" or
+// "NOK: John Hartley" should be redacted too.
+const RELATION =
+  "daughter|son|wife|husband|partner|spouse|mother|father|mum|mom|dad|" +
+  "sister|brother|sibling|grandson|granddaughter|grandmother|grandfather|" +
+  "grandparent|aunt|uncle|niece|nephew|cousin|carer|caregiver|guardian|" +
+  "parent|next\\s+of\\s+kin|nok|relative|widow|widower";
+const RELATIVE_NAME_RE = new RegExp(
+  String.raw`\b(${RELATION})([:,\-]?[ \t]+)(${NAME})`,
+  "gi"
+);
+
 // ---------------------------------------------------------------------------
 // Redaction passes
 // ---------------------------------------------------------------------------
@@ -281,6 +294,17 @@ const redactPlate: Pass = (text, tok) =>
     tok.tokenFor("VEHICLE_REG", m, m.replace(/\s/g, "").toUpperCase())
   );
 
+const redactRelative: Pass = (text, tok) =>
+  text.replace(RELATIVE_NAME_RE, (m, rel: string, sep: string, name: string) => {
+    // The regex is case-insensitive for the relationship word, which also
+    // relaxes the name's capitalisation — so require a real capitalised name
+    // here, otherwise "daughter and two sons" would be swallowed.
+    if (!/^[A-Z]/.test(name)) return m;
+    return (
+      rel + sep + tok.tokenFor("RELATIVE_NAME", name.trim(), name.trim().toLowerCase().replace(/\s+/g, " "))
+    );
+  });
+
 const redactName: Pass = (text, tok) => {
   const nameToken = (raw: string) =>
     tok.tokenFor("PATIENT_NAME", raw.trim(), raw.trim().toLowerCase().replace(/\s+/g, " "));
@@ -309,6 +333,7 @@ const CLINICAL_PASSES: Pass[] = [
   redactPhone,
   redactPostcode,
   redactZip,
+  redactRelative,
   redactName,
 ];
 
@@ -323,6 +348,7 @@ const GENERAL_PASSES: Pass[] = [
   redactZip,
   redactIp,
   redactPlate,
+  redactRelative,
   redactName,
 ];
 
@@ -333,6 +359,21 @@ const GENERAL_PASSES: Pass[] = [
 export interface RedactionResult {
   text: string;
   changed: boolean;
+}
+
+// Self-check: patterns that should NOT remain in already-redacted text. These
+// are intentionally broad — they flag *possible* leftovers for human review,
+// not confirmed identifiers. Tokens like [NHS_NUMBER_1] are excluded.
+const RESIDUAL_CHECKS: { label: string; re: RegExp }[] = [
+  { label: "long number (10+ digits)", re: /(?<![\d-])\d[\d\s-]{8,}\d(?![\d-])/g },
+  { label: "email address", re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g },
+  { label: "UK postcode", re: /\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b/gi },
+  { label: "URL", re: /\b(?:https?:\/\/|www\.)\S+/gi },
+];
+
+export interface ResidualFinding {
+  label: string;
+  sample: string;
 }
 
 /**
@@ -376,4 +417,28 @@ export class Redactor {
   get tokenMap(): Record<string, string> {
     return { ...this.tok.tokenMap };
   }
+}
+
+/**
+ * Re-scan already-redacted text for anything that still looks like an
+ * identifier, so the UI can warn the user to check manually. Returns one
+ * finding per distinct sample (deduplicated, capped). A clean result is not a
+ * guarantee — it's a second pair of eyes, not a proof.
+ */
+export function selfCheck(redactedText: string): ResidualFinding[] {
+  const seen = new Set<string>();
+  const findings: ResidualFinding[] = [];
+  for (const { label, re } of RESIDUAL_CHECKS) {
+    for (const match of redactedText.matchAll(re)) {
+      const sample = match[0].trim();
+      // Ignore our own tokens, e.g. [NHS_NUMBER_1].
+      if (/^\[[A-Z_]+_\d+\]$/.test(sample)) continue;
+      const key = `${label}:${sample.toLowerCase()}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      findings.push({ label, sample });
+      if (findings.length >= 20) return findings;
+    }
+  }
+  return findings;
 }

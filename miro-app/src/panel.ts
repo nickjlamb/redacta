@@ -1,6 +1,6 @@
 /// <reference types="@mirohq/websdk-types" />
 
-import { Category, Redactor } from "./redact";
+import { Category, Redactor, ResidualFinding, selfCheck } from "./redact";
 
 type RedactableItem = {
   id: string;
@@ -31,6 +31,14 @@ async function collectItems(scope: "selection" | "board"): Promise<RedactableIte
   );
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function selectedCategories(): Category[] {
   const mode = (document.getElementById("mode") as HTMLSelectElement).value;
   if (mode === "clinical") return ["clinical"];
@@ -47,6 +55,7 @@ interface RunResult {
   redactor: Redactor;
   itemsScanned: number;
   itemsChanged: number;
+  residual: ResidualFinding[];
 }
 
 /** Run the engine over items. When `apply` is true, write changes back. */
@@ -56,12 +65,14 @@ async function run(apply: boolean): Promise<RunResult> {
   const items = await collectItems(scope);
 
   let itemsChanged = 0;
+  const redactedParts: string[] = [];
   for (const item of items) {
     let itemChanged = false;
     for (const field of fieldsFor(item)) {
       const value = item[field];
       if (typeof value !== "string" || !value) continue;
       const { text, changed } = redactor.redactText(value);
+      redactedParts.push(text);
       if (changed) {
         itemChanged = true;
         if (apply) item[field] = text;
@@ -72,7 +83,9 @@ async function run(apply: boolean): Promise<RunResult> {
       if (apply) await item.sync();
     }
   }
-  return { redactor, itemsScanned: items.length, itemsChanged };
+  // Second pass: re-scan the redacted output for anything that slipped through.
+  const residual = selfCheck(redactedParts.join("\n"));
+  return { redactor, itemsScanned: items.length, itemsChanged, residual };
 }
 
 function renderReport(result: RunResult, applied: boolean) {
@@ -110,6 +123,20 @@ function renderReport(result: RunResult, applied: boolean) {
         : `<p class="hint">Nothing has been changed yet. Click <strong>Redact</strong> to apply.</p>`
     }
   `;
+
+  // Self-check warning — possible leftovers for the user to review.
+  if (result.residual.length > 0) {
+    const items = result.residual
+      .map((f) => `<li><span>${f.label}</span> <code>${escapeHtml(f.sample)}</code></li>`)
+      .join("");
+    el.innerHTML += `
+      <div class="selfcheck">
+        <p class="status warn">⚠ Self-check: ${result.residual.length} thing(s) still look like identifiers — please review:</p>
+        <ul class="selfcheck-list">${items}</ul>
+      </div>`;
+  } else if (applied && result.itemsChanged > 0) {
+    el.innerHTML += `<p class="status ok selfcheck-clean">✓ Self-check found no obvious leftover identifiers.</p>`;
+  }
 
   const dl = document.getElementById("download-map");
   if (dl) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Redactor, isValidLuhn, isValidNhs, isValidNi } from "./redact";
+import { Redactor, isValidLuhn, isValidNhs, isValidNi, selfCheck } from "./redact";
 
 const clinical = () => new Redactor(["clinical"]);
 const general = () => new Redactor(["general"]);
@@ -143,6 +143,52 @@ describe("keyword-anchored names", () => {
     const b = r.redactText("Patient: Patricia Hartley").text;
     expect(a).toContain("[PATIENT_NAME_1]");
     expect(b).toContain("[PATIENT_NAME_1]");
+  });
+});
+
+describe("relative and carer names", () => {
+  it("redacts a relative's name but keeps the relationship word", () => {
+    const r = clinical();
+    const { text } = r.redactText("Her daughter Sarah visits daily.");
+    expect(text).toContain("daughter [RELATIVE_NAME_1]");
+    expect(text).not.toContain("Sarah");
+  });
+
+  it("redacts next-of-kin and carer names", () => {
+    const r = clinical();
+    const { text } = r.redactText("NOK: John Hartley. Carer Maria Lopez attends.");
+    expect(text).toContain("[RELATIVE_NAME_1]");
+    expect(text).toContain("[RELATIVE_NAME_2]");
+    expect(text).not.toContain("John Hartley");
+    expect(text).not.toContain("Maria Lopez");
+  });
+
+  it("does not fire on a relationship word with no following name", () => {
+    const r = clinical();
+    const input = "The patient has a daughter and two sons.";
+    expect(r.redactText(input).text).toBe(input);
+  });
+});
+
+describe("self-check", () => {
+  it("flags an identifier that survived redaction", () => {
+    const findings = selfCheck("Contact 07700 900123 or visit https://example.com");
+    const labels = findings.map((f) => f.label);
+    expect(labels).toContain("long number (10+ digits)");
+    expect(labels).toContain("URL");
+  });
+
+  it("ignores Redacta's own tokens and clean text", () => {
+    expect(selfCheck("DOB: [DATE_OF_BIRTH_1], NHS: [NHS_NUMBER_1]")).toHaveLength(0);
+    expect(selfCheck("The quick brown fox.")).toHaveLength(0);
+  });
+
+  it("confirms a real redaction leaves no residual identifiers", () => {
+    const r = both();
+    const { text } = r.redactText(
+      "NHS Number: 943 476 5919, email p.hartley@example.com"
+    );
+    expect(selfCheck(text)).toHaveLength(0);
   });
 });
 
