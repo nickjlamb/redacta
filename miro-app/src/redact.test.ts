@@ -103,6 +103,49 @@ describe("general mode", () => {
   });
 });
 
+describe("keyword-anchored names", () => {
+  it("redacts a courtesy-titled patient name including the title", () => {
+    const r = clinical();
+    const { text } = r.redactText("Dear Mrs Patricia Hartley,");
+    expect(text).toContain("Dear [PATIENT_NAME_1]");
+    expect(text).not.toContain("Patricia");
+    expect(text).not.toContain("Mrs");
+  });
+
+  it("redacts a salutation name with no title", () => {
+    const r = clinical();
+    expect(r.redactText("Dear Patricia Hartley,").text).toContain("Dear [PATIENT_NAME_1]");
+  });
+
+  it("redacts labelled names but keeps the label", () => {
+    const r = clinical();
+    const { text } = r.redactText("Patient: John Smith\nName - Jane Doe");
+    expect(text).toContain("Patient: [PATIENT_NAME_1]");
+    expect(text).toContain("Name - [PATIENT_NAME_2]");
+  });
+
+  it("PRESERVES clinician names carrying a clinical title", () => {
+    const r = clinical();
+    const input = "under the care of Dr Sarah Chen and Consultant James Wright";
+    const { text } = r.redactText(input);
+    expect(text).toBe(input); // nothing redacted
+  });
+
+  it("does not redact a clinician introduced by 'Dear Dr ...'", () => {
+    const r = clinical();
+    const { text } = r.redactText("Dear Dr Chen,");
+    expect(text).toBe("Dear Dr Chen,");
+  });
+
+  it("gives the same patient the same name token across notes", () => {
+    const r = clinical();
+    const a = r.redactText("Dear Mrs Patricia Hartley").text;
+    const b = r.redactText("Patient: Patricia Hartley").text;
+    expect(a).toContain("[PATIENT_NAME_1]");
+    expect(b).toContain("[PATIENT_NAME_1]");
+  });
+});
+
 describe("combined mode and reporting", () => {
   it("handles the full sample letter", () => {
     const r = both();

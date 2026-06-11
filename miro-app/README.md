@@ -15,7 +15,9 @@ Two modes (combinable):
 
 - **Clinical** — NHS numbers (Modulus-11 validated), UK National Insurance
   numbers, dates of birth (keyword-anchored; appointment dates preserved), UK
-  postcodes, US SSNs and ZIP codes, hospital/MRN numbers, emails, phone numbers.
+  postcodes, US SSNs and ZIP codes, hospital/MRN numbers, emails, phone numbers,
+  and patient names in clear contexts (after a courtesy title, "Dear …", or a
+  "Patient:" / "Name:" label — clinician names are preserved by design).
 - **General PII** — URLs, IP addresses, payment cards (Luhn validated), IBANs,
   keyword-anchored account/member/policy numbers, UK vehicle registrations,
   plus emails/phones/postcodes.
@@ -86,10 +88,12 @@ npx vercel --prod
 
 ## Limits
 
-Deterministic patterns only — names and free-text addresses are not detected in
-this version (the agent-skill version of Redacta handles those with LLM
-reasoning). Always review the result before sharing. Not a substitute for
-formal data-protection processes.
+Deterministic patterns only. Names are caught in clear contexts (titles,
+salutations, labels) but not in free prose; partial/free-text addresses and
+identifying ages are not detected (the agent-skill version of Redacta handles
+those with LLM reasoning). Clinician names are preserved by design. Always
+review the result before sharing. Not a substitute for formal data-protection
+processes.
 
 ## License
 

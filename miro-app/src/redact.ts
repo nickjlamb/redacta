@@ -141,6 +141,31 @@ const ACCOUNT_KW_RE =
 
 const UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
 
+// --- Names (keyword-anchored) ----------------------------------------------
+// Names need contextual judgement, which a client-side deterministic engine
+// can't fully do. We catch the high-confidence cases — names introduced by a
+// courtesy title, a salutation, or a label — and deliberately PRESERVE names
+// carrying a clinical title (Dr, Consultant, Nurse, ...), matching the Redacta
+// skill's "don't redact the treating clinician" rule. Names buried in free
+// prose are NOT caught; the UI tells users to review.
+const NAME = String.raw`[A-Z][a-z]+(?:['’\-][A-Za-z]+)?(?:[ \t]+[A-Z][a-z]+(?:['’\-][A-Za-z]+)?){0,2}`;
+const COURTESY_TITLE = "Mr|Mrs|Ms|Miss|Mx";
+const CLINICAL_TITLE =
+  "Dr|Doctor|Prof|Professor|Consultant|Nurse|Sister|Matron|Surgeon|Registrar";
+
+// "Mrs Patricia Hartley" → redact title + name together.
+const NAME_TITLE_RE = new RegExp(String.raw`\b(?:${COURTESY_TITLE})\.?\s+(${NAME})`, "g");
+// "Dear Patricia Hartley" → keep "Dear", redact the name — unless a clinical title follows.
+const NAME_SALUTATION_RE = new RegExp(
+  String.raw`\b(Dear)\s+(?!(?:${CLINICAL_TITLE})\b)(${NAME})`,
+  "g"
+);
+// "Patient: ...", "Name - ...", "Re: ..." → keep the label, redact the name.
+const NAME_LABEL_RE = new RegExp(
+  String.raw`\b((?:Patient(?:\s+Name)?|Name|Client|Re)\s*[:\-]\s*)(${NAME})`,
+  "gi"
+);
+
 // ---------------------------------------------------------------------------
 // Redaction passes
 // ---------------------------------------------------------------------------
@@ -256,6 +281,22 @@ const redactPlate: Pass = (text, tok) =>
     tok.tokenFor("VEHICLE_REG", m, m.replace(/\s/g, "").toUpperCase())
   );
 
+const redactName: Pass = (text, tok) => {
+  const nameToken = (raw: string) =>
+    tok.tokenFor("PATIENT_NAME", raw.trim(), raw.trim().toLowerCase().replace(/\s+/g, " "));
+  // Courtesy-titled names first, so the title is absorbed into the token.
+  let out = text.replace(NAME_TITLE_RE, (_m, name: string) => nameToken(name));
+  // Salutations without a courtesy title (clinical titles already excluded).
+  out = out.replace(NAME_SALUTATION_RE, (_m, dear: string, name: string) =>
+    `${dear} ${nameToken(name)}`
+  );
+  // Labelled names — preserve the original label + separator.
+  out = out.replace(NAME_LABEL_RE, (_m, prefix: string, name: string) =>
+    prefix + nameToken(name)
+  );
+  return out;
+};
+
 // Order matters: keyword-anchored and checksum-validated patterns first,
 // weaker heuristics last, so high-confidence matches win any overlap.
 const CLINICAL_PASSES: Pass[] = [
@@ -268,6 +309,7 @@ const CLINICAL_PASSES: Pass[] = [
   redactPhone,
   redactPostcode,
   redactZip,
+  redactName,
 ];
 
 const GENERAL_PASSES: Pass[] = [
@@ -281,6 +323,7 @@ const GENERAL_PASSES: Pass[] = [
   redactZip,
   redactIp,
   redactPlate,
+  redactName,
 ];
 
 // ---------------------------------------------------------------------------

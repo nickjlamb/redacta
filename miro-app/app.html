@@ -26,7 +26,7 @@
     <h3 style="margin-bottom: 4px;">Redacta</h3>
     <p class="hint" style="margin-bottom: 16px;">
       Replace patient identifiers and PII on this board with labelled tokens —
-      <code>[NHS_NUMBER_1]</code>, <code>[EMAIL_1]</code>, … — before sharing or AI processing.
+      <code>[NHS_NUMBER_1]</code>, <code>[PATIENT_NAME_1]</code>, … — before sharing or AI processing.
     </p>
 
     <div class="field">
@@ -55,8 +55,14 @@
 
     <p class="privacy">
       <strong>Privacy by design:</strong> all detection runs locally in this panel.
-      Board content is never sent to a server. Deterministic patterns only —
-      always review the result before sharing.
+      Board content is never sent to a server.
+    </p>
+    <p class="privacy" style="border-top: none; padding-top: 0; margin-top: 8px;">
+      <strong>Always review before sharing.</strong> Redacta uses deterministic
+      patterns. Names are detected only in clear contexts (after a title,
+      &ldquo;Dear&hellip;&rdquo;, or a &ldquo;Patient:&rdquo; label) — names in
+      free text, partial addresses, and other identifiers may not be caught, and
+      clinician names are kept by design. Check the result yourself.
       Built by <a href="https://www.pharmatools.ai/redacta" target="_blank" rel="noopener">PharmaTools.AI</a>.
     </p>
 
