@@ -1,6 +1,7 @@
 ---
 name: redacta
-description: Pseudonymises medical and clinical documents by replacing patient identifiers with labelled tokens (e.g. [PATIENT_NAME_1], [NHS_NUMBER_1], [DATE_OF_BIRTH_1]) so the text can be safely processed by AI or shared, with clinical meaning intact. Combines a deterministic pattern layer (NHS numbers with Modulus-11 validation, UK National Insurance numbers, dates of birth, UK postcodes, phone numbers, emails, hospital/MRN numbers) with contextual reasoning for patient names, postal addresses and identifying ages, then returns the redacted document plus a redaction report. Use when the user wants to redact, de-identify, anonymise or pseudonymise a medical letter, clinical note, discharge summary, referral or patient record, or before pasting clinical text into another AI tool.
+version: 1.1.0
+description: Pseudonymises medical and clinical documents by replacing patient identifiers with labelled tokens (e.g. [PATIENT_NAME_1], [NHS_NUMBER_1], [DATE_OF_BIRTH_1]) so the text can be safely processed by AI or shared, with clinical meaning intact. Combines a deterministic pattern layer (NHS numbers with Modulus-11 validation, UK National Insurance numbers, dates of birth, UK postcodes, phone numbers, emails, hospital/MRN numbers) with contextual reasoning for patient names, postal addresses and identifying ages, then returns the redacted document plus a redaction report. Use when the user wants to redact, de-identify, anonymise or pseudonymise a medical letter, clinical note, discharge summary, referral or patient record, or before pasting clinical text into another AI tool. Can also re-identify (reverse the redaction) by restoring original values from a token map.
 license: MIT-0
 ---
 
@@ -31,8 +32,9 @@ Redaction progress:
 - [ ] 2. Run the pattern layer (scripts/redact_structured.py)
 - [ ] 3. Apply the reasoning layer (names, addresses, ages)
 - [ ] 4. Assemble the pseudonymised document (formatting preserved)
-- [ ] 5. Write the redaction report
-- [ ] 6. Add the limits note
+- [ ] 5. Self-check the output for residual identifiers
+- [ ] 6. Write the redaction report
+- [ ] 7. Add the limits note
 ```
 
 ### 1–2. Pattern layer
@@ -77,7 +79,22 @@ Reproduce the document exactly — same line breaks, headings and layout — cha
 only the identifiers. Never alter clinical content (findings, medications, doses,
 results, dates of appointments or procedures).
 
-### 5. Report
+### 5. Self-check
+
+Before finalising, re-read the assembled document as if you were an auditor and
+look for anything that still identifies a person:
+
+- Numbers that look like an NHS number, phone, MRN, account or reference but were
+  not tokenised.
+- A name, relative, carer or place name you passed over — especially mid-sentence
+  ("…lives with her sister Joan…", "…transferred from St Elsewhere…").
+- A specific age, postcode fragment, email, URL or date of birth.
+
+If you find anything, tokenise it and update the report. A clean self-check is not
+a guarantee — it is a second pass, not a proof. Treat it as the moment to catch
+what Layers 1 and 2 missed.
+
+### 6. Report
 
 End with a short, human-readable report, for example:
 
@@ -89,13 +106,33 @@ If the user may need to reverse the process, also offer the token map as a table
 pseudonymisation — include it only where the user wants it, and never alongside the
 redacted text if the point was to keep identifiers separate.
 
-### 6. Limits note
+### 7. Limits note
 
 Always include this note:
 
 > Redacta is a strong first line of defence, not a guarantee. It will not catch
 > every possible identifier and is not a substitute for formal data-protection
 > processes. Review the report before sharing the text.
+
+## Re-identification (reversing the redaction)
+
+When the user has run the redacted text through another tool and wants the real
+values put back, use the token map with the bundled script (execute it — do not
+read it into context):
+
+```bash
+python3 scripts/reinstate.py redacted_or_ai_output.txt --map token_map.json
+```
+
+`token_map.json` may be either a bare map (`{"[NHS_NUMBER_1]": "943 476 5919"}`)
+or the full JSON object printed by `redact_structured.py` — both work. The script
+swaps every token back to its original value and prints `{text, changed}`; add
+`--text-only` for just the restored text. It is standard-library only and makes no
+network calls.
+
+This completes the round trip: **redact → process/share → re-identify**, with the
+real identifiers only ever present locally. The token map is the key that reverses
+the pseudonymisation — handle and store it with the same care as the original data.
 
 ## Notes
 

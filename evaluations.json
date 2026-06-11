@@ -32,5 +32,26 @@
       "Does not redact clinical values such as Hb 11.2 or ferritin 8, and does not redact the relative time 'in 6 weeks'",
       "Returns the pseudonymised text plus a report, and includes the limits note rather than claiming the text is guaranteed safe"
     ]
+  },
+  {
+    "skills": ["redacta"],
+    "query": "Pseudonymise this and watch the relatives:\n\nMrs Edith Crowe (DOB 02/11/1948) lives with her daughter Sarah Crowe and is visited by carer Maria Lopez. Seen by Dr Patel.",
+    "expected_behavior": [
+      "Redacts the date of birth 02/11/1948 via the structured script",
+      "Redacts the patient Edith Crowe as [PATIENT_NAME_1] in the reasoning layer",
+      "Also redacts the relative Sarah Crowe and the carer Maria Lopez (relatives and carers are identifiers), as [PATIENT_NAME_n] or a relative token",
+      "Keeps the treating clinician Dr Patel by default",
+      "Performs a self-check pass for any residual identifier before finalising, and returns a report plus the limits note"
+    ]
+  },
+  {
+    "skills": ["redacta"],
+    "query": "I redacted a letter earlier and got this token map: {\"[PATIENT_NAME_1]\": \"Patricia Hartley\", \"[NHS_NUMBER_1]\": \"943 476 5919\"}. The AI replied 'Dear [PATIENT_NAME_1], your record [NHS_NUMBER_1] is updated.' Can you put the real details back?",
+    "expected_behavior": [
+      "Recognises this as a re-identification request and uses scripts/reinstate.py with the supplied token map rather than guessing values",
+      "Restores [PATIENT_NAME_1] to Patricia Hartley and [NHS_NUMBER_1] to 943 476 5919",
+      "Returns the re-identified text 'Dear Patricia Hartley, your record 943 476 5919 is updated.'",
+      "Reminds the user that the token map is the key to the data and should be handled securely"
+    ]
   }
 ]

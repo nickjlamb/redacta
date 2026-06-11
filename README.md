@@ -19,8 +19,16 @@ Two layers:
   birth, UK postcodes, phone numbers, emails, and hospital/MRN numbers. US SSN
   and ZIP codes are also handled.
 - **Reasoning (judgement).** The skill then has the agent handle what patterns
-  can't: patient names (told apart from the clinicians treating them), postal
-  addresses, and identifying ages.
+  can't: patient names (told apart from the clinicians treating them), relatives
+  and carers, postal addresses, and identifying ages.
+- **Self-check.** A final pass re-reads the output for any identifier that slipped
+  through before the report is written.
+
+It also works in reverse. **Re-identification** (`scripts/reinstate.py`) takes the
+token map from an earlier redaction and restores the original values — so you can
+redact a document, run it through another AI tool, and put the real details back
+locally. Redact → process → re-identify is a complete round trip, and identifiers
+only ever exist on your machine.
 
 ## Install
 
@@ -44,13 +52,16 @@ Zip the repository folder and upload it as a skill.
 | `SKILL.md` | The skill — instructions plus metadata |
 | `reference.md` | Pattern specs, the Modulus-11 algorithm, NI prefix rules, the date-of-birth vs clinical-date rule, token vocabulary, limitations |
 | `scripts/redact_structured.py` | The deterministic pattern layer |
+| `scripts/reinstate.py` | The re-identification layer (restore originals from a token map) |
 | `scripts/test_redact_structured.py` | Tests for the pattern layer |
+| `scripts/test_reinstate.py` | Tests for the re-identification layer |
 | `evaluations.json` | Example evaluation scenarios |
 
-Run the pattern-layer tests:
+Run the tests:
 
 ```bash
 python3 scripts/test_redact_structured.py
+python3 scripts/test_reinstate.py
 ```
 
 ## A note on limits
