@@ -214,6 +214,13 @@ fileInput.addEventListener("change", async () => {
   }
 });
 
+const reidentifyDetails = document.querySelector<HTMLDetailsElement>(".reidentify");
+reidentifyDetails?.addEventListener("toggle", () => {
+  if (reidentifyDetails.open) {
+    reidentifyDetails.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
 reinstateBtn.addEventListener("click", async () => {
   if (!loadedTokenMap) return;
   reinstateBtn.disabled = true;
