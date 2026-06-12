@@ -10,3 +10,8 @@ miro-app/node_modules/
 miro-app/dist/
 miro-app/.vercel/
 *.timestamp-*.mjs
+
+# Python package build artifacts
+python-package/dist/
+python-package/build/
+python-package/src/*.egg-info/
