@@ -14,7 +14,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { Redactor, isValidTokenMap, reinstate, selfCheck } from "@pharmatools/redacta";
 
-const server = new McpServer({ name: "redacta", version: "1.1.2" });
+const server = new McpServer({ name: "redacta", version: "1.2.0" });
 
 const jsonResult = (data: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
@@ -34,12 +34,15 @@ server.registerTool(
     inputSchema: {
       text: z.string().describe("The text to redact."),
       categories: z
-        .array(z.enum(["clinical", "general"]))
+        .array(z.enum(["clinical", "general", "safeharbor"]))
         .optional()
         .describe(
-          "Which pattern sets to apply. Defaults to both. 'clinical' = NHS/NI/" +
-            "DOB/MRN/postcode/SSN/ZIP/email/phone/names; 'general' = URLs, IPs, " +
-            "payment cards, IBANs, account numbers, vehicle regs."
+          "Which pattern sets to apply. Defaults to clinical + general. " +
+            "'clinical' = NHS/NI/DOB/MRN/postcode/SSN/ZIP/email/phone/names; " +
+            "'general' = URLs, IPs, payment cards, IBANs, account numbers, " +
+            "vehicle regs; 'safeharbor' = strictest, HIPAA Safe Harbor — implies " +
+            "clinical + general and also removes ALL dates (not just DOB), ages, " +
+            "fax, licence, device-serial, VIN and health-plan numbers."
         ),
     },
   },

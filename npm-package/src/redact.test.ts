@@ -257,6 +257,61 @@ describe("re-identification", () => {
   });
 });
 
+describe("Safe Harbor mode", () => {
+  const sh = () => new Redactor(["safeharbor"]);
+
+  it("redacts ALL dates, not just DOB (incl. appointment dates)", () => {
+    const r = sh();
+    const { text } = r.redactText(
+      "DOB: 14/03/1952. Next appointment is on 15 March 2026."
+    );
+    expect(text).toContain("[DATE_OF_BIRTH_1]");
+    expect(text).toContain("[DATE_1]");
+    expect(text).not.toContain("15 March 2026");
+  });
+
+  it("redacts specific ages", () => {
+    const r = sh();
+    const { text } = r.redactText("A 73-year-old man, aged 73.");
+    expect(text).toContain("[AGE_1]");
+    expect(text).not.toContain("73-year-old");
+  });
+
+  it("redacts fax, licence, device serial and health-plan numbers", () => {
+    const r = sh();
+    const { text } = r.redactText(
+      "Fax: 0113 496 1234. Licence No: AB-99213. Serial No: SN8842XK. Medicare ID: 1EG4TE5MK73"
+    );
+    expect(text).toContain("[FAX_1]");
+    expect(text).toContain("[LICENSE_1]");
+    expect(text).toContain("[DEVICE_ID_1]");
+    expect(text).toContain("[HEALTH_PLAN_NUMBER_1]");
+  });
+
+  it("redacts a VIN but not an ordinary 17-char word", () => {
+    const r = sh();
+    expect(r.redactText("VIN 1HGCM82633A004352 on file.").text).toContain("[VIN_1]");
+    const r2 = sh();
+    expect(r2.redactText("Antidisestablishmentari").text).toBe(
+      "Antidisestablishmentari"
+    );
+  });
+
+  it("safeharbor implies clinical + general (NHS + URL both caught)", () => {
+    const r = sh();
+    const { text } = r.redactText("NHS 943 476 5919 at https://portal.example.com");
+    expect(text).toContain("[NHS_NUMBER_1]");
+    expect(text).toContain("[URL_1]");
+  });
+
+  it("clinical mode still preserves appointment dates (default unchanged)", () => {
+    const r = new Redactor(["clinical"]);
+    expect(r.redactText("Next appointment is on 15 March 2026.").text).toContain(
+      "15 March 2026"
+    );
+  });
+});
+
 describe("combined mode and reporting", () => {
   it("handles the full sample letter", () => {
     const r = both();

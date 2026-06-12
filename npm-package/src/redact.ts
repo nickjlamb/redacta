@@ -7,7 +7,7 @@
  * output, and reverses the process from a token map.
  */
 
-export type Category = "clinical" | "general";
+export type Category = "clinical" | "general" | "safeharbor";
 
 // ---------------------------------------------------------------------------
 // Validators
@@ -342,6 +342,63 @@ const redactName: Pass = (text, tok) => {
   return out;
 };
 
+// --- Safe Harbor extras (HIPAA §164.514(b)(2)) -----------------------------
+// Stricter passes layered on top of clinical + general for full Safe Harbor
+// de-identification: ALL dates (not just DOB), specific ages, fax numbers,
+// certificate/licence numbers, device serials, VINs, and health-plan numbers.
+const ANY_DATE_RE = new RegExp("(?:" + DATE + ")", "g");
+const AGE_PHRASE_RE = /\b\d{1,3}[\s-]?(?:years?[\s-]?old|y\/?o)\b/gi;
+const AGE_LABEL_RE = /\b(aged|age)([:\s]+)(\d{1,3})\b/gi;
+const FAX_RE = /\b(fax(?:\s*(?:no\.?|number|#))?[:\s]+)(\+?[\d(][\d().\s-]{6,}\d)/gi;
+const LICENSE_RE =
+  /\b((?:licen[cs]e|certificate|cert\.?|registration)\s*(?:no\.?|number|#)?[:\s]+)([A-Z0-9][A-Z0-9-]{3,})/gi;
+const DEVICE_RE =
+  /\b((?:serial|device\s*(?:id|identifier|no\.?|number)|imei)\s*(?:no\.?|number|#)?[:\s]+)([A-Z0-9][A-Z0-9-]{4,})/gi;
+const VIN_RE = /\b[A-HJ-NPR-Z0-9]{17}\b/g;
+const HEALTH_PLAN_RE =
+  /\b((?:health\s*plan|beneficiary|medicare|medicaid)\s*(?:id|no\.?|number|#)?[:\s]+)([A-Z0-9][A-Z0-9-]{4,})/gi;
+
+const redactAllDates: Pass = (text, tok) =>
+  text.replace(ANY_DATE_RE, (m) => tok.tokenFor("DATE", m));
+
+const redactAge: Pass = (text, tok) => {
+  let out = text.replace(AGE_PHRASE_RE, (m) =>
+    tok.tokenFor("AGE", m.trim(), m.replace(/\D/g, ""))
+  );
+  out = out.replace(AGE_LABEL_RE, (_m, kw: string, sep: string, num: string) =>
+    kw + sep + tok.tokenFor("AGE", num)
+  );
+  return out;
+};
+
+const redactFax: Pass = (text, tok) =>
+  text.replace(FAX_RE, (_m, kw: string, num: string) =>
+    kw + tok.tokenFor("FAX", num.trim(), digitsOf(num))
+  );
+
+const redactLicense: Pass = (text, tok) =>
+  text.replace(LICENSE_RE, (_m, kw: string, id: string) =>
+    kw + tok.tokenFor("LICENSE", id, id.toUpperCase())
+  );
+
+const redactDevice: Pass = (text, tok) =>
+  text.replace(DEVICE_RE, (_m, kw: string, id: string) =>
+    kw + tok.tokenFor("DEVICE_ID", id, id.toUpperCase())
+  );
+
+const redactVin: Pass = (text, tok) =>
+  text.replace(VIN_RE, (m) => {
+    // Require both a digit and a letter, so we don't grab a 17-char all-alpha
+    // word or an all-digit run.
+    if (!/\d/.test(m) || !/[A-Z]/.test(m)) return m;
+    return tok.tokenFor("VIN", m, m.toUpperCase());
+  });
+
+const redactHealthPlan: Pass = (text, tok) =>
+  text.replace(HEALTH_PLAN_RE, (_m, kw: string, id: string) =>
+    kw + tok.tokenFor("HEALTH_PLAN_NUMBER", id, id.toUpperCase())
+  );
+
 // Order matters: keyword-anchored and checksum-validated patterns first,
 // weaker heuristics last, so high-confidence matches win any overlap.
 const CLINICAL_PASSES: Pass[] = [
@@ -371,6 +428,21 @@ const GENERAL_PASSES: Pass[] = [
   redactPlate,
   redactRelative,
   redactName,
+];
+
+// redactFax must run BEFORE the generic phone pass, or a fax number is claimed
+// as [PHONE]. It's keyword-anchored ("Fax: ...") so running first is safe.
+const SAFE_HARBOR_PRE_PASSES: Pass[] = [redactFax];
+
+// Layered after clinical + general. redactAllDates runs last so keyword DOBs are
+// already [DATE_OF_BIRTH] and only the remaining dates (appointments) → [DATE].
+const SAFE_HARBOR_EXTRA_PASSES: Pass[] = [
+  redactAge,
+  redactLicense,
+  redactDevice,
+  redactVin,
+  redactHealthPlan,
+  redactAllDates,
 ];
 
 // ---------------------------------------------------------------------------
@@ -406,13 +478,23 @@ export class Redactor {
   private passes: Pass[];
 
   constructor(categories: Category[]) {
+    // Safe Harbor is the strictest mode and implies clinical + general plus the
+    // extra Safe Harbor passes (all dates, ages, fax, licence, device, VIN,
+    // health-plan numbers).
+    const safeHarbor = categories.includes("safeharbor");
     const seen = new Set<Pass>();
     const passes: Pass[] = [];
-    if (categories.includes("clinical")) {
+    if (safeHarbor) {
+      for (const p of SAFE_HARBOR_PRE_PASSES) if (!seen.has(p)) (seen.add(p), passes.push(p));
+    }
+    if (categories.includes("clinical") || safeHarbor) {
       for (const p of CLINICAL_PASSES) if (!seen.has(p)) (seen.add(p), passes.push(p));
     }
-    if (categories.includes("general")) {
+    if (categories.includes("general") || safeHarbor) {
       for (const p of GENERAL_PASSES) if (!seen.has(p)) (seen.add(p), passes.push(p));
+    }
+    if (safeHarbor) {
+      for (const p of SAFE_HARBOR_EXTRA_PASSES) if (!seen.has(p)) (seen.add(p), passes.push(p));
     }
     this.passes = passes;
   }

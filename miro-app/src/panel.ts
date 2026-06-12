@@ -50,6 +50,7 @@ function selectedCategories(): Category[] {
   const mode = (document.getElementById("mode") as HTMLSelectElement).value;
   if (mode === "clinical") return ["clinical"];
   if (mode === "general") return ["general"];
+  if (mode === "safeharbor") return ["safeharbor"];
   return ["clinical", "general"];
 }
 

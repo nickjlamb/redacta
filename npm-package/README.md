@@ -36,6 +36,25 @@ numbers, UK vehicle regs) and keyword-anchored patient / relative / carer names
 Same value → same token across a `Redactor` instance; the `tokenMap` reverses
 the redaction. No DOM, no network, no storage.
 
+### Safe Harbor mode
+
+`new Redactor(["safeharbor"])` applies a stricter, US-focused pass aligned with
+the HIPAA Safe Harbor method (§164.514). It implies `clinical` + `general` and
+adds: **all** dates (not just DOB — appointment dates included), specific ages,
+fax numbers, certificate/licence numbers, device serial numbers, VINs, and
+health-plan/beneficiary numbers.
+
+```ts
+const r = new Redactor(["safeharbor"]);
+r.redactText("73-year-old, appointment 15 March 2026, fax 0113 496 1234").text;
+// "[AGE_1], appointment [DATE_1], fax [FAX_1]"
+```
+
+Note: this over-redacts slightly versus the letter of the standard (it removes
+all specific ages and full dates rather than only ages 90+ and date elements
+beyond the year) — deliberately, on the safe side. Biometric and photographic
+identifiers are out of scope for a text engine. Not legal advice; review output.
+
 ## API
 
 - `new Redactor(categories: ("clinical" | "general")[])` — `.redactText(s)`,
