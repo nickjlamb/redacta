@@ -5,6 +5,7 @@
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "editorType": ["figjam"],
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["none"],
     "reasoning": "Redacta runs entirely on-device. It never sends board content anywhere."
