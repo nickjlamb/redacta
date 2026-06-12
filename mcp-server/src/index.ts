@@ -12,9 +12,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { Redactor, isValidTokenMap, reinstate, selfCheck } from "./redact.js";
+import { Redactor, isValidTokenMap, reinstate, selfCheck } from "@pharmatools/redacta";
 
-const server = new McpServer({ name: "redacta", version: "1.1.1" });
+const server = new McpServer({ name: "redacta", version: "1.1.2" });
 
 const jsonResult = (data: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],

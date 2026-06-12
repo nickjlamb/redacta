@@ -7,7 +7,7 @@ import {
   isValidTokenMap,
   reinstate,
   selfCheck,
-} from "./redact";
+} from "@pharmatools/redacta";
 
 type RedactableItem = {
   id: string;

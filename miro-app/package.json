@@ -12,6 +12,7 @@
     "start": "serve dist -l tcp://0.0.0.0:${PORT:-3000}"
   },
   "dependencies": {
+    "@pharmatools/redacta": "^1.1.1",
     "serve": "^14.2.0"
   },
   "devDependencies": {

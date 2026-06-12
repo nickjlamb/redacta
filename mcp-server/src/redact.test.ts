@@ -7,7 +7,7 @@ import {
   isValidTokenMap,
   reinstate,
   selfCheck,
-} from "./redact";
+} from "@pharmatools/redacta";
 
 const clinical = () => new Redactor(["clinical"]);
 const general = () => new Redactor(["general"]);
