@@ -149,6 +149,18 @@ const UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
 // skill's "don't redact the treating clinician" rule. Names buried in free
 // prose are NOT caught; the UI tells users to review.
 const NAME = String.raw`[A-Z][a-z]+(?:['’\-][A-Za-z]+)?(?:[ \t]+[A-Z][a-z]+(?:['’\-][A-Za-z]+)?){0,2}`;
+// Case-sensitive, anchored version. Used to trim a loosely-captured name down
+// to its leading run of properly capitalised words — necessary because the
+// label/relative regexes carry the `i` flag (for the keyword), which would
+// otherwise let a name match swallow trailing lowercase words ("Sarah is the").
+const STRICT_NAME_RE = new RegExp("^" + NAME);
+
+/** Split a loosely-captured name into its real leading name and the remainder. */
+function leadingName(s: string): { name: string; rest: string } | null {
+  const m = s.match(STRICT_NAME_RE);
+  if (!m) return null;
+  return { name: m[0], rest: s.slice(m[0].length) };
+}
 const COURTESY_TITLE = "Mr|Mrs|Ms|Miss|Mx";
 const CLINICAL_TITLE =
   "Dr|Doctor|Prof|Professor|Consultant|Nurse|Sister|Matron|Surgeon|Registrar";
@@ -296,12 +308,15 @@ const redactPlate: Pass = (text, tok) =>
 
 const redactRelative: Pass = (text, tok) =>
   text.replace(RELATIVE_NAME_RE, (m, rel: string, sep: string, name: string) => {
-    // The regex is case-insensitive for the relationship word, which also
-    // relaxes the name's capitalisation — so require a real capitalised name
-    // here, otherwise "daughter and two sons" would be swallowed.
-    if (!/^[A-Z]/.test(name)) return m;
+    // The `i` flag (for the relationship word) relaxes the name's
+    // capitalisation, so trim to the leading capitalised run — this both
+    // rejects "daughter and two sons" and stops "Sarah is the" over-capturing.
+    const split = leadingName(name);
+    if (!split) return m;
     return (
-      rel + sep + tok.tokenFor("RELATIVE_NAME", name.trim(), name.trim().toLowerCase().replace(/\s+/g, " "))
+      rel + sep +
+      tok.tokenFor("RELATIVE_NAME", split.name, split.name.toLowerCase()) +
+      split.rest
     );
   });
 
@@ -318,10 +333,13 @@ const redactName: Pass = (text, tok) => {
   out = out.replace(NAME_SALUTATION_RE, (_m, dear: string, name: string) =>
     `${dear} ${nameToken(name)}`
   );
-  // Labelled names — preserve the original label + separator.
-  out = out.replace(NAME_LABEL_RE, (_m, prefix: string, name: string) =>
-    prefix + nameToken(name)
-  );
+  // Labelled names — preserve the original label + separator. This regex also
+  // carries the `i` flag (for the label word), so trim the name the same way.
+  out = out.replace(NAME_LABEL_RE, (m, prefix: string, name: string) => {
+    const split = leadingName(name);
+    if (!split) return m;
+    return prefix + nameToken(split.name) + split.rest;
+  });
   return out;
 };
 

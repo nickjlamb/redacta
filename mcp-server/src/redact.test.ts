@@ -176,6 +176,20 @@ describe("relative and carer names", () => {
     const input = "The patient has a daughter and two sons.";
     expect(r.redactText(input).text).toBe(input);
   });
+
+  it("does not over-capture trailing lowercase words after a relative name", () => {
+    const r = clinical();
+    const { text } = r.redactText("Her daughter Sarah is the main contact.");
+    expect(text).toBe("Her daughter [RELATIVE_NAME_1] is the main contact.");
+    expect(r.tokenMap["[RELATIVE_NAME_1]"]).toBe("Sarah");
+  });
+
+  it("does not over-capture after a labelled patient name", () => {
+    const r = clinical();
+    const { text } = r.redactText("Patient: John is doing well.");
+    expect(text).toBe("Patient: [PATIENT_NAME_1] is doing well.");
+    expect(r.tokenMap["[PATIENT_NAME_1]"]).toBe("John");
+  });
 });
 
 describe("self-check", () => {
