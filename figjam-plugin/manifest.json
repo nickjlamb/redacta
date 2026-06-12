@@ -1,0 +1,12 @@
+{
+  "name": "Redacta",
+  "id": "REPLACE_WITH_FIGMA_ASSIGNED_ID",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figjam"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "Redacta runs entirely on-device. It never sends board content anywhere."
+  }
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body { font-family: Inter, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 16px; color: #1e1e1e; font-size: 13px; }
+      h3 { margin: 0 0 4px; font-size: 15px; }
+      .hint { font-size: 11px; color: #777; line-height: 1.5; }
+      .field { margin: 14px 0; }
+      .field label.section { display: block; font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+      select { width: 100%; padding: 6px; font-size: 13px; border: 1px solid #d9d9d9; border-radius: 4px; }
+      .radio-row { display: flex; gap: 16px; }
+      .actions { display: flex; gap: 8px; margin: 16px 0 6px; }
+      button { font-size: 13px; padding: 7px 14px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; cursor: pointer; }
+      button.primary { background: #0d99ff; color: #fff; border-color: #0d99ff; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      .status { font-size: 12px; margin: 8px 0; }
+      .status.ok { color: #0a7d4f; }
+      .status.warn { color: #b45309; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+      th, td { text-align: left; padding: 3px 6px; border-bottom: 1px solid #eee; }
+      code { font-size: 11px; }
+      details { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
+      summary { font-weight: 600; cursor: pointer; }
+      .selfcheck { margin-top: 12px; padding-top: 10px; border-top: 1px solid #eee; }
+      .selfcheck li { display: flex; justify-content: space-between; gap: 10px; list-style: none; }
+      ul { padding: 0; margin: 6px 0; }
+      .privacy { font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 10px; margin-top: 18px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <h3>Redacta</h3>
+    <p class="hint">Replace patient identifiers &amp; PII on this board with labelled tokens before sharing or AI processing.</p>
+
+    <div class="field">
+      <label class="section" for="mode">Detection mode</label>
+      <select id="mode">
+        <option value="both" selected>Clinical + general PII</option>
+        <option value="clinical">Clinical (UK/US healthcare)</option>
+        <option value="general">General PII</option>
+        <option value="safeharbor">Safe Harbor (US HIPAA) — strictest</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="section">Scope</label>
+      <div class="radio-row">
+        <label><input type="radio" name="scope" value="selection" checked /> Selected items</label>
+        <label><input type="radio" name="scope" value="page" /> Whole page</label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="scan">1 · Preview</button>
+      <button id="redact" class="primary">2 · Redact</button>
+    </div>
+    <p class="hint"><strong>Preview</strong> shows what will be found — nothing changes. <strong>Redact</strong> applies it.</p>
+
+    <div id="report"></div>
+
+    <details id="reidentify">
+      <summary>Re-identify (restore originals)</summary>
+      <p class="hint">Load a token map you downloaded earlier to put real values back. Processed on-device.</p>
+      <input type="file" id="token-map-file" accept="application/json,.json" />
+      <div class="actions"><button id="reinstate" disabled>Restore on board</button></div>
+      <div id="reinstate-status"></div>
+    </details>
+
+    <p class="privacy"><strong>On-device by design:</strong> detection runs inside the plugin; the manifest grants no network access, so board content never leaves FigJam. Deterministic patterns — always review before sharing. Built by PharmaTools.AI.</p>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const post = (m) => parent.postMessage({ pluginMessage: m }, "*");
+      const scope = () => document.querySelector('input[name="scope"]:checked').value;
+      const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+      let loadedMap = null;
+      let lastTokenMap = null;
+
+      $("scan").onclick = () => { busy(true); post({ type: "scan", mode: $("mode").value, scope: scope() }); };
+      $("redact").onclick = () => { busy(true); post({ type: "redact", mode: $("mode").value, scope: scope() }); };
+
+      function busy(b) { $("scan").disabled = b; $("redact").disabled = b; }
+
+      $("token-map-file").onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          loadedMap = JSON.parse(await file.text());
+          $("reinstate").disabled = false;
+          $("reinstate-status").innerHTML = '<span class="status ok">✓ Loaded ' + Object.keys(loadedMap).length + ' token(s).</span>';
+        } catch {
+          loadedMap = null; $("reinstate").disabled = true;
+          $("reinstate-status").innerHTML = '<span class="status warn">⚠ Could not read that file as JSON.</span>';
+        }
+      };
+
+      $("reinstate").onclick = () => {
+        if (!loadedMap) return;
+        $("reinstate").disabled = true;
+        post({ type: "reinstate", scope: scope(), tokenMap: loadedMap });
+      };
+
+      onmessage = (event) => {
+        const msg = event.data.pluginMessage;
+        if (!msg) return;
+        if (msg.type === "error") { busy(false); $("report").innerHTML = '<p class="status warn">⚠ ' + esc(msg.message) + '</p>'; return; }
+        if (msg.type === "result") { busy(false); renderResult(msg); }
+        if (msg.type === "reinstate-result") { renderReinstate(msg); }
+      };
+
+      function renderResult(r) {
+        lastTokenMap = r.tokenMap;
+        const el = $("report");
+        if (r.itemsScanned === 0) { el.innerHTML = '<p class="status">No supported items ' + (scope() === "selection" ? "selected." : "on this page.") + '</p>'; return; }
+        const types = Object.keys(r.report).sort();
+        if (types.length === 0) { el.innerHTML = '<p class="status ok">✓ No identifiers found across ' + r.itemsScanned + ' item(s).</p>'; return; }
+        let html = '<p class="status ' + (r.applied ? "ok" : "warn") + '">' + (r.applied ? "✓ Redacted" : "⚠ Found") + ' identifiers in ' + r.itemsChanged + ' of ' + r.itemsScanned + ' item(s):</p>';
+        html += '<table><thead><tr><th>Type</th><th>Distinct</th></tr></thead><tbody>';
+        for (const t of types) html += '<tr><td><code>[' + t + ']</code></td><td>' + r.report[t] + '</td></tr>';
+        html += '</tbody></table>';
+        if (r.applied) html += '<button id="dl">Download token map</button><p class="hint">The token map links tokens back to originals. Generated on-device — store it securely.</p>';
+        else html += '<p class="hint">Nothing changed yet. Click <strong>Redact</strong> to apply.</p>';
+        if (r.residual && r.residual.length) {
+          html += '<div class="selfcheck"><p class="status warn">⚠ Self-check: ' + r.residual.length + ' thing(s) still look like identifiers:</p><ul>';
+          for (const f of r.residual) html += '<li><span>' + esc(f.label) + '</span> <code>' + esc(f.sample) + '</code></li>';
+          html += '</ul></div>';
+        } else if (r.applied && r.itemsChanged) {
+          html += '<p class="status ok">✓ Self-check found no obvious leftovers.</p>';
+        }
+        el.innerHTML = html;
+        const dl = $("dl");
+        if (dl) dl.onclick = () => downloadMap(lastTokenMap);
+      }
+
+      function renderReinstate(r) {
+        $("reinstate").disabled = false;
+        if (r.error) { $("reinstate-status").innerHTML = '<span class="status warn">⚠ Not a valid Redacta token map.</span>'; return; }
+        $("reinstate-status").innerHTML = r.itemsChanged
+          ? '<span class="status ok">✓ Restored originals in ' + r.itemsChanged + ' item(s).</span>'
+          : '<span class="status">No matching tokens found.</span>';
+      }
+
+      function downloadMap(map) {
+        const blob = new Blob([JSON.stringify(map, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "redacta-token-map.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    </script>
+  </body>
+</html>

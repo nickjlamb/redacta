@@ -1,0 +1,20 @@
+{
+  "name": "redacta-figjam",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Redact patient identifiers and PII on FigJam boards — on-device, nothing leaves the board.",
+  "license": "MIT-0",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pharmatools/redacta": "^1.2.0"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.100.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.4.0"
+  }
+}
