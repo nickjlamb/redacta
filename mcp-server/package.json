@@ -1,6 +1,7 @@
 {
   "name": "redacta-mcp",
-  "version": "1.2.0",
+  "version": "1.2.1",
+  "mcpName": "io.github.nickjlamb/redacta-mcp",
   "description": "MCP server that pseudonymises patient identifiers and PII in text, and restores them — runs locally, nothing leaves your machine.",
   "license": "MIT-0",
   "author": "Nick Lamb (PharmaTools.AI)",

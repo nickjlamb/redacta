@@ -14,7 +14,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { Redactor, isValidTokenMap, reinstate, selfCheck } from "@pharmatools/redacta";
 
-const server = new McpServer({ name: "redacta", version: "1.2.0" });
+const server = new McpServer({ name: "redacta", version: "1.2.1" });
 
 const jsonResult = (data: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
