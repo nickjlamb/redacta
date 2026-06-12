@@ -84,6 +84,12 @@ If you judge in Layer 2 that a non-DOB date is itself identifying (e.g. a date o
 death tied to a named individual), redact it as `[DATE_OF_BIRTH]`'s sibling
 `[DATE_n]` and note it in the report.
 
+**Safe Harbor mode overrides this.** When the user asks for HIPAA Safe Harbor
+de-identification, redact *every* date tied to the individual as `[DATE_n]` (DOB
+still as `[DATE_OF_BIRTH_n]`) — appointment and clinical dates included — plus all
+specific ages and the extra identifier types. See the Safe Harbor mode section in
+SKILL.md.
+
 ### Postcode, phone, email, MRN
 
 - **Postcode**: all valid UK formats (`A9 9AA`, `A99 9AA`, `A9A 9AA`, `AA9 9AA`,

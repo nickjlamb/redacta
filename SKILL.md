@@ -1,7 +1,7 @@
 ---
 name: redacta
-version: 1.1.0
-description: Pseudonymises medical and clinical documents by replacing patient identifiers with labelled tokens (e.g. [PATIENT_NAME_1], [NHS_NUMBER_1], [DATE_OF_BIRTH_1]) so the text can be safely processed by AI or shared, with clinical meaning intact. Combines a deterministic pattern layer (NHS numbers with Modulus-11 validation, UK National Insurance numbers, dates of birth, UK postcodes, phone numbers, emails, hospital/MRN numbers) with contextual reasoning for patient names, postal addresses and identifying ages, then returns the redacted document plus a redaction report. Use when the user wants to redact, de-identify, anonymise or pseudonymise a medical letter, clinical note, discharge summary, referral or patient record, or before pasting clinical text into another AI tool. Can also re-identify (reverse the redaction) by restoring original values from a token map.
+version: 1.2.0
+description: Pseudonymises medical and clinical documents by replacing patient identifiers with labelled tokens (e.g. [PATIENT_NAME_1], [NHS_NUMBER_1], [DATE_OF_BIRTH_1]) so the text can be safely processed by AI or shared, with clinical meaning intact. Combines a deterministic pattern layer (NHS numbers with Modulus-11 validation, UK National Insurance numbers, dates of birth, UK postcodes, phone numbers, emails, hospital/MRN numbers) with contextual reasoning for patient names, postal addresses and identifying ages, then returns the redacted document plus a redaction report. Use when the user wants to redact, de-identify, anonymise or pseudonymise a medical letter, clinical note, discharge summary, referral or patient record, or before pasting clinical text into another AI tool. Can also re-identify (reverse the redaction) by restoring original values from a token map, and offers a stricter HIPAA Safe Harbor mode for US de-identification (all dates, ages, and the remaining HIPAA identifiers).
 license: MIT-0
 ---
 
@@ -70,6 +70,10 @@ Read `redacted_text` and pseudonymise what the patterns cannot:
   already in `token_map`.
 - **When unsure, redact.** Prefer removing a possible identifier over leaving it.
 
+If the user asked for **HIPAA Safe Harbor** de-identification, also apply the
+stricter rules in [Safe Harbor mode](#safe-harbor-mode-us-hipaa) at this step —
+most importantly, redact *all* dates and ages, not just the date of birth.
+
 See [reference.md](reference.md) for disambiguation heuristics and the full token
 vocabulary.
 
@@ -133,6 +137,33 @@ network calls.
 This completes the round trip: **redact → process/share → re-identify**, with the
 real identifiers only ever present locally. The token map is the key that reverses
 the pseudonymisation — handle and store it with the same care as the original data.
+
+## Safe Harbor mode (US HIPAA)
+
+If the user asks for **HIPAA Safe Harbor** de-identification — or "US
+de-identification", "Safe Harbor", or "remove all 18 HIPAA identifiers" — apply a
+stricter pass on top of the normal workflow:
+
+- **All dates, not just the date of birth.** Remove every date that relates to the
+  individual — birth, admission, discharge, appointment, procedure, sample,
+  death — as `[DATE_n]` (or `[DATE_OF_BIRTH_n]` for the DOB). This **overrides**
+  the usual rule that keeps appointment and clinical dates. You may keep the bare
+  year if the user asks, since Safe Harbor permits the year alone.
+- **All specific ages** → `[AGE_n]`. Ages of 90 or older must be removed and
+  aggregated (treat "92" and "almost 90" alike); do not leave a redactable age.
+- **The remaining HIPAA identifier types** beyond what the pattern layer catches:
+  fax numbers `[FAX_n]`, certificate/licence numbers `[LICENSE_n]`, device
+  identifiers and serial numbers `[DEVICE_ID_n]`, vehicle identifiers / VINs
+  `[VIN_n]`, health-plan beneficiary numbers `[HEALTH_PLAN_NUMBER_n]`, and any
+  other unique identifying number, characteristic or code.
+- Biometric identifiers and full-face photographs are out of scope for a text
+  tool — flag them if referenced, but they cannot be removed from text alone.
+
+Everything else (names, relatives, addresses, NHS/NI/SSN/MRN, emails, phones,
+URLs, IP addresses, postcodes/ZIP) is already handled by the standard layers. Note
+in the report that **Safe Harbor mode** was applied, and keep the limits note: the
+Safe Harbor method still assumes no actual knowledge that the residual information
+could re-identify the individual.
 
 ## Notes
 

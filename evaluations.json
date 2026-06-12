@@ -53,5 +53,17 @@
       "Returns the re-identified text 'Dear Patricia Hartley, your record 943 476 5919 is updated.'",
       "Reminds the user that the token map is the key to the data and should be handled securely"
     ]
+  },
+  {
+    "skills": ["redacta"],
+    "query": "De-identify this to HIPAA Safe Harbor standard:\n\nMr Earl Dawson, 91 years old, admitted 02/03/2026, discharged 09/03/2026. Next clinic 20 March 2026. Medicare ID: 1EG4TE5MK73. Fax: (216) 555-0142.",
+    "expected_behavior": [
+      "Recognises this as a HIPAA Safe Harbor request and applies the stricter Safe Harbor mode on top of the normal workflow",
+      "Redacts the patient name Mr Earl Dawson as [PATIENT_NAME_1]",
+      "Redacts ALL dates, not just a date of birth — admission 02/03/2026, discharge 09/03/2026 and the next-clinic date 20 March 2026 all become [DATE_n] (overriding the usual keep-appointment-dates rule)",
+      "Redacts the age 91 as [AGE_1] (an age of 90 or older must be removed)",
+      "Redacts the Medicare beneficiary number as [HEALTH_PLAN_NUMBER_1] and the fax number as [FAX_1]",
+      "Notes that Safe Harbor mode was applied and includes the limits note"
+    ]
   }
 ]

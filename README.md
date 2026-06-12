@@ -30,6 +30,11 @@ redact a document, run it through another AI tool, and put the real details back
 locally. Redact → process → re-identify is a complete round trip, and identifiers
 only ever exist on your machine.
 
+**Safe Harbor mode.** Ask for HIPAA Safe Harbor (or "US de-identification") and
+Redacta applies a stricter pass: *all* dates (not just the date of birth), all
+specific ages, and the remaining HIPAA identifiers — fax, certificate/licence,
+device serial, VIN, and health-plan beneficiary numbers.
+
 ## Install
 
 **Claude Code**
