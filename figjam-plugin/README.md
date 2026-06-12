@@ -39,8 +39,11 @@ Then in the **Figma desktop app**, open a FigJam file →
 
 Build, then in Figma: **Plugins → Development → Redacta → Publish**, or manage at
 <https://www.figma.com/developers/plugins>. Set editor type to FigJam, add the
-listing copy, icon, and a privacy note (no network access). Figma reviews
-submissions before they go live in Community.
+listing copy, and a privacy note (no network access). Figma reviews submissions
+before they go live in Community.
+
+The plugin **icon** is set in the publish dialog (there is no manifest field for
+it) — upload `icon.png` (128×128) from this folder.
 
 ## Limits
 
