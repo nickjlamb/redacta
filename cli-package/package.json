@@ -1,0 +1,29 @@
+{
+  "name": "redacta-cli",
+  "version": "1.2.0",
+  "description": "Command-line redaction: pseudonymise patient identifiers & PII in text (and restore them), with a HIPAA Safe Harbor mode. Runs locally.",
+  "license": "MIT-0",
+  "author": "Nick Lamb (PharmaTools.AI)",
+  "homepage": "https://www.pharmatools.ai/redacta",
+  "repository": { "type": "git", "url": "https://github.com/nickjlamb/redacta" },
+  "type": "module",
+  "bin": {
+    "redacta-cli": "dist/cli.js"
+  },
+  "files": ["dist"],
+  "keywords": [
+    "redaction", "cli", "pseudonymisation", "de-identification", "pii", "phi",
+    "healthcare", "nhs", "hipaa", "privacy"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@pharmatools/redacta": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.4.0"
+  }
+}
