@@ -6,8 +6,26 @@ shared. Redacta replaces patient identifiers with labelled tokens —
 clinical meaning intact, and returns a redaction report alongside the cleaned
 text.
 
-It's an [Agent Skill](https://agentskills.io) (the open standard used by Claude
-and other agents), so it drops into Claude Code, the Claude apps, or the API.
+It started as an [Agent Skill](https://agentskills.io) and is now one engine
+shipped across six surfaces — agent skill, MCP server, two libraries, and two
+whiteboard apps.
+
+## One engine, many surfaces
+
+| Surface | Folder | Get it |
+|---------|--------|--------|
+| Agent skill (Claude Code / apps / API) | `SKILL.md`, `scripts/` | `openclaw skills install redacta` ([ClawHub](https://clawhub.ai/nickjlamb/redacta)) |
+| MCP server (Claude Desktop, Cursor, …) | `mcp-server/` | `npx -y redacta-mcp` ([npm](https://www.npmjs.com/package/redacta-mcp) · [MCP Registry](https://registry.modelcontextprotocol.io)) |
+| TypeScript library | `npm-package/` | `npm i @pharmatools/redacta` ([npm](https://www.npmjs.com/package/@pharmatools/redacta)) |
+| Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
+| Miro app | `miro-app/` | [getpatiently.ai → Redacta](https://www.pharmatools.ai/redacta) |
+| FigJam plugin | `figjam-plugin/` | Figma Community |
+
+The detection logic lives in one place — the TypeScript engine
+(`@pharmatools/redacta`, in `npm-package/`), which the MCP server and both
+whiteboard apps consume. The Python package mirrors it for `pip` users; the
+agent skill adds LLM reasoning for free-text names on top of the deterministic
+patterns.
 
 ## How it works
 
