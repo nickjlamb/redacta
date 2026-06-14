@@ -35,9 +35,11 @@ appears within a day of the registry publish. Claim/verify the listing at
 
 ## 3. Smithery
 
-Add via <https://smithery.ai> → "Add Server" → import the GitHub repo
-(`nickjlamb/redacta`, server in `mcp-server/`). It can run the stdio server via
-`npx -y redacta-mcp`.
+Redacta is a **local stdio** server (no hosted HTTPS URL), so do **not** use the
+`/servers/new` URL form. Instead use Smithery's **Connect GitHub repository**
+flow and let it read `mcp-server/smithery.yaml`, which declares the stdio start
+command (`npx -y redacta-mcp`). If Smithery insists on a hosted URL, skip it —
+the official MCP Registry listing already drives discovery.
 
 ## 4. awesome-mcp-servers (GitHub)
 

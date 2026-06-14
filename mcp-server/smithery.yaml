@@ -1,0 +1,12 @@
+# Smithery configuration for a local (stdio) MCP server.
+# Redacta runs on the user's machine via npx — there is no hosted HTTPS endpoint.
+# Publish via Smithery's "Connect GitHub repository" flow (not the URL form),
+# pointing at this repo with the server in mcp-server/.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+    additionalProperties: false
+  commandFunction: |-
+    (config) => ({ command: "npx", args: ["-y", "redacta-mcp"] })
