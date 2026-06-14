@@ -5,7 +5,7 @@
   "license": "MIT-0",
   "author": "Nick Lamb (PharmaTools.AI)",
   "homepage": "https://www.pharmatools.ai/redacta",
-  "repository": { "type": "git", "url": "https://github.com/nickjlamb/redacta" },
+  "repository": { "type": "git", "url": "git+https://github.com/nickjlamb/redacta.git" },
   "type": "module",
   "bin": {
     "redacta-cli": "dist/cli.js"
