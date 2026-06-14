@@ -7,8 +7,8 @@ clinical meaning intact, and returns a redaction report alongside the cleaned
 text.
 
 It started as an [Agent Skill](https://agentskills.io) and is now one engine
-shipped across six surfaces — agent skill, MCP server, two libraries, and two
-whiteboard apps.
+shipped across seven surfaces — agent skill, MCP server, two libraries, a CLI,
+and two whiteboard apps.
 
 ## One engine, many surfaces
 
@@ -18,6 +18,7 @@ whiteboard apps.
 | MCP server (Claude Desktop, Cursor, …) | `mcp-server/` | `npx -y redacta-mcp` ([npm](https://www.npmjs.com/package/redacta-mcp) · [MCP Registry](https://registry.modelcontextprotocol.io)) |
 | TypeScript library | `npm-package/` | `npm i @pharmatools/redacta` ([npm](https://www.npmjs.com/package/@pharmatools/redacta)) |
 | Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
+| Command-line tool | `cli-package/` | `npx redacta-cli` ([npm](https://www.npmjs.com/package/redacta-cli)) |
 | Miro app | `miro-app/` | [getpatiently.ai → Redacta](https://www.pharmatools.ai/redacta) |
 | FigJam plugin | `figjam-plugin/` | Figma Community |
 
