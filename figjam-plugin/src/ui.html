@@ -26,6 +26,8 @@
       .selfcheck li { display: flex; justify-content: space-between; gap: 10px; list-style: none; }
       ul { padding: 0; margin: 6px 0; }
       .privacy { font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 10px; margin-top: 18px; line-height: 1.5; }
+      .tokenmap { margin-top: 10px; }
+      textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 11px; margin-top: 6px; border: 1px solid #d9d9d9; border-radius: 4px; padding: 6px; }
     </style>
   </head>
   <body>
@@ -60,7 +62,7 @@
 
     <details id="reidentify">
       <summary>Re-identify (restore originals)</summary>
-      <p class="hint">Load a token map you downloaded earlier to put real values back. Processed on-device.</p>
+      <p class="hint">After you Redact, download or copy the token map above. Later — e.g. once you've run the safe text through an AI tool — load that map file here to put the real values back. Processed on-device.</p>
       <input type="file" id="token-map-file" accept="application/json,.json" />
       <div class="actions"><button id="reinstate" disabled>Restore on board</button></div>
       <div id="reinstate-status"></div>
@@ -119,8 +121,15 @@
         html += '<table><thead><tr><th>Type</th><th>Distinct</th></tr></thead><tbody>';
         for (const t of types) html += '<tr><td><code>[' + t + ']</code></td><td>' + r.report[t] + '</td></tr>';
         html += '</tbody></table>';
-        if (r.applied) html += '<button id="dl">Download token map</button><p class="hint">The token map links tokens back to originals. Generated on-device — store it securely.</p>';
-        else html += '<p class="hint">Nothing changed yet. Click <strong>Redact</strong> to apply.</p>';
+        if (r.applied) {
+          html += '<div class="tokenmap">'
+            + '<p class="hint"><strong>Token map</strong> — links tokens back to the originals, so you can restore them later. Generated on-device; store it securely.</p>'
+            + '<div class="actions"><button id="dl">Download .json</button><button id="copy">Copy</button> <span id="copied" class="status ok" style="display:none">✓ copied</span></div>'
+            + '<details><summary>View token map</summary><textarea id="tm" readonly rows="6"></textarea></details>'
+            + '</div>';
+        } else {
+          html += '<p class="hint">Nothing changed yet. Click <strong>Redact</strong> to apply — the token map appears here afterwards.</p>';
+        }
         if (r.residual && r.residual.length) {
           html += '<div class="selfcheck"><p class="status warn">⚠ Self-check: ' + r.residual.length + ' thing(s) still look like identifiers:</p><ul>';
           for (const f of r.residual) html += '<li><span>' + esc(f.label) + '</span> <code>' + esc(f.sample) + '</code></li>';
@@ -129,8 +138,21 @@
           html += '<p class="status ok">✓ Self-check found no obvious leftovers.</p>';
         }
         el.innerHTML = html;
+        const ta = $("tm");
+        if (ta) ta.value = JSON.stringify(lastTokenMap, null, 2);
         const dl = $("dl");
         if (dl) dl.onclick = () => downloadMap(lastTokenMap);
+        const copy = $("copy");
+        if (copy) copy.onclick = () => {
+          const box = $("tm");
+          box.style.display = "block";
+          box.select();
+          let ok = false;
+          try { ok = document.execCommand("copy"); } catch (e) {}
+          try { if (navigator.clipboard) navigator.clipboard.writeText(box.value); } catch (e) {}
+          const c = $("copied");
+          if (c) { c.style.display = "inline"; setTimeout(() => { c.style.display = "none"; }, 1500); }
+        };
       }
 
       function renderReinstate(r) {
