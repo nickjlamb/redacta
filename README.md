@@ -20,7 +20,7 @@ and two whiteboard apps.
 | Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
 | Command-line tool | `cli-package/` | `npx redacta-cli` ([npm](https://www.npmjs.com/package/redacta-cli)) |
 | Miro app | `miro-app/` | [getpatiently.ai → Redacta](https://www.pharmatools.ai/redacta) |
-| FigJam plugin | `figjam-plugin/` | Figma Community |
+| FigJam plugin | `figjam-plugin/` | [Figma Community](https://www.figma.com/community/plugin/1647311189828426124) |
 
 The detection logic lives in one place — the TypeScript engine
 (`@pharmatools/redacta`, in `npm-package/`), which the MCP server and both
