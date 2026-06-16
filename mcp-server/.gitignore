@@ -1,2 +1,5 @@
 node_modules/
 dist/
+mcpb/server.mjs
+mcpb/icon.png
+*.mcpb

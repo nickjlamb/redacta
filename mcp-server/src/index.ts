@@ -14,7 +14,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { Redactor, isValidTokenMap, reinstate, selfCheck } from "@pharmatools/redacta";
 
-const server = new McpServer({ name: "redacta", version: "1.2.1" });
+const server = new McpServer({ name: "redacta", version: "1.2.2" });
 
 const jsonResult = (data: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
@@ -24,6 +24,7 @@ server.registerTool(
   "redact",
   {
     title: "Redact / pseudonymise text",
+    annotations: { title: "Redact / pseudonymise text", readOnlyHint: true, openWorldHint: false },
     description:
       "Replace patient identifiers and PII in text with labelled tokens " +
       "([NHS_NUMBER_1], [PATIENT_NAME_1], ...) so it can be safely shared or " +
@@ -64,6 +65,7 @@ server.registerTool(
   "reinstate",
   {
     title: "Re-identify (restore originals)",
+    annotations: { title: "Re-identify (restore originals)", readOnlyHint: true, openWorldHint: false },
     description:
       "Reverse a redaction: replace tokens with their original values using a " +
       "token map from an earlier redact call. Use this to put real data back " +
@@ -96,6 +98,7 @@ server.registerTool(
   "self_check",
   {
     title: "Self-check for residual identifiers",
+    annotations: { title: "Self-check for residual identifiers", readOnlyHint: true, openWorldHint: false },
     description:
       "Scan already-redacted text for anything that still looks like an " +
       "identifier (long numbers, emails, postcodes, URLs). A second pair of " +

@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.2",
+  "name": "redacta",
+  "display_name": "Redacta",
+  "version": "1.2.2",
+  "description": "Pseudonymise patient identifiers and PII in text, and restore them — on-device, nothing leaves your machine.",
+  "long_description": "Redacta replaces patient identifiers and personal data (NHS numbers with Modulus-11 validation, names, dates of birth, MRNs, emails, phones, postcodes, plus general PII like URLs, IPs, payment cards and account numbers) with labelled tokens, so text can be safely shared or processed by AI. It includes a HIPAA Safe Harbor mode and is fully reversible via a token map. All processing happens locally in the server process — it makes no network calls and stores nothing.",
+  "author": {
+    "name": "Nick Lamb",
+    "email": "info@pharmatools.ai",
+    "url": "https://www.pharmatools.ai"
+  },
+  "homepage": "https://www.pharmatools.ai/redacta",
+  "documentation": "https://github.com/nickjlamb/redacta/tree/main/mcp-server",
+  "support": "mailto:info@pharmatools.ai",
+  "icon": "icon.png",
+  "license": "MIT-0",
+  "keywords": [
+    "redaction",
+    "pseudonymisation",
+    "de-identification",
+    "pii",
+    "phi",
+    "healthcare",
+    "nhs",
+    "hipaa",
+    "privacy"
+  ],
+  "privacy_policies": [
+    "https://www.pharmatools.ai/privacy-policy"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "server.mjs",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server.mjs"]
+    }
+  },
+  "tools": [
+    {
+      "name": "redact",
+      "description": "Replace patient identifiers and PII in text with labelled tokens; returns redacted text, a report, and a token map. Modes: clinical, general, safeharbor."
+    },
+    {
+      "name": "reinstate",
+      "description": "Reverse a redaction: restore original values from a token map."
+    },
+    {
+      "name": "self_check",
+      "description": "Re-scan redacted text for anything that still looks like an identifier."
+    }
+  ],
+  "tools_generated": false
+}

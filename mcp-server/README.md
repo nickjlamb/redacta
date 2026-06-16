@@ -69,6 +69,36 @@ Then list it on the MCP registries for discovery:
 - **mcp.so / PulseMCP** — community submission
 - **awesome-mcp-servers** — open a PR adding the entry
 
+## Privacy Policy
+
+Redacta runs entirely on your device.
+
+- **Data collection:** none. Redacta does not collect, transmit, or log any of
+  the text you pass to it.
+- **Usage & storage:** input text is processed in memory to produce the redacted
+  output and token map, then discarded. Nothing is persisted by the server. The
+  token map is returned to you (the caller) and never stored or sent anywhere.
+- **Third-party sharing:** none. The server makes no network calls.
+- **Data retention:** none. No data is retained after a request completes.
+- **Contact:** info@pharmatools.ai
+
+Full policy: https://www.pharmatools.ai/privacy-policy
+
+## Desktop extension (MCPB) for the Claude Connectors Directory
+
+Redacta is a local stdio server, so it's distributed to Claude as a Desktop
+Extension (MCPB), not a remote connector.
+
+```bash
+npm run build:mcpb                      # bundles mcpb/server.mjs (+ icon)
+npx @anthropic-ai/mcpb pack mcpb        # produces redacta-<version>.mcpb
+```
+
+Submit the resulting `.mcpb` via the
+[Desktop extension submission form](https://clau.de/desktop-extention-submission).
+All three tools are annotated `readOnlyHint: true` (no side effects), and the
+manifest declares no network access and links the privacy policy.
+
 ## Limits
 
 Deterministic + keyword-anchored detection only — not a guarantee, and not a
