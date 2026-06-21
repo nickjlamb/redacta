@@ -106,7 +106,19 @@ the bundle, packs a versioned `.mcpb`, and attaches it to the GitHub Release
 whenever a tag matching `redacta-*` is pushed. The directory review cycle then
 picks the new tag up automatically.
 
-To cut a release:
+**First decide whether the engine changed.** The workflow publishes only
+`redacta-mcp` — not the shared `@pharmatools/redacta` engine. So:
+
+- **Engine changed?** Publish it first, otherwise the MCP build picks up the old
+  version:
+  ```bash
+  # in npm-package/: bump version, then
+  npm publish
+  # then bump the "@pharmatools/redacta" range in mcp-server/package.json to match
+  ```
+- **MCP server only?** Skip the above and go straight to tagging.
+
+To cut the release:
 
 ```bash
 # from repo root, after bumping the version in mcp-server/package.json
@@ -122,6 +134,23 @@ Registered with the directory as: **repo** `nickjlamb/redacta`, **tag pattern**
 `redacta-*`. For a one-off / first manual submission, pack locally and upload the
 `.mcpb` via the
 [Desktop extension submission form](https://clau.de/desktop-extention-submission).
+
+The same tag also fans out to the other distribution channels:
+
+1. **GitHub Release** — attaches `redacta-<version>.mcpb` (Anthropic directory).
+2. **npm** — publishes `redacta-mcp@<version>` (`publish-npm` job).
+3. **Official MCP Registry** — publishes `io.github.nickjlamb/redacta-mcp`
+   (`publish-registry` job, after npm has indexed the version).
+
+One-time setup — **no secrets required**; both npm and the registry authenticate
+with tokenless GitHub OIDC (`id-token: write`):
+
+- **npm Trusted Publishing** — on npmjs.com, open the `redacta-mcp` package →
+  *Settings → Trusted Publisher → GitHub Actions*, and register:
+  repository `nickjlamb/redacta`, workflow `mcpb-pack.yaml`. After that the
+  `publish-npm` job publishes via OIDC (and gets build provenance for free).
+- **MCP Registry** — needs no setup; the `io.github.nickjlamb/*` namespace is
+  granted automatically because the workflow runs in a repo owned by that account.
 
 ## Limits
 

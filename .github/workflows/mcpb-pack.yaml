@@ -77,3 +77,98 @@ jobs:
           asset_name: ${{ steps.meta.outputs.tag }}.mcpb
           tag: ${{ steps.meta.outputs.tag }}
           overwrite: true
+
+  # Publish the same version to npm via Trusted Publishing (tokenless OIDC — no
+  # NPM_TOKEN secret). The official MCP Registry validates that the referenced npm
+  # package exists and carries the matching `mcpName`, so this must land before
+  # publish-registry runs. Requires a trusted publisher configured on npmjs.com
+  # for the redacta-mcp package pointing at this repo + workflow.
+  publish-npm:
+    needs: build-and-release
+    if: needs.build-and-release.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: mcp-server
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: mcp-server/package-lock.json
+
+      - name: Upgrade npm (Trusted Publishing needs >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Resolve version
+        id: meta
+        run: |
+          TAG="${{ github.ref_type == 'tag' && github.ref_name || github.event.inputs.tag }}"
+          echo "version=${TAG#redacta-}" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync package version to the tag
+        run: |
+          jq --arg v "${{ steps.meta.outputs.version }}" '.version = $v' package.json > package.tmp.json && mv package.tmp.json package.json
+
+      - name: Publish to npm (Trusted Publishing)
+        run: npm publish --access public
+
+  # Publish to the official MCP Registry (io.github.nickjlamb/redacta-mcp).
+  # Auth is tokenless via GitHub OIDC — the io.github.<owner> namespace is granted
+  # because the workflow runs in a repo owned by that user.
+  publish-registry:
+    needs: publish-npm
+    if: needs.publish-npm.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: mcp-server
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: meta
+        run: |
+          TAG="${{ github.ref_type == 'tag' && github.ref_name || github.event.inputs.tag }}"
+          echo "version=${TAG#redacta-}" >> "$GITHUB_OUTPUT"
+
+      - name: Sync server.json to the tag version
+        run: |
+          V="${{ steps.meta.outputs.version }}"
+          jq --arg v "$V" '.version = $v | .packages[].version = $v' server.json > server.tmp.json && mv server.tmp.json server.json
+
+      - name: Wait for npm to index the new version
+        run: |
+          for i in $(seq 1 20); do
+            if npm view "redacta-mcp@${{ steps.meta.outputs.version }}" version >/dev/null 2>&1; then
+              echo "redacta-mcp@${{ steps.meta.outputs.version }} is live on npm"; exit 0
+            fi
+            echo "waiting for npm... ($i)"; sleep 15
+          done
+          echo "npm version not visible yet" >&2; exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz
+          chmod +x mcp-publisher
+
+      - name: Login via GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to the MCP Registry
+        run: ./mcp-publisher publish
