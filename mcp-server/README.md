@@ -94,10 +94,34 @@ npm run build:mcpb                      # bundles mcpb/server.mjs (+ icon)
 npx @anthropic-ai/mcpb pack mcpb        # produces redacta-<version>.mcpb
 ```
 
-Submit the resulting `.mcpb` via the
-[Desktop extension submission form](https://clau.de/desktop-extention-submission).
 All three tools are annotated `readOnlyHint: true` (no side effects), and the
 manifest declares no network access and links the privacy policy.
+
+### Automated releases (Anthropic MCP Directory)
+
+Redacta is published in the Anthropic MCP Directory via a **pull-based** flow —
+no submission form per release. The workflow at
+[`.github/workflows/mcpb-pack.yaml`](../.github/workflows/mcpb-pack.yaml) builds
+the bundle, packs a versioned `.mcpb`, and attaches it to the GitHub Release
+whenever a tag matching `redacta-*` is pushed. The directory review cycle then
+picks the new tag up automatically.
+
+To cut a release:
+
+```bash
+# from repo root, after bumping the version in mcp-server/package.json
+git tag redacta-1.3.0
+git push origin redacta-1.3.0
+```
+
+The workflow syncs `package.json` + `mcpb/manifest.json` to the tag version,
+builds, and publishes `redacta-1.3.0.mcpb` to the release. Tag convention:
+`redacta-<version>` → asset `redacta-<version>.mcpb`.
+
+Registered with the directory as: **repo** `nickjlamb/redacta`, **tag pattern**
+`redacta-*`. For a one-off / first manual submission, pack locally and upload the
+`.mcpb` via the
+[Desktop extension submission form](https://clau.de/desktop-extention-submission).
 
 ## Limits
 

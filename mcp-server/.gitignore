@@ -3,3 +3,7 @@ dist/
 mcpb/server.mjs
 mcpb/icon.png
 *.mcpb
+
+# Registry auth tokens — never commit
+.mcpregistry_github_token
+.mcpregistry_registry_token
