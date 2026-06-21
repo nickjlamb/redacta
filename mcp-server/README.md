@@ -16,6 +16,9 @@ Everything runs locally in the server process: **no network calls, no storage.**
 Same engine as the [Redacta skill](https://clawhub.ai/nickjlamb/redacta) and the
 Redacta for Miro app.
 
+Listed in [Anthropic's MCP Directory](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)
+— one-click install in Claude Desktop.
+
 ## Detection
 
 Deterministic patterns with checksum validation — NHS numbers (Modulus-11), UK

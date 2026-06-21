@@ -15,7 +15,7 @@ and two whiteboard apps.
 | Surface | Folder | Get it |
 |---------|--------|--------|
 | Agent skill (Claude Code / apps / API) | `SKILL.md`, `scripts/` | `openclaw skills install redacta` ([ClawHub](https://clawhub.ai/nickjlamb/redacta)) |
-| MCP server (Claude Desktop, Cursor, …) | `mcp-server/` | `npx -y redacta-mcp` ([npm](https://www.npmjs.com/package/redacta-mcp) · [MCP Registry](https://registry.modelcontextprotocol.io)) |
+| MCP server (Claude Desktop, Cursor, …) | `mcp-server/` | `npx -y redacta-mcp` ([npm](https://www.npmjs.com/package/redacta-mcp) · [MCP Registry](https://registry.modelcontextprotocol.io) · [Anthropic MCP Directory](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)) |
 | TypeScript library | `npm-package/` | `npm i @pharmatools/redacta` ([npm](https://www.npmjs.com/package/@pharmatools/redacta)) |
 | Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
 | Command-line tool | `cli-package/` | `npx redacta-cli` ([npm](https://www.npmjs.com/package/redacta-cli)) |
