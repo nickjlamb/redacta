@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" role="img" aria-labelledby="t d" font-family="Poppins, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <title id="t">Redacta — one engine, many surfaces</title>
+  <desc id="d">A single TypeScript redaction engine feeds eight surfaces: directly in Node/TS (MCP server, CLI, TypeScript library, FigJam plugin, Miro app), on-device via JavaScriptCore (iOS app, Share Extension, Home-Screen widget), mirrored in Python, and as a Claude agent skill.</desc>
+
+  <rect x="1" y="1" width="1118" height="698" rx="24" fill="#FFFFFF" stroke="#E9EDF6"/>
+
+  <!-- Heading -->
+  <text x="560" y="48" text-anchor="middle" font-size="25" font-weight="700" fill="#0B0F1C" letter-spacing="-0.3">Redacta — one engine, many surfaces</text>
+  <text x="560" y="74" text-anchor="middle" font-size="13.5" fill="#5F6B82">One detection engine. Eight surfaces. The iOS family runs it on-device.</text>
+
+  <!-- Source engine -->
+  <rect x="360" y="96" width="400" height="92" rx="16" fill="#2036F5"/>
+  <text x="560" y="131" text-anchor="middle" font-size="16.5" font-weight="700" fill="#FFFFFF">Redacta detection engine</text>
+  <text x="560" y="153" text-anchor="middle" font-size="11.5" fill="#FFFFFF" opacity="0.92">TypeScript · @pharmatools/redacta · npm-package/</text>
+  <text x="560" y="171" text-anchor="middle" font-size="10.5" fill="#FFFFFF" opacity="0.8">NHS Mod-11 · NI · Luhn · names · HIPAA Safe Harbor</text>
+
+  <!-- Connectors source → method pills -->
+  <path d="M560,188 C560,214 155,206 155,232" fill="none" stroke="#CBD3E1" stroke-width="1.5"/>
+  <path d="M560,188 C560,214 425,206 425,232" fill="none" stroke="#2036F5" stroke-width="2.5"/>
+  <path d="M560,188 C560,214 695,206 695,232" fill="none" stroke="#CBD3E1" stroke-width="1.5"/>
+  <path d="M560,188 C560,214 965,206 965,232" fill="none" stroke="#CBD3E1" stroke-width="1.5"/>
+
+  <!-- Method pills -->
+  <rect x="50" y="232" width="210" height="44" rx="22" fill="#F4F6FB"/>
+  <text x="155" y="259" text-anchor="middle" font-size="12.5" font-weight="600" fill="#404A60">Direct · Node / TS</text>
+
+  <rect x="320" y="232" width="210" height="44" rx="22" fill="#2036F5"/>
+  <text x="425" y="259" text-anchor="middle" font-size="12.5" font-weight="600" fill="#FFFFFF">JavaScriptCore · on-device</text>
+
+  <rect x="590" y="232" width="210" height="44" rx="22" fill="#F4F6FB"/>
+  <text x="695" y="259" text-anchor="middle" font-size="12.5" font-weight="600" fill="#404A60">Python mirror</text>
+
+  <rect x="860" y="232" width="210" height="44" rx="22" fill="#F4F6FB"/>
+  <text x="965" y="259" text-anchor="middle" font-size="12.5" font-weight="600" fill="#404A60">Agent skill</text>
+
+  <!-- Pill → first box short connectors -->
+  <path d="M155,276 L155,296" stroke="#CBD3E1" stroke-width="1.5"/>
+  <path d="M425,276 L425,296" stroke="#2036F5" stroke-width="2.5"/>
+  <path d="M695,276 L695,296" stroke="#CBD3E1" stroke-width="1.5"/>
+  <path d="M965,276 L965,296" stroke="#CBD3E1" stroke-width="1.5"/>
+
+  <!-- C1: Direct (Node/TS) -->
+  <g font-size="13" font-weight="600">
+    <rect x="50" y="296" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="155" y="317" text-anchor="middle" fill="#2A3247">MCP server</text>
+    <text x="155" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">npx redacta-mcp</text>
+
+    <rect x="50" y="364" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="155" y="385" text-anchor="middle" fill="#2A3247">CLI</text>
+    <text x="155" y="402" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">redacta-cli</text>
+
+    <rect x="50" y="432" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="155" y="453" text-anchor="middle" fill="#2A3247">TypeScript library</text>
+    <text x="155" y="470" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">@pharmatools/redacta</text>
+
+    <rect x="50" y="500" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="155" y="521" text-anchor="middle" fill="#2A3247">FigJam plugin</text>
+    <text x="155" y="538" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">Figma Community</text>
+
+    <rect x="50" y="568" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="155" y="589" text-anchor="middle" fill="#2A3247">Miro app</text>
+    <text x="155" y="606" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">pharmatools.ai</text>
+  </g>
+
+  <!-- C2: JavaScriptCore on-device (highlighted) -->
+  <g font-size="13" font-weight="600">
+    <rect x="320" y="296" width="210" height="52" rx="12" fill="#EEF1FF" stroke="#C4D0FF"/>
+    <text x="425" y="317" text-anchor="middle" fill="#1A2A8C">iOS app</text>
+    <text x="425" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#5A6CB0">SwiftUI · this repo</text>
+
+    <rect x="320" y="364" width="210" height="52" rx="12" fill="#EEF1FF" stroke="#C4D0FF"/>
+    <text x="425" y="385" text-anchor="middle" fill="#1A2A8C">Share Extension</text>
+    <text x="425" y="402" text-anchor="middle" font-size="10.5" font-weight="400" fill="#5A6CB0">redact in any app</text>
+
+    <rect x="320" y="432" width="210" height="52" rx="12" fill="#EEF1FF" stroke="#C4D0FF"/>
+    <text x="425" y="453" text-anchor="middle" fill="#1A2A8C">Home-Screen widget</text>
+    <text x="425" y="470" text-anchor="middle" font-size="10.5" font-weight="400" fill="#5A6CB0">iOS 17 · one tap</text>
+  </g>
+
+  <!-- C3: Python mirror -->
+  <g font-size="13" font-weight="600">
+    <rect x="590" y="296" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="695" y="317" text-anchor="middle" fill="#2A3247">Python library</text>
+    <text x="695" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">pip install redacta</text>
+  </g>
+
+  <!-- C4: Agent skill -->
+  <g font-size="13" font-weight="600">
+    <rect x="860" y="296" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
+    <text x="965" y="317" text-anchor="middle" fill="#2A3247">Agent skill</text>
+    <text x="965" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">Claude Code · apps · API</text>
+  </g>
+
+  <!-- Footnotes for the single-box columns -->
+  <text x="695" y="384" text-anchor="middle" font-size="10.5" fill="#A6B0C2">mirrors the engine for pip users</text>
+  <text x="965" y="384" text-anchor="middle" font-size="10.5" fill="#A6B0C2">patterns + LLM reasoning</text>
+
+  <text x="560" y="664" text-anchor="middle" font-size="12" fill="#5F6B82">The detection logic lives in one place — every surface consumes it. Built by PharmaTools.AI · MIT-0</text>
+</svg>

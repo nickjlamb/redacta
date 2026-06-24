@@ -31,17 +31,9 @@ relatives redacted, clinicians preserved), and HIPAA Safe Harbor passes. iOS doe
 reimplement any of it — the engine is compiled to a 15 KB dependency-free IIFE and run
 through **JavaScriptCore**, so every surface stays in lockstep with one source of truth.
 
-```
-                       ┌──────────────────────────┐
-                       │  TypeScript redaction     │
-                       │  engine  (npm-package)    │
-                       └─────────────┬─────────────┘
-              esbuild → redacta.bundle.js (IIFE, no deps)
-                                     │  JavaScriptCore
-        ┌─────────────┬─────────────┼─────────────┬─────────────┐
-     iOS app    Share Extension   Widget       (also: skill, MCP,
-   (this dir)   (redact in place) (clipboard)   CLI, FigJam/Miro)
-```
+<p align="center">
+  <img src="docs/architecture.svg" width="100%" alt="One engine, many surfaces: the TypeScript redaction engine feeds the iOS app, Share Extension and widget on-device via JavaScriptCore, plus the MCP server, CLI, libraries, FigJam/Miro plugins and the Claude skill." />
+</p>
 
 ## Highlights
 

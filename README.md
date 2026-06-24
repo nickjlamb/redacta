@@ -12,6 +12,10 @@ libraries, a CLI, and two whiteboard apps.
 
 ## One engine, many surfaces
 
+<p align="center">
+  <img src="ios-app/docs/architecture.svg" width="100%" alt="One detection engine feeds eight surfaces: the iOS app, Share Extension and widget run it on-device via JavaScriptCore; the MCP server, CLI, TypeScript library and FigJam/Miro plugins consume it directly; a Python package mirrors it; and the agent skill adds LLM reasoning." />
+</p>
+
 | Surface | Folder | Get it |
 |---------|--------|--------|
 | iOS app — iPhone (app, Share Extension, widget) | [`ios-app/`](ios-app/) | Build with Xcode — see [`ios-app/README.md`](ios-app/README.md) |
