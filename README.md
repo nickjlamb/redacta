@@ -7,13 +7,14 @@ clinical meaning intact, and returns a redaction report alongside the cleaned
 text.
 
 It started as an [Agent Skill](https://agentskills.io) and is now one engine
-shipped across seven surfaces — agent skill, MCP server, two libraries, a CLI,
-and two whiteboard apps.
+shipped across eight surfaces — an iOS app, agent skill, MCP server, two
+libraries, a CLI, and two whiteboard apps.
 
 ## One engine, many surfaces
 
 | Surface | Folder | Get it |
 |---------|--------|--------|
+| iOS app — iPhone (app, Share Extension, widget) | [`ios-app/`](ios-app/) | Build with Xcode — see [`ios-app/README.md`](ios-app/README.md) |
 | Agent skill (Claude Code / apps / API) | `SKILL.md`, `scripts/` | `openclaw skills install redacta` ([ClawHub](https://clawhub.ai/nickjlamb/redacta)) |
 | MCP server (Claude Desktop, Cursor, …) | `mcp-server/` | `npx -y redacta-mcp` ([npm](https://www.npmjs.com/package/redacta-mcp) · [MCP Registry](https://registry.modelcontextprotocol.io) · [Anthropic MCP Directory](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)) |
 | TypeScript library | `npm-package/` | `npm i @pharmatools/redacta` ([npm](https://www.npmjs.com/package/@pharmatools/redacta)) |
@@ -24,9 +25,9 @@ and two whiteboard apps.
 
 The detection logic lives in one place — the TypeScript engine
 (`@pharmatools/redacta`, in `npm-package/`), which the MCP server and both
-whiteboard apps consume. The Python package mirrors it for `pip` users; the
-agent skill adds LLM reasoning for free-text names on top of the deterministic
-patterns.
+whiteboard apps consume, and which the iOS app runs on-device via JavaScriptCore.
+The Python package mirrors it for `pip` users; the agent skill adds LLM reasoning
+for free-text names on top of the deterministic patterns.
 
 ## How it works
 
