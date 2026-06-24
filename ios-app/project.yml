@@ -50,7 +50,6 @@ targetTemplates:
       - path: RedactaEngine
         excludes:
           - "entry.mjs"
-          - "_entry.mjs"
           - "build-bundle.mjs"
 
 targets:
