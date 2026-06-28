@@ -1,55 +1,55 @@
 {
-  "leaksAvoided": 89.8,
-  "strictRecall": 76.3,
-  "precision": 58.9,
-  "falsePositives": 331,
-  "preserveAccuracy": 32.7,
-  "goldIdentifiers": 333,
+  "leaksAvoided": 89.7,
+  "strictRecall": 77.3,
+  "precision": 59.8,
+  "falsePositives": 1643,
+  "preserveAccuracy": 32.8,
+  "goldIdentifiers": 1713,
   "perCategory": {
     "DATE_OF_BIRTH": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 45
+      "n": 247
     },
     "EMAIL": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 21
+      "n": 132
     },
     "MRN": {
       "leaksAvoided": 100.0,
       "strictRecall": 0.0,
-      "n": 27
+      "n": 130
     },
     "NHS_NUMBER": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 60
+      "n": 300
     },
     "NI_NUMBER": {
-      "leaksAvoided": 40.0,
+      "leaksAvoided": 32.4,
       "strictRecall": 0.0,
-      "n": 25
+      "n": 105
     },
     "PATIENT_NAME": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 60
+      "n": 300
     },
     "PHONE": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 32
+      "n": 175
     },
     "POSTCODE": {
-      "leaksAvoided": 38.7,
-      "strictRecall": 12.9,
-      "n": 31
+      "leaksAvoided": 38.2,
+      "strictRecall": 9.4,
+      "n": 170
     },
     "RELATIVE_NAME": {
       "leaksAvoided": 100.0,
       "strictRecall": 100.0,
-      "n": 32
+      "n": 154
     }
   }
 }

@@ -1,64 +1,93 @@
 {
   "seed": 20260626,
-  "notes": 60,
+  "notes": 300,
   "redacta": {
     "leaksAvoided": 100,
     "strictRecall": 100,
     "precision": 100,
     "falsePositives": 0,
     "preserveAccuracy": 100,
-    "goldIdentifiers": 333
+    "goldIdentifiers": 1713
   },
   "perCategory": {
     "DATE_OF_BIRTH": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 45
+      "n": 247
     },
     "EMAIL": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 21
+      "n": 132
     },
     "MRN": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 27
+      "n": 130
     },
     "NHS_NUMBER": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 60
+      "n": 300
     },
     "NI_NUMBER": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 25
+      "n": 105
     },
     "PATIENT_NAME": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 60
+      "n": 300
     },
     "PHONE": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 32
+      "n": 175
     },
     "POSTCODE": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 31
+      "n": 170
     },
     "RELATIVE_NAME": {
       "leaksAvoided": 100,
       "strictRecall": 100,
-      "n": 32
+      "n": 154
     }
   },
   "freeTextNames": {
     "caught": 0,
-    "total": 15,
+    "total": 50,
     "note": "Out of deterministic scope; the app prompts the user to review."
+  },
+  "robustness": {
+    "seeds": 10,
+    "identifiersTested": 17227,
+    "leaksAvoided": {
+      "min": 100,
+      "max": 100,
+      "mean": 100
+    },
+    "strictRecall": {
+      "min": 100,
+      "max": 100,
+      "mean": 100
+    },
+    "precision": {
+      "min": 100,
+      "max": 100,
+      "mean": 100
+    },
+    "falsePositives": {
+      "min": 0,
+      "max": 0,
+      "mean": 0
+    },
+    "preserveAccuracy": {
+      "min": 100,
+      "max": 100,
+      "mean": 100
+    }
   }
 }

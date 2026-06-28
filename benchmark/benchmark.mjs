@@ -32,7 +32,10 @@ function mulberry32(a) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-const rng = mulberry32(20260626);
+const CANONICAL_SEED = 20260626;
+let _rand = mulberry32(CANONICAL_SEED);
+const reseed = (seed) => { _rand = mulberry32(seed); };
+const rng = () => _rand();
 const pick = (arr) => arr[Math.floor(rng() * arr.length)];
 const randInt = (lo, hi) => lo + Math.floor(rng() * (hi - lo + 1));
 const pad = (n, w) => String(n).padStart(w, "0");
@@ -167,13 +170,22 @@ const overlap = (a, b) => { const x = norm(a), y = norm(b); return !!x && !!y &&
 // Category from a Redacta token, e.g. "[DATE_OF_BIRTH_2]" -> "DATE_OF_BIRTH".
 const catOf = (token) => token.slice(1, -1).replace(/_\d+$/, "");
 
-const N = 60;
-const corpus = Array.from({ length: N }, note);
-const freeSet = Array.from({ length: 15 }, freeTextNameNote);
+const N = 300;          // notes per corpus
+const FREE = 50;        // free-text-name probes
+const SEEDS = 10;       // robustness: independent corpora
+
+// Build a fresh corpus from a given seed (reproducible).
+function build(seed) {
+  reseed(seed);
+  return {
+    corpus: Array.from({ length: N }, note),
+    freeSet: Array.from({ length: FREE }, freeTextNameNote),
+  };
+}
 
 // Generic scorer so Redacta and any other engine are measured identically.
 // engineFn(text) -> [{ value, cat }] (cat optional; used for strict recall).
-function score(engineFn) {
+function score(engineFn, corpus) {
   const cats = {};
   let goldTotal = 0, lenient = 0, strict = 0;
   let redactTotal = 0, redactCorrect = 0, falsePos = 0;
@@ -220,16 +232,32 @@ const redactaEngine = (text) => {
   return Object.entries(r.tokenMap).map(([tok, val]) => ({ value: val, cat: catOf(tok) }));
 };
 
-const redacta = score(redactaEngine);
+const freeRecall = (freeSet) => {
+  let caught = 0;
+  for (const f of freeSet) if (redactaEngine(f.text).some((x) => overlap(x.value, f.name))) caught++;
+  return caught;
+};
 
-// Free-text name probe (clinical mode)
-let freeCaught = 0;
-for (const f of freeSet) {
-  if (redactaEngine(f.text).some((x) => overlap(x.value, f.name))) freeCaught++;
+// --- Primary run (canonical seed): headline + per-category + exported corpus -
+const primary = build(CANONICAL_SEED);
+const redacta = score(redactaEngine, primary.corpus);
+const freeCaught = freeRecall(primary.freeSet);
+
+// --- Robustness: independent corpora from SEEDS different seeds ---------------
+const seedRuns = [];
+for (let i = 0; i < SEEDS; i++) {
+  const { corpus } = build(CANONICAL_SEED + i);
+  const r = score(redactaEngine, corpus);
+  seedRuns.push(r);
 }
+const agg = (key) => {
+  const xs = seedRuns.map((r) => r[key]);
+  return { min: Math.min(...xs), max: Math.max(...xs), mean: +(xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(2) };
+};
+const totalGold = seedRuns.reduce((s, r) => s + r.goldIdentifiers, 0);
 
 const out = {
-  seed: 20260626, notes: N,
+  seed: CANONICAL_SEED, notes: N,
   redacta: {
     leaksAvoided: redacta.leaksAvoided,
     strictRecall: redacta.strictRecall,
@@ -239,15 +267,24 @@ const out = {
     goldIdentifiers: redacta.goldIdentifiers,
   },
   perCategory: redacta.perCategory,
-  freeTextNames: { caught: freeCaught, total: freeSet.length, note: "Out of deterministic scope; the app prompts the user to review." },
+  freeTextNames: { caught: freeCaught, total: primary.freeSet.length, note: "Out of deterministic scope; the app prompts the user to review." },
+  robustness: {
+    seeds: SEEDS,
+    identifiersTested: totalGold,
+    leaksAvoided: agg("leaksAvoided"),
+    strictRecall: agg("strictRecall"),
+    precision: agg("precision"),
+    falsePositives: agg("falsePositives"),
+    preserveAccuracy: agg("preserveAccuracy"),
+  },
 };
 
 console.log(JSON.stringify(out, null, 2));
 fs.writeFileSync(path.resolve(here, "results.json"), JSON.stringify(out, null, 2) + "\n");
 
-// Emit the labelled corpus so other engines (e.g. Presidio) can be scored on
-// the identical input with the identical rule. See presidio_baseline.py.
+// Emit the canonical-seed corpus so other engines (e.g. Presidio) can be scored
+// on the identical input with the identical rule. See presidio_baseline.py.
 fs.writeFileSync(
   path.resolve(here, "corpus.json"),
-  JSON.stringify({ seed: 20260626, notes: corpus, freeTextNames: freeSet }, null, 2) + "\n"
+  JSON.stringify({ seed: CANONICAL_SEED, notes: primary.corpus, freeTextNames: primary.freeSet }, null, 2) + "\n"
 );

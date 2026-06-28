@@ -14,19 +14,23 @@ importantly — how well it *avoids* redacting things it shouldn't.
 
 | Metric | Redacta | Microsoft Presidio (default) |
 |---|---|---|
-| **Identifiers found** (any label) | **100%** | 89.8% |
-| **Strict recall** (correct category) | **100%** | 76.3% |
-| **False positives** (wrongly redacted) | **0** | 331 |
-| **Clinical context preserved** | **100%** (269 / 269) | 32.7% |
-| Free-text names (out of scope) | 0% (0 / 15) — *by design* | — |
+| **Identifiers found** (any label) | **100%** | 89.7% |
+| **Strict recall** (correct category) | **100%** | 77.3% |
+| **False positives** (wrongly redacted) | **0** | 1,643 |
+| **Clinical context preserved** | **100%** (1,329 / 1,329) | 32.8% |
+| Free-text names (out of scope) | 0% (0 / 50) — *by design* | — |
 
-Corpus: **60 synthetic UK clinical notes** containing **333** gold-labelled
-identifiers, plus **269** "preserve" distractors designed to tempt a naive redactor.
+Corpus: **300 synthetic UK clinical notes** containing **1,713** gold-labelled
+identifiers, plus **1,329** "preserve" distractors designed to tempt a naive redactor.
 
-Presidio finds most identifiers but over-redacts heavily — flagging 331 non-identifiers
+**Robustness.** Repeated across **10 independent seeds (17,227 identifiers total)**, every
+metric is identical run to run — recall 100%, false positives 0, preservation 100%,
+**zero variance**. Expected for a deterministic engine, and now measured.
+
+Presidio finds most identifiers but over-redacts heavily — flagging 1,643 non-identifiers
 (every clinician name, every appointment date) and keeping barely a third of the
-clinical context. It also has no recogniser for UK National Insurance numbers (40%
-found) or postcodes (39%). Presidio was run as shipped (presidio-analyzer 2.2.362,
+clinical context. It also has no recogniser for UK National Insurance numbers (32%
+found) or postcodes (38%). Presidio was run as shipped (presidio-analyzer 2.2.362,
 default recognisers, `en_core_web_lg` 3.7.x); the corpus is UK clinical text,
 Redacta's tuned domain.
 
