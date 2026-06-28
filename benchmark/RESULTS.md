@@ -26,8 +26,9 @@ identifiers, plus **269** "preserve" distractors designed to tempt a naive redac
 Presidio finds most identifiers but over-redacts heavily — flagging 331 non-identifiers
 (every clinician name, every appointment date) and keeping barely a third of the
 clinical context. It also has no recogniser for UK National Insurance numbers (40%
-found) or postcodes (39%). Presidio was run as shipped (default recognisers,
-`en_core_web_lg`); the corpus is UK clinical text, Redacta's tuned domain.
+found) or postcodes (39%). Presidio was run as shipped (presidio-analyzer 2.2.362,
+default recognisers, `en_core_web_lg` 3.7.x); the corpus is UK clinical text,
+Redacta's tuned domain.
 
 ## What was tested
 
@@ -60,6 +61,25 @@ The corpus seeds each note with false-positive bait. The engine correctly **kept
   the record keeps its meaning.
 - **Clinician names** (`Dr`, `Consultant`, `Registrar`) — only the patient is redacted.
 - **Dosages and lab values** (`200 mg`, `Ferritin 23 ug/L`).
+
+## Speed & footprint
+
+The engine is deterministic regex + checksums, so it's tiny and instant — which is
+what lets it run on-device (iPhone app, browser) rather than server-side.
+
+| | Redacta | Presidio |
+|---|---|---|
+| Engine / model size | **~15 KB** (5 KB gzipped) | ~560 MB (`en_core_web_lg`) |
+| Per-note time | **0.04 ms** (~25,000 notes/sec) | loads a ~560 MB model first |
+| Where it runs | on-device, 0 network calls | Python runtime, in practice server-side |
+
+Redacta's footprint is ~37,000× smaller than the model Presidio loads. Measured with
+Node 22 on a laptop-class core (warm, 12,000 redactions); on-device it runs in
+JavaScriptCore. Reproduce the speed number:
+
+```
+node -e 'const fs=require("fs"),vm=require("vm");const c={};vm.createContext(c);vm.runInContext(fs.readFileSync("ios-app/RedactaEngine/Resources/redacta.bundle.js","utf8"),c);const t=JSON.parse(fs.readFileSync("benchmark/corpus.json")).notes.map(n=>n.text);for(let i=0;i<3;i++)t.forEach(x=>c.Redacta.redact(x,"clinical"));const s=process.hrtime.bigint();for(let i=0;i<200;i++)t.forEach(x=>c.Redacta.redact(x,"clinical"));console.log((Number(process.hrtime.bigint()-s)/1e6/(200*t.length)).toFixed(3),"ms/note")'
+```
 
 ## Methodology
 
