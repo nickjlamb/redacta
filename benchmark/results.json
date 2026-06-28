@@ -1,54 +1,60 @@
 {
   "seed": 20260626,
   "notes": 60,
-  "overall": {
-    "recall": 100,
+  "redacta": {
+    "leaksAvoided": 100,
+    "strictRecall": 100,
     "precision": 100,
-    "f1": 100,
+    "falsePositives": 0,
+    "preserveAccuracy": 100,
     "goldIdentifiers": 333
   },
   "perCategory": {
     "DATE_OF_BIRTH": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 45
     },
     "EMAIL": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 21
     },
     "MRN": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 27
     },
     "NHS_NUMBER": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 60
     },
     "NI_NUMBER": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 25
     },
     "PATIENT_NAME": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 60
     },
     "PHONE": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 32
     },
     "POSTCODE": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 31
     },
     "RELATIVE_NAME": {
-      "recall": 100,
+      "leaksAvoided": 100,
+      "strictRecall": 100,
       "n": 32
     }
-  },
-  "preserve": {
-    "accuracy": 100,
-    "kept": 269,
-    "total": 269
   },
   "freeTextNames": {
     "caught": 0,

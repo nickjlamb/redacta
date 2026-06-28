@@ -1,0 +1,2895 @@
+{
+  "seed": 20260626,
+  "notes": [
+    {
+      "text": "Re: Ms Sylvia Ashcroft, NHS Number 5677622257. Born on 12/12/1962. Contact number 020 7946 0583. Email sylvia.ashcroft@example.com. MRN: RJ1-1807656. Reviewed in clinic on 17 November 2025 by Dr Fenwick. Lab sample reference 1766711031 (not an NHS number). Old form quoted ZZ 18 32 60 A, since corrected. Ferritin 32 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Sylvia Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "567 762 2257",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "12/12/1962",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "020 7946 0583",
+          "cat": "PHONE"
+        },
+        {
+          "value": "sylvia.ashcroft@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RJ1-1807656",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Fenwick",
+          "reason": "clinician name"
+        },
+        {
+          "value": "17 November 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1766711031",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "ZZ 18 32 60 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Derek Wadsworth, NHS Number 1876093064. Address on file at EC1A 1BB. NI number GH 70 71 09 A. Reviewed in clinic on 24 May 2025 by Consultant Thistlewood. Lab sample reference 5499703494 (not an NHS number). Ferritin 31 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "187 609 3064",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "EC1A 1BB",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "GH 70 71 09 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Thistlewood",
+          "reason": "clinician name"
+        },
+        {
+          "value": "24 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5499703494",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Brenda Entwistle, NHS Number 957 886 0056. D.O.B. 27/01/1989. MRN: RJ1-7491798. Their son Doreen Ramsbottom attended. Reviewed in clinic on 10 April 2025 by Consultant Hartley. Lab sample reference 8302909468 (not an NHS number). Old form quoted NK 90 28 44 A, since corrected. Ferritin 8 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Entwistle",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "957 886 0056",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "27/01/1989",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "RJ1-7491798",
+          "cat": "MRN"
+        },
+        {
+          "value": "Doreen Ramsbottom",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Hartley",
+          "reason": "clinician name"
+        },
+        {
+          "value": "10 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8302909468",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 90 28 44 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Clifford Ashcroft, NHS Number 5886016198. MRN: RGT-0584031. Reviewed in clinic on 16 April 2025 by Dr Rowbotham. Lab sample reference 4229904526 (not an NHS number). Ferritin 11 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Clifford Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "588 601 6198",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "RGT-0584031",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "16 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4229904526",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Doreen Collier, NHS Number 1813760314. Date of birth 20/06/1945. Address on file at EC1A 1BB. Email doreen.collier@example.com. MRN: RGT-3966285. Their husband Sylvia Rowbotham attended. Reviewed in clinic on 20 July 2025 by Doctor Thistlewood. Lab sample reference 4563291847 (not an NHS number). Ferritin 19 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Doreen Collier",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "181 376 0314",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "20/06/1945",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "EC1A 1BB",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "doreen.collier@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RGT-3966285",
+          "cat": "MRN"
+        },
+        {
+          "value": "Sylvia Rowbotham",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Thistlewood",
+          "reason": "clinician name"
+        },
+        {
+          "value": "20 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4563291847",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Sylvia Fenwick, NHS Number 6516905266. Born on 23/01/1941. Address on file at CF10 1EP. Contact number 020 7946 0379. Email sylvia.fenwick@example.com. Their son Marjorie Ramsbottom attended. Reviewed in clinic on 25 September 2025 by Doctor Entwistle. Lab sample reference 6253403495 (not an NHS number). Old form quoted BG 64 45 40 A, since corrected. Ferritin 19 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Sylvia Fenwick",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "651 690 5266",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "23/01/1941",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0379",
+          "cat": "PHONE"
+        },
+        {
+          "value": "sylvia.fenwick@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "Marjorie Ramsbottom",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Entwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 September 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6253403495",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 64 45 40 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Leonard Entwistle, NHS Number 382-318-5276. Reviewed in clinic on 19 October 2025 by Registrar Rowbotham. Lab sample reference 1581234431 (not an NHS number). Ferritin 27 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Leonard Entwistle",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "382 318 5276",
+          "cat": "NHS_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "19 October 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1581234431",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Pauline Brierley, NHS Number 715-542-1227. Address on file at BT1 5GS. Contact number 020 7946 0585. MRN: RXH-6283081. NI number LM 40 62 06 A. Their mother Patricia Pemberton attended. Reviewed in clinic on 9 September 2025 by Dr Entwistle. Lab sample reference 8591637861 (not an NHS number). Old form quoted BG 72 13 69 A, since corrected. Ferritin 18 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Pauline Brierley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "715 542 1227",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "BT1 5GS",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0585",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RXH-6283081",
+          "cat": "MRN"
+        },
+        {
+          "value": "LM 40 62 06 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Patricia Pemberton",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Entwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "9 September 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8591637861",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 72 13 69 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Marjorie Fenwick, NHS Number 776 139 9182. Born on 26/05/1943. Contact number 07700 900037. Email marjorie.fenwick@example.com. NI number BB 31 44 66 A. Their brother Doreen Pemberton attended. Reviewed in clinic on 11 February 2025 by Doctor Crowther. Lab sample reference 1075727333 (not an NHS number). Old form quoted BG 05 94 98 A, since corrected. Ferritin 37 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Fenwick",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "776 139 9182",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "26/05/1943",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900037",
+          "cat": "PHONE"
+        },
+        {
+          "value": "marjorie.fenwick@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "BB 31 44 66 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Doreen Pemberton",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Crowther",
+          "reason": "clinician name"
+        },
+        {
+          "value": "11 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1075727333",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 05 94 98 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Leonard Crowther, NHS Number 502-390-6523. DOB: 11/11/1956. Address on file at EC1A 1BB. Contact number 020 7946 0632. Email leonard.crowther@example.com. MRN: RXH-6540189. NI number WK 95 32 36 A. Reviewed in clinic on 14 May 2025 by Registrar Collier. Lab sample reference 8956923923 (not an NHS number). Old form quoted NK 58 41 60 A, since corrected. Ferritin 21 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Leonard Crowther",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "502 390 6523",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "11/11/1956",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "EC1A 1BB",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0632",
+          "cat": "PHONE"
+        },
+        {
+          "value": "leonard.crowther@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RXH-6540189",
+          "cat": "MRN"
+        },
+        {
+          "value": "WK 95 32 36 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Collier",
+          "reason": "clinician name"
+        },
+        {
+          "value": "14 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8956923923",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 58 41 60 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Gerald Ashcroft, NHS Number 245-328-8458. DOB: 28/02/1937. Email gerald.ashcroft@example.com. NI number ZA 38 84 22 A. Reviewed in clinic on 14 November 2025 by Doctor Fenwick. Lab sample reference 2665596874 (not an NHS number). Old form quoted BG 03 44 02 A, since corrected. Ferritin 12 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "245 328 8458",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "28/02/1937",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "gerald.ashcroft@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "ZA 38 84 22 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Fenwick",
+          "reason": "clinician name"
+        },
+        {
+          "value": "14 November 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2665596874",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 03 44 02 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Clifford Ashcroft, NHS Number 847 014 7048. Address on file at M1 1AE. MRN: RJ1-7240511. Their sister Clifford Collier attended. Reviewed in clinic on 27 July 2025 by Doctor Fenwick. Lab sample reference 4533296751 (not an NHS number). Ferritin 22 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Clifford Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "847 014 7048",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "M1 1AE",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "RJ1-7240511",
+          "cat": "MRN"
+        },
+        {
+          "value": "Clifford Collier",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Fenwick",
+          "reason": "clinician name"
+        },
+        {
+          "value": "27 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4533296751",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Brenda Ramsbottom, NHS Number 443 926 9737. D.O.B. 09/01/1971. Contact number 07700 900170. Email brenda.ramsbottom@example.com. MRN: RJ1-9294376. Their brother Clifford Ramsbottom attended. Reviewed in clinic on 15 February 2025 by Registrar Entwistle. Lab sample reference 9918910802 (not an NHS number). Old form quoted NK 18 64 75 A, since corrected. Ferritin 21 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Ramsbottom",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "443 926 9737",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "09/01/1971",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900170",
+          "cat": "PHONE"
+        },
+        {
+          "value": "brenda.ramsbottom@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RJ1-9294376",
+          "cat": "MRN"
+        },
+        {
+          "value": "Clifford Ramsbottom",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Entwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "15 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9918910802",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 18 64 75 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Stanley Hargreaves, NHS Number 2275891226. D.O.B. 12/08/1985. Contact number 07700 900245. Their husband Patricia Hartley attended. Reviewed in clinic on 8 March 2025 by Dr Hargreaves. Lab sample reference 9299946117 (not an NHS number). Old form quoted GB 27 38 53 A, since corrected. Ferritin 33 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Stanley Hargreaves",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "227 589 1226",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "12/08/1985",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900245",
+          "cat": "PHONE"
+        },
+        {
+          "value": "Patricia Hartley",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Hargreaves",
+          "reason": "clinician name"
+        },
+        {
+          "value": "8 March 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9299946117",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "GB 27 38 53 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Gerald Hartley, NHS Number 804 869 3895. Contact number 07700 900852. MRN: RGT-2596814. NI number AB 81 20 72 A. Reviewed in clinic on 23 March 2025 by Consultant Postlethwaite. Lab sample reference 7479281286 (not an NHS number). Ferritin 18 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "804 869 3895",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "07700 900852",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RGT-2596814",
+          "cat": "MRN"
+        },
+        {
+          "value": "AB 81 20 72 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Postlethwaite",
+          "reason": "clinician name"
+        },
+        {
+          "value": "23 March 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7479281286",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Maureen Rowbotham, NHS Number 230 234 7404. D.O.B. 08/11/1989. Address on file at M1 1AE. Email maureen.rowbotham@example.com. MRN: RJ1-5996033. Their son Derek Entwistle attended. Reviewed in clinic on 13 April 2025 by Registrar Rowbotham. Lab sample reference 6036040637 (not an NHS number). Ferritin 30 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Maureen Rowbotham",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "230 234 7404",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "08/11/1989",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "M1 1AE",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "maureen.rowbotham@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RJ1-5996033",
+          "cat": "MRN"
+        },
+        {
+          "value": "Derek Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "13 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6036040637",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Doreen Wadsworth, NHS Number 7191190329. Born on 03/03/1995. Contact number 020 7946 0132. Their daughter Derek Thistlewood attended. Reviewed in clinic on 8 April 2025 by Dr Birtwistle. Lab sample reference 3568309816 (not an NHS number). Ferritin 15 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Doreen Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "719 119 0329",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "03/03/1995",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "020 7946 0132",
+          "cat": "PHONE"
+        },
+        {
+          "value": "Derek Thistlewood",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Birtwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "8 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "3568309816",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Derek Thistlewood, NHS Number 403 657 3586. Date of birth 19/04/1983. Address on file at B33 8TH. Contact number 020 7946 0271. MRN: RXH-7396056. NI number JM 74 78 58 A. Reviewed in clinic on 12 April 2025 by Dr Collier. Lab sample reference 8962192781 (not an NHS number). Ferritin 40 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Thistlewood",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "403 657 3586",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "19/04/1983",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "B33 8TH",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0271",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RXH-7396056",
+          "cat": "MRN"
+        },
+        {
+          "value": "JM 74 78 58 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Collier",
+          "reason": "clinician name"
+        },
+        {
+          "value": "12 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8962192781",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Marjorie Birtwistle, NHS Number 5023513807. D.O.B. 01/02/1984. Address on file at SW1A 2AA. MRN: RGT-6155514. Their brother Brenda Collier attended. Reviewed in clinic on 1 October 2025 by Dr Pemberton. Lab sample reference 7085190150 (not an NHS number). Old form quoted BG 49 32 54 A, since corrected. Ferritin 24 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Birtwistle",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "502 351 3807",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "01/02/1984",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "SW1A 2AA",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "RGT-6155514",
+          "cat": "MRN"
+        },
+        {
+          "value": "Brenda Collier",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Pemberton",
+          "reason": "clinician name"
+        },
+        {
+          "value": "1 October 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7085190150",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 49 32 54 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Eileen Ashcroft, NHS Number 8374189037. D.O.B. 15/11/1965. Address on file at NE1 7RU. Contact number 020 7946 0552. Reviewed in clinic on 7 April 2025 by Consultant Hargreaves. Lab sample reference 5841285603 (not an NHS number). Old form quoted GB 49 07 67 A, since corrected. Ferritin 14 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Eileen Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "837 418 9037",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "15/11/1965",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "NE1 7RU",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0552",
+          "cat": "PHONE"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Hargreaves",
+          "reason": "clinician name"
+        },
+        {
+          "value": "7 April 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5841285603",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "GB 49 07 67 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Marjorie Collier, NHS Number 388 915 0160. D.O.B. 13/12/1955. Email marjorie.collier@example.com. NI number WK 97 02 28 A. Their mother Sylvia Postlethwaite attended. Reviewed in clinic on 11 June 2025 by Doctor Ramsbottom. Lab sample reference 6643286663 (not an NHS number). Ferritin 27 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Collier",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "388 915 0160",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "13/12/1955",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "marjorie.collier@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "WK 97 02 28 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Sylvia Postlethwaite",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Ramsbottom",
+          "reason": "clinician name"
+        },
+        {
+          "value": "11 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6643286663",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Brenda Brierley, NHS Number 4945584540. Contact number 07700 900144. MRN: RGT-8851946. Their brother Leonard Hartley attended. Reviewed in clinic on 21 August 2025 by Dr Hartley. Lab sample reference 9893444587 (not an NHS number). Ferritin 28 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Brierley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "494 558 4540",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "07700 900144",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RGT-8851946",
+          "cat": "MRN"
+        },
+        {
+          "value": "Leonard Hartley",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Hartley",
+          "reason": "clinician name"
+        },
+        {
+          "value": "21 August 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9893444587",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Marjorie Ashcroft, NHS Number 275-291-7422. D.O.B. 04/03/1944. Address on file at CF10 1EP. MRN: RGT-6467071. Their son Raymond Hartley attended. Reviewed in clinic on 25 February 2025 by Doctor Fenwick. Lab sample reference 4757770082 (not an NHS number). Ferritin 26 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "275 291 7422",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "04/03/1944",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "RGT-6467071",
+          "cat": "MRN"
+        },
+        {
+          "value": "Raymond Hartley",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Fenwick",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4757770082",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Derek Wadsworth, NHS Number 680-264-1879. Address on file at CF10 1EP. Contact number 020 7946 0488. Email derek.wadsworth@example.com. NI number BB 75 51 91 A. Their mother Doreen Postlethwaite attended. Reviewed in clinic on 19 June 2025 by Consultant Entwistle. Lab sample reference 7303617567 (not an NHS number). Old form quoted ZZ 62 67 46 A, since corrected. Ferritin 30 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "680 264 1879",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0488",
+          "cat": "PHONE"
+        },
+        {
+          "value": "derek.wadsworth@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "BB 75 51 91 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Doreen Postlethwaite",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Entwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "19 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7303617567",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "ZZ 62 67 46 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Gerald Ashcroft, NHS Number 319-943-9225. Born on 14/03/1948. Contact number 020 7946 0185. Their wife Brenda Collier attended. Reviewed in clinic on 8 October 2025 by Doctor Rowbotham. Lab sample reference 6425682338 (not an NHS number). Old form quoted NK 50 37 20 A, since corrected. Ferritin 39 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "319 943 9225",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "14/03/1948",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "020 7946 0185",
+          "cat": "PHONE"
+        },
+        {
+          "value": "Brenda Collier",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "8 October 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6425682338",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 50 37 20 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Harold Collier, NHS Number 9308282343. Born on 20/07/1962. Address on file at CF10 1EP. Contact number 07700 900887. Email harold.collier@example.com. MRN: RJ1-4344661. Reviewed in clinic on 21 July 2025 by Doctor Crowther. Lab sample reference 8886196947 (not an NHS number). Ferritin 16 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Harold Collier",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "930 828 2343",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "20/07/1962",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "07700 900887",
+          "cat": "PHONE"
+        },
+        {
+          "value": "harold.collier@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RJ1-4344661",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Crowther",
+          "reason": "clinician name"
+        },
+        {
+          "value": "21 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8886196947",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Patricia Wadsworth, NHS Number 451-607-3676. Address on file at CR2 6XH. NI number ZA 80 09 85 A. Reviewed in clinic on 25 May 2025 by Doctor Ashcroft. Lab sample reference 1259664326 (not an NHS number). Old form quoted ZZ 48 28 98 A, since corrected. Ferritin 13 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Patricia Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "451 607 3676",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "CR2 6XH",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "ZA 80 09 85 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Ashcroft",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1259664326",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "ZZ 48 28 98 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Gerald Hartley, NHS Number 941 153 1970. Date of birth 10/06/1988. Address on file at LS1 4DY. MRN: RGT-7228416. NI number BB 18 57 73 A. Their husband Sylvia Wadsworth attended. Reviewed in clinic on 10 September 2025 by Consultant Birtwistle. Lab sample reference 2971080260 (not an NHS number). Old form quoted NK 15 94 34 A, since corrected. Ferritin 38 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "941 153 1970",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "10/06/1988",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "LS1 4DY",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "RGT-7228416",
+          "cat": "MRN"
+        },
+        {
+          "value": "BB 18 57 73 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Sylvia Wadsworth",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Birtwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "10 September 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2971080260",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 15 94 34 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Patricia Pemberton, NHS Number 727 738 0738. Born on 09/02/1964. MRN: RJ1-7569635. Reviewed in clinic on 17 June 2025 by Registrar Hargreaves. Lab sample reference 7990678609 (not an NHS number). Ferritin 24 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Patricia Pemberton",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "727 738 0738",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "09/02/1964",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "RJ1-7569635",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Hargreaves",
+          "reason": "clinician name"
+        },
+        {
+          "value": "17 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7990678609",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Sylvia Ramsbottom, NHS Number 587-752-6421. Date of birth 12/02/1948. Address on file at LS1 4DY. Email sylvia.ramsbottom@example.com. MRN: RXH-2738206. NI number PR 03 12 02 A. Their sister Harold Entwistle attended. Reviewed in clinic on 22 September 2025 by Dr Pemberton. Lab sample reference 2436155535 (not an NHS number). Ferritin 36 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Sylvia Ramsbottom",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "587 752 6421",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "12/02/1948",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "LS1 4DY",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "sylvia.ramsbottom@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RXH-2738206",
+          "cat": "MRN"
+        },
+        {
+          "value": "PR 03 12 02 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Harold Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Pemberton",
+          "reason": "clinician name"
+        },
+        {
+          "value": "22 September 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2436155535",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Marjorie Brierley, NHS Number 4889557873. Address on file at SW1A 2AA. Contact number 07700 900261. Email marjorie.brierley@example.com. NI number WK 43 00 61 A. Reviewed in clinic on 9 June 2025 by Registrar Hargreaves. Lab sample reference 2864937086 (not an NHS number). Old form quoted BG 07 73 90 A, since corrected. Ferritin 31 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Brierley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "488 955 7873",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "SW1A 2AA",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "07700 900261",
+          "cat": "PHONE"
+        },
+        {
+          "value": "marjorie.brierley@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "WK 43 00 61 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Hargreaves",
+          "reason": "clinician name"
+        },
+        {
+          "value": "9 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2864937086",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 07 73 90 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Raymond Brierley, NHS Number 2990956522. Born on 08/07/1980. Contact number 07700 900066. MRN: RJ1-1719493. Their husband Gerald Entwistle attended. Reviewed in clinic on 12 December 2025 by Consultant Crowther. Lab sample reference 9874218763 (not an NHS number). Old form quoted NK 57 17 47 A, since corrected. Ferritin 28 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Raymond Brierley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "299 095 6522",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "08/07/1980",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900066",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RJ1-1719493",
+          "cat": "MRN"
+        },
+        {
+          "value": "Gerald Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Crowther",
+          "reason": "clinician name"
+        },
+        {
+          "value": "12 December 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9874218763",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 57 17 47 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Gerald Wadsworth, NHS Number 4057994602. DOB: 03/09/1976. Contact number 07700 900405. Reviewed in clinic on 24 May 2025 by Registrar Ashcroft. Lab sample reference 8519520520 (not an NHS number). Old form quoted ZZ 60 53 01 A, since corrected. Ferritin 33 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "405 799 4602",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "03/09/1976",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900405",
+          "cat": "PHONE"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Ashcroft",
+          "reason": "clinician name"
+        },
+        {
+          "value": "24 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8519520520",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "ZZ 60 53 01 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Doreen Ashcroft, NHS Number 162 340 5114. Born on 01/10/1970. Address on file at G2 8DL. Contact number 020 7946 0529. NI number AB 66 01 01 A. Reviewed in clinic on 12 November 2025 by Doctor Ashcroft. Lab sample reference 6048232269 (not an NHS number). Ferritin 11 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Doreen Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "162 340 5114",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "01/10/1970",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "G2 8DL",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0529",
+          "cat": "PHONE"
+        },
+        {
+          "value": "AB 66 01 01 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Ashcroft",
+          "reason": "clinician name"
+        },
+        {
+          "value": "12 November 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6048232269",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Leonard Fenwick, NHS Number 324-241-3725. Born on 13/04/1975. Contact number 07700 900465. Reviewed in clinic on 12 May 2025 by Doctor Thistlewood. Lab sample reference 4150366579 (not an NHS number). Ferritin 34 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Leonard Fenwick",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "324 241 3725",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "13/04/1975",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900465",
+          "cat": "PHONE"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Thistlewood",
+          "reason": "clinician name"
+        },
+        {
+          "value": "12 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4150366579",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Raymond Thistlewood, NHS Number 281 679 3613. D.O.B. 25/06/1985. MRN: RGT-5342599. Their mother Brenda Entwistle attended. Reviewed in clinic on 25 June 2025 by Doctor Postlethwaite. Lab sample reference 8398069296 (not an NHS number). Old form quoted ZZ 69 49 34 A, since corrected. Ferritin 39 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Raymond Thistlewood",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "281 679 3613",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "25/06/1985",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "RGT-5342599",
+          "cat": "MRN"
+        },
+        {
+          "value": "Brenda Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Postlethwaite",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8398069296",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "ZZ 69 49 34 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Brenda Crowther, NHS Number 2737492904. Date of birth 19/06/1967. NI number EH 10 63 85 A. Their husband Pauline Wadsworth attended. Reviewed in clinic on 25 August 2025 by Dr Crowther. Lab sample reference 2778414186 (not an NHS number). Ferritin 37 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Crowther",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "273 749 2904",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "19/06/1967",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "EH 10 63 85 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Pauline Wadsworth",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Crowther",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 August 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2778414186",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Marjorie Rowbotham, NHS Number 285-991-4560. Contact number 07700 900439. Email marjorie.rowbotham@example.com. Their brother Patricia Hargreaves attended. Reviewed in clinic on 1 February 2025 by Consultant Ramsbottom. Lab sample reference 4034694808 (not an NHS number). Ferritin 23 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Rowbotham",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "285 991 4560",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "07700 900439",
+          "cat": "PHONE"
+        },
+        {
+          "value": "marjorie.rowbotham@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "Patricia Hargreaves",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Ramsbottom",
+          "reason": "clinician name"
+        },
+        {
+          "value": "1 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4034694808",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Maureen Ashcroft, NHS Number 676 500 7334. Born on 13/02/1963. NI number LM 31 02 64 A. Their son Maureen Birtwistle attended. Reviewed in clinic on 25 March 2025 by Registrar Rowbotham. Lab sample reference 5273815003 (not an NHS number). Ferritin 18 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Maureen Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "676 500 7334",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "13/02/1963",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "LM 31 02 64 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Maureen Birtwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 March 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5273815003",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Gerald Collier, NHS Number 8619872834. DOB: 06/08/1952. Contact number 020 7946 0015. MRN: RGT-3562689. Reviewed in clinic on 25 November 2025 by Doctor Birtwistle. Lab sample reference 4855193322 (not an NHS number). Ferritin 32 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Collier",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "861 987 2834",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "06/08/1952",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "020 7946 0015",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RGT-3562689",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Birtwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "25 November 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4855193322",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Derek Hartley, NHS Number 549-408-9622. Date of birth 23/03/1950. Address on file at CF10 1EP. Contact number 020 7946 0607. NI number AB 98 21 62 A. Their mother Malcolm Entwistle attended. Reviewed in clinic on 23 June 2025 by Consultant Ashcroft. Lab sample reference 6592160820 (not an NHS number). Ferritin 40 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "549 408 9622",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "23/03/1950",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0607",
+          "cat": "PHONE"
+        },
+        {
+          "value": "AB 98 21 62 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Malcolm Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Ashcroft",
+          "reason": "clinician name"
+        },
+        {
+          "value": "23 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6592160820",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Pauline Ashcroft, NHS Number 006-896-5095. Date of birth 04/07/1980. Address on file at M1 1AE. Email pauline.ashcroft@example.com. MRN: RJ1-7687947. Reviewed in clinic on 18 June 2025 by Consultant Pemberton. Lab sample reference 5858779035 (not an NHS number). Old form quoted NK 76 69 45 A, since corrected. Ferritin 19 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Pauline Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "006 896 5095",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "04/07/1980",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "M1 1AE",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "pauline.ashcroft@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RJ1-7687947",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Pemberton",
+          "reason": "clinician name"
+        },
+        {
+          "value": "18 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5858779035",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 76 69 45 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Pauline Birtwistle, NHS Number 674 606 4298. Born on 17/09/1982. Address on file at CR2 6XH. Contact number 07700 900588. NI number GH 41 92 40 A. Reviewed in clinic on 27 March 2025 by Doctor Crowther. Lab sample reference 2101511836 (not an NHS number). Old form quoted BG 45 61 08 A, since corrected. Ferritin 16 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Pauline Birtwistle",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "674 606 4298",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "17/09/1982",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "CR2 6XH",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "07700 900588",
+          "cat": "PHONE"
+        },
+        {
+          "value": "GH 41 92 40 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Crowther",
+          "reason": "clinician name"
+        },
+        {
+          "value": "27 March 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2101511836",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 45 61 08 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Malcolm Hargreaves, NHS Number 644-477-1552. DOB: 07/04/1984. Reviewed in clinic on 13 February 2025 by Dr Collier. Lab sample reference 5195401412 (not an NHS number). Old form quoted BG 53 85 81 A, since corrected. Ferritin 39 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Malcolm Hargreaves",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "644 477 1552",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "07/04/1984",
+          "cat": "DATE_OF_BIRTH"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Collier",
+          "reason": "clinician name"
+        },
+        {
+          "value": "13 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5195401412",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 53 85 81 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Raymond Hartley, NHS Number 951-305-4268. D.O.B. 04/08/1995. Address on file at B33 8TH. Contact number 020 7946 0971. MRN: RGT-0701918. Their mother Maureen Entwistle attended. Reviewed in clinic on 12 June 2025 by Dr Hargreaves. Lab sample reference 1391984855 (not an NHS number). Old form quoted NK 68 71 23 A, since corrected. Ferritin 25 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Raymond Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "951 305 4268",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "04/08/1995",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "B33 8TH",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0971",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RGT-0701918",
+          "cat": "MRN"
+        },
+        {
+          "value": "Maureen Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Hargreaves",
+          "reason": "clinician name"
+        },
+        {
+          "value": "12 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1391984855",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 68 71 23 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Gerald Wadsworth, NHS Number 293 495 9848. Address on file at CF10 1EP. Contact number 020 7946 0656. MRN: RJ1-3187129. NI number WK 85 60 29 A. Reviewed in clinic on 11 February 2025 by Consultant Postlethwaite. Lab sample reference 4580126719 (not an NHS number). Old form quoted GB 30 03 74 A, since corrected. Ferritin 22 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Gerald Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "293 495 9848",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "CF10 1EP",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0656",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RJ1-3187129",
+          "cat": "MRN"
+        },
+        {
+          "value": "WK 85 60 29 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Postlethwaite",
+          "reason": "clinician name"
+        },
+        {
+          "value": "11 February 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "4580126719",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "GB 30 03 74 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Pauline Fenwick, NHS Number 8048140837. Born on 06/10/1950. Address on file at BT1 5GS. MRN: RXH-3500257. Their brother Derek Entwistle attended. Reviewed in clinic on 8 September 2025 by Doctor Rowbotham. Lab sample reference 8626542322 (not an NHS number). Ferritin 36 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Pauline Fenwick",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "804 814 0837",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "06/10/1950",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "BT1 5GS",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "RXH-3500257",
+          "cat": "MRN"
+        },
+        {
+          "value": "Derek Entwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "8 September 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "8626542322",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Eileen Hargreaves, NHS Number 0353992194. Reviewed in clinic on 11 July 2025 by Doctor Pemberton. Lab sample reference 9201028831 (not an NHS number). Ferritin 21 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Eileen Hargreaves",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "035 399 2194",
+          "cat": "NHS_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Pemberton",
+          "reason": "clinician name"
+        },
+        {
+          "value": "11 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9201028831",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Raymond Wadsworth, NHS Number 876 407 0689. DOB: 01/06/1959. Contact number 07700 900650. Email raymond.wadsworth@example.com. NI number EH 86 54 13 A. Reviewed in clinic on 2 May 2025 by Consultant Ramsbottom. Lab sample reference 5473235795 (not an NHS number). Old form quoted BG 05 76 82 A, since corrected. Ferritin 33 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Raymond Wadsworth",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "876 407 0689",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "01/06/1959",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "07700 900650",
+          "cat": "PHONE"
+        },
+        {
+          "value": "raymond.wadsworth@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "EH 86 54 13 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Ramsbottom",
+          "reason": "clinician name"
+        },
+        {
+          "value": "2 May 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "5473235795",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 05 76 82 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Derek Thistlewood, NHS Number 541 297 2004. D.O.B. 10/03/1972. Address on file at LS1 4DY. NI number ZA 70 69 59 A. Their wife Eileen Ashcroft attended. Reviewed in clinic on 4 March 2025 by Dr Wadsworth. Lab sample reference 3257540451 (not an NHS number). Old form quoted NK 67 01 12 A, since corrected. Ferritin 17 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Thistlewood",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "541 297 2004",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "10/03/1972",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "LS1 4DY",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "ZA 70 69 59 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Eileen Ashcroft",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Wadsworth",
+          "reason": "clinician name"
+        },
+        {
+          "value": "4 March 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "3257540451",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "NK 67 01 12 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Derek Fenwick, NHS Number 967 593 5383. Email derek.fenwick@example.com. MRN: RXH-5705677. Reviewed in clinic on 1 October 2025 by Doctor Thistlewood. Lab sample reference 7808866521 (not an NHS number). Ferritin 33 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Fenwick",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "967 593 5383",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "derek.fenwick@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "RXH-5705677",
+          "cat": "MRN"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Doctor Thistlewood",
+          "reason": "clinician name"
+        },
+        {
+          "value": "1 October 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7808866521",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Sylvia Hartley, NHS Number 846-756-3850. DOB: 23/04/1940. Address on file at M1 1AE. Contact number 020 7946 0889. NI number CE 50 79 04 A. Their husband Malcolm Birtwistle attended. Reviewed in clinic on 6 June 2025 by Dr Rowbotham. Lab sample reference 1130276784 (not an NHS number). Ferritin 9 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Sylvia Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "846 756 3850",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "23/04/1940",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "M1 1AE",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0889",
+          "cat": "PHONE"
+        },
+        {
+          "value": "CE 50 79 04 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Malcolm Birtwistle",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "6 June 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "1130276784",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mr Raymond Crowther, NHS Number 239 886 0574. D.O.B. 28/12/1953. Address on file at EC1A 1BB. Contact number 020 7946 0363. Reviewed in clinic on 4 January 2025 by Registrar Rowbotham. Lab sample reference 7934700122 (not an NHS number). Ferritin 38 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Raymond Crowther",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "239 886 0574",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "28/12/1953",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "EC1A 1BB",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0363",
+          "cat": "PHONE"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Rowbotham",
+          "reason": "clinician name"
+        },
+        {
+          "value": "4 January 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "7934700122",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Miss Brenda Collier, NHS Number 500 943 8984. DOB: 02/07/1976. Address on file at NE1 7RU. Contact number 020 7946 0434. MRN: RXH-7934543. NI number AB 75 32 36 A. Their wife Derek Wadsworth attended. Reviewed in clinic on 14 January 2025 by Consultant Ramsbottom. Lab sample reference 2964720194 (not an NHS number). Ferritin 27 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Collier",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "500 943 8984",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "02/07/1976",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "NE1 7RU",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0434",
+          "cat": "PHONE"
+        },
+        {
+          "value": "RXH-7934543",
+          "cat": "MRN"
+        },
+        {
+          "value": "AB 75 32 36 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Derek Wadsworth",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Ramsbottom",
+          "reason": "clinician name"
+        },
+        {
+          "value": "14 January 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2964720194",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Stanley Ashcroft, NHS Number 4047379247. Address on file at NE1 7RU. Contact number 020 7946 0564. Email stanley.ashcroft@example.com. NI number ZA 34 24 44 A. Their son Doreen Pemberton attended. Reviewed in clinic on 11 July 2025 by Registrar Birtwistle. Lab sample reference 9676395235 (not an NHS number). Ferritin 30 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Stanley Ashcroft",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "404 737 9247",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "NE1 7RU",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "020 7946 0564",
+          "cat": "PHONE"
+        },
+        {
+          "value": "stanley.ashcroft@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "ZA 34 24 44 A",
+          "cat": "NI_NUMBER"
+        },
+        {
+          "value": "Doreen Pemberton",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Birtwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "11 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "9676395235",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Malcolm Pemberton, NHS Number 9106348378. DOB: 14/03/1935. Address on file at BT1 5GS. Email malcolm.pemberton@example.com. Their husband Maureen Ramsbottom attended. Reviewed in clinic on 10 July 2025 by Registrar Ramsbottom. Lab sample reference 2093624614 (not an NHS number). Ferritin 32 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Malcolm Pemberton",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "910 634 8378",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "14/03/1935",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "BT1 5GS",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "malcolm.pemberton@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "Maureen Ramsbottom",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Ramsbottom",
+          "reason": "clinician name"
+        },
+        {
+          "value": "10 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "2093624614",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Pauline Hartley, NHS Number 492 984 9136. Date of birth 21/12/1957. Contact number 020 7946 0002. Reviewed in clinic on 17 December 2025 by Consultant Wadsworth. Lab sample reference 3910627928 (not an NHS number). Old form quoted BG 15 09 93 A, since corrected. Ferritin 21 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Pauline Hartley",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "492 984 9136",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "21/12/1957",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "020 7946 0002",
+          "cat": "PHONE"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Wadsworth",
+          "reason": "clinician name"
+        },
+        {
+          "value": "17 December 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "3910627928",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 15 09 93 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Derek Postlethwaite, NHS Number 535-623-9793. D.O.B. 19/09/1941. NI number JM 07 43 01 A. Reviewed in clinic on 26 October 2025 by Registrar Entwistle. Lab sample reference 6234199179 (not an NHS number). Old form quoted BG 54 89 35 A, since corrected. Ferritin 18 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Derek Postlethwaite",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "535 623 9793",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "19/09/1941",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "JM 07 43 01 A",
+          "cat": "NI_NUMBER"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Registrar Entwistle",
+          "reason": "clinician name"
+        },
+        {
+          "value": "26 October 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6234199179",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 54 89 35 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Mrs Brenda Birtwistle, NHS Number 7881269960. Born on 17/05/1952. Address on file at B33 8TH. Email brenda.birtwistle@example.com. Reviewed in clinic on 8 July 2025 by Consultant Brierley. Lab sample reference 3286864618 (not an NHS number). Old form quoted BG 04 89 42 A, since corrected. Ferritin 10 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Brenda Birtwistle",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "788 126 9960",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "17/05/1952",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "B33 8TH",
+          "cat": "POSTCODE"
+        },
+        {
+          "value": "brenda.birtwistle@example.com",
+          "cat": "EMAIL"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Consultant Brierley",
+          "reason": "clinician name"
+        },
+        {
+          "value": "8 July 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "3286864618",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "BG 04 89 42 A",
+          "reason": "invalid NI prefix"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    },
+    {
+      "text": "Re: Ms Marjorie Crowther, NHS Number 1031508899. Born on 22/07/1941. Email marjorie.crowther@example.com. Their son Clifford Thistlewood attended. Reviewed in clinic on 6 November 2025 by Dr Wadsworth. Lab sample reference 6678162197 (not an NHS number). Ferritin 35 ug/L; continuing oral iron 200 mg.",
+      "gold": [
+        {
+          "value": "Marjorie Crowther",
+          "cat": "PATIENT_NAME"
+        },
+        {
+          "value": "103 150 8899",
+          "cat": "NHS_NUMBER"
+        },
+        {
+          "value": "22/07/1941",
+          "cat": "DATE_OF_BIRTH"
+        },
+        {
+          "value": "marjorie.crowther@example.com",
+          "cat": "EMAIL"
+        },
+        {
+          "value": "Clifford Thistlewood",
+          "cat": "RELATIVE_NAME"
+        }
+      ],
+      "preserve": [
+        {
+          "value": "Dr Wadsworth",
+          "reason": "clinician name"
+        },
+        {
+          "value": "6 November 2025",
+          "reason": "appointment date"
+        },
+        {
+          "value": "6678162197",
+          "reason": "invalid NHS — fails checksum"
+        },
+        {
+          "value": "200 mg",
+          "reason": "dosage"
+        }
+      ]
+    }
+  ],
+  "freeTextNames": [
+    {
+      "text": "Brenda returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Brenda"
+    },
+    {
+      "text": "Derek returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Derek"
+    },
+    {
+      "text": "Eileen returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Eileen"
+    },
+    {
+      "text": "Eileen returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Eileen"
+    },
+    {
+      "text": "Marjorie returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Marjorie"
+    },
+    {
+      "text": "Leonard returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Leonard"
+    },
+    {
+      "text": "Derek returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Derek"
+    },
+    {
+      "text": "Stanley returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Stanley"
+    },
+    {
+      "text": "Leonard returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Leonard"
+    },
+    {
+      "text": "Harold returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Harold"
+    },
+    {
+      "text": "Sylvia returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Sylvia"
+    },
+    {
+      "text": "Raymond returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Raymond"
+    },
+    {
+      "text": "Derek returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Derek"
+    },
+    {
+      "text": "Patricia returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Patricia"
+    },
+    {
+      "text": "Doreen returned today feeling much improved and will self-refer if symptoms recur.",
+      "name": "Doreen"
+    }
+  ]
+}

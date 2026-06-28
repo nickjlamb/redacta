@@ -5,21 +5,29 @@ the layer that ships in the iOS app, the MCP server, the CLI and the libraries. 
 measures how reliably the engine redacts the identifiers it targets, and — just as
 importantly — how well it *avoids* redacting things it shouldn't.
 
-> **Reproduce it:** `node benchmark/benchmark.mjs` (seed `20260626`).
-> Run against `ios-app/RedactaEngine/Resources/redacta.bundle.js`, clinical mode.
+> **Reproduce it:** `node benchmark/benchmark.mjs` (seed `20260626`), run against
+> `ios-app/RedactaEngine/Resources/redacta.bundle.js`, clinical mode. The corpus is
+> exported to `corpus.json`; `presidio_baseline.py` scores Microsoft Presidio on the
+> identical input with the identical rule.
 
 ## Headline
 
-| Metric | Result |
-|---|---|
-| **Recall** (in-scope identifiers caught) | **100%** (333 / 333) |
-| **Precision** (redactions that were correct) | **100%** |
-| **F1** | **100%** |
-| **Preservation** (distractors correctly kept) | **100%** (269 / 269) |
-| Free-text names (out of scope) | 0% (0 / 15) — *by design; see Limitations* |
+| Metric | Redacta | Microsoft Presidio (default) |
+|---|---|---|
+| **Identifiers found** (any label) | **100%** | 89.8% |
+| **Strict recall** (correct category) | **100%** | 76.3% |
+| **False positives** (wrongly redacted) | **0** | 331 |
+| **Clinical context preserved** | **100%** (269 / 269) | 32.7% |
+| Free-text names (out of scope) | 0% (0 / 15) — *by design* | — |
 
 Corpus: **60 synthetic UK clinical notes** containing **333** gold-labelled
 identifiers, plus **269** "preserve" distractors designed to tempt a naive redactor.
+
+Presidio finds most identifiers but over-redacts heavily — flagging 331 non-identifiers
+(every clinician name, every appointment date) and keeping barely a third of the
+clinical context. It also has no recogniser for UK National Insurance numbers (40%
+found) or postcodes (39%). Presidio was run as shipped (default recognisers,
+`en_core_web_lg`); the corpus is UK clinical text, Redacta's tuned domain.
 
 ## What was tested
 

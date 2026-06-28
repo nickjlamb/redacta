@@ -164,64 +164,90 @@ function freeTextNameNote() {
 // "943-476-5919" match, and "Mrs Patricia Hartley" still contains "Patricia Hartley".
 const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 const overlap = (a, b) => { const x = norm(a), y = norm(b); return !!x && !!y && (x.includes(y) || y.includes(x)); };
+// Category from a Redacta token, e.g. "[DATE_OF_BIRTH_2]" -> "DATE_OF_BIRTH".
+const catOf = (token) => token.slice(1, -1).replace(/_\d+$/, "");
 
 const N = 60;
 const corpus = Array.from({ length: N }, note);
 const freeSet = Array.from({ length: 15 }, freeTextNameNote);
 
-const cats = {};
-let goldTotal = 0, caught = 0;
-let redactTotal = 0, redactCorrect = 0;
-let preserveTotal = 0, preserveKept = 0;
+// Generic scorer so Redacta and any other engine are measured identically.
+// engineFn(text) -> [{ value, cat }] (cat optional; used for strict recall).
+function score(engineFn) {
+  const cats = {};
+  let goldTotal = 0, lenient = 0, strict = 0;
+  let redactTotal = 0, redactCorrect = 0, falsePos = 0;
+  let preserveTotal = 0, preserveKept = 0;
 
-for (const item of corpus) {
-  const r = Redacta.redact(item.text, "clinical");
-  const values = Object.values(r.tokenMap);
-
-  for (const g of item.gold) {
-    goldTotal++;
-    cats[g.cat] ??= { caught: 0, total: 0 };
-    cats[g.cat].total++;
-    if (values.some((v) => overlap(v, g.value))) { caught++; cats[g.cat].caught++; }
+  for (const item of corpus) {
+    const found = engineFn(item.text); // [{value, cat}]
+    for (const g of item.gold) {
+      goldTotal++;
+      cats[g.cat] ??= { lenient: 0, strict: 0, total: 0 };
+      cats[g.cat].total++;
+      if (found.some((f) => overlap(f.value, g.value))) { lenient++; cats[g.cat].lenient++; }
+      if (found.some((f) => overlap(f.value, g.value) && f.cat === g.cat)) { strict++; cats[g.cat].strict++; }
+    }
+    for (const f of found) {
+      redactTotal++;
+      if (item.gold.some((g) => overlap(f.value, g.value))) redactCorrect++; else falsePos++;
+    }
+    for (const p of item.preserve) {
+      preserveTotal++;
+      if (!found.some((f) => overlap(f.value, p.value))) preserveKept++;
+    }
   }
-  for (const v of values) {
-    redactTotal++;
-    if (item.gold.some((g) => overlap(v, g.value))) redactCorrect++;
-  }
-  for (const p of item.preserve) {
-    preserveTotal++;
-    const hit = values.find((v) => overlap(v, p.value));
-    if (!hit) preserveKept++;
-    else if (process.env.DEBUG) console.error(`PRESERVE MISS [${p.reason}] "${p.value}" -> redacted as "${hit}"`);
-  }
+  return {
+    leaksAvoided: +((lenient / goldTotal) * 100).toFixed(1), // any-category recall
+    strictRecall: +((strict / goldTotal) * 100).toFixed(1),  // correct-category recall
+    precision: +((redactCorrect / redactTotal) * 100).toFixed(1),
+    falsePositives: falsePos,
+    goldIdentifiers: goldTotal,
+    preserveAccuracy: +((preserveKept / preserveTotal) * 100).toFixed(1),
+    perCategory: Object.fromEntries(
+      Object.entries(cats).sort().map(([k, v]) => [k, {
+        leaksAvoided: +((v.lenient / v.total) * 100).toFixed(1),
+        strictRecall: +((v.strict / v.total) * 100).toFixed(1),
+        n: v.total,
+      }])
+    ),
+  };
 }
+
+// Redacta as an engine: token type -> category, token value -> matched text.
+const redactaEngine = (text) => {
+  const r = Redacta.redact(text, "clinical");
+  return Object.entries(r.tokenMap).map(([tok, val]) => ({ value: val, cat: catOf(tok) }));
+};
+
+const redacta = score(redactaEngine);
 
 // Free-text name probe (clinical mode)
 let freeCaught = 0;
 for (const f of freeSet) {
-  const r = Redacta.redact(f.text, "clinical");
-  if (Object.values(r.tokenMap).some((v) => overlap(v, f.name))) freeCaught++;
+  if (redactaEngine(f.text).some((x) => overlap(x.value, f.name))) freeCaught++;
 }
-
-const recall = caught / goldTotal;
-const precision = redactCorrect / redactTotal;
-const f1 = (2 * precision * recall) / (precision + recall);
-const preserveAcc = preserveKept / preserveTotal;
 
 const out = {
   seed: 20260626, notes: N,
-  overall: {
-    recall: +(recall * 100).toFixed(1),
-    precision: +(precision * 100).toFixed(1),
-    f1: +(f1 * 100).toFixed(1),
-    goldIdentifiers: goldTotal,
+  redacta: {
+    leaksAvoided: redacta.leaksAvoided,
+    strictRecall: redacta.strictRecall,
+    precision: redacta.precision,
+    falsePositives: redacta.falsePositives,
+    preserveAccuracy: redacta.preserveAccuracy,
+    goldIdentifiers: redacta.goldIdentifiers,
   },
-  perCategory: Object.fromEntries(
-    Object.entries(cats).sort().map(([k, v]) => [k, { recall: +((v.caught / v.total) * 100).toFixed(1), n: v.total }])
-  ),
-  preserve: { accuracy: +(preserveAcc * 100).toFixed(1), kept: preserveKept, total: preserveTotal },
+  perCategory: redacta.perCategory,
   freeTextNames: { caught: freeCaught, total: freeSet.length, note: "Out of deterministic scope; the app prompts the user to review." },
 };
 
 console.log(JSON.stringify(out, null, 2));
 fs.writeFileSync(path.resolve(here, "results.json"), JSON.stringify(out, null, 2) + "\n");
+
+// Emit the labelled corpus so other engines (e.g. Presidio) can be scored on
+// the identical input with the identical rule. See presidio_baseline.py.
+fs.writeFileSync(
+  path.resolve(here, "corpus.json"),
+  JSON.stringify({ seed: 20260626, notes: corpus, freeTextNames: freeSet }, null, 2) + "\n"
+);
