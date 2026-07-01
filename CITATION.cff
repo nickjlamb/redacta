@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use Redacta in your research, please cite it as below."
+title: "Redacta: pseudonymise medical text before AI processing"
+authors:
+  - family-names: "Lamb"
+    given-names: "Nick"
+    affiliation: "PharmaTools.AI"
+    orcid: "https://orcid.org/0009-0009-6266-8499"
+version: 1.2.0
+doi: 10.5281/zenodo.21115605
+date-released: 2026-07-01
+url: "https://github.com/nickjlamb/redacta"
+license: MIT-0
+keywords:
+  - de-identification
+  - pseudonymisation
+  - clinical-text
+  - privacy
+  - healthcare
+  - PII
+abstract: >-
+  Redacta replaces patient identifiers in medical and clinical text
+  with labelled tokens before AI processing, using deterministic
+  pattern matching (including Modulus-11 NHS number validation) and
+  agent-based reasoning, while preserving clinical meaning. Supports
+  HIPAA Safe Harbor mode and local round-trip re-identification.
