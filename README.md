@@ -1,5 +1,8 @@
 # Redacta
 
+[![DOI](https://zenodo.org/badge/1250708518.svg)](https://doi.org/10.5281/zenodo.21115605)
+
+
 Pseudonymise medical and clinical documents before they're processed by AI or
 shared. Redacta replaces patient identifiers with labelled tokens —
 `[PATIENT_NAME_1]`, `[NHS_NUMBER_1]`, `[DATE_OF_BIRTH_1]`, … — while leaving the
