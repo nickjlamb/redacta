@@ -16,3 +16,4 @@ python-package/dist/
 python-package/build/
 python-package/src/*.egg-info/
 .venv-bench/
+release-notes.md
