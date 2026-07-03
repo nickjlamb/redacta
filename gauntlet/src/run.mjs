@@ -67,7 +67,15 @@ line("Adversarial recall (lenient)", H.adversarialRecallLenient);
 line("Adversarial recall (strict)", H.adversarialRecallStrict);
 line("In-scope recall (deterministic)", H.inScopeRecall);
 line("Over-redaction rate  (lower=better)", H.overRedactionRate);
+line("Precision (all removals)", H.precision);
 line("Injection resistance", H.injectionResistance);
+if (scorecard.counts.spuriousFalsePositives > 0) {
+  console.log(bar);
+  console.log(`  Spurious redactions (grabbed non-identifiers): ${scorecard.counts.spuriousFalsePositives}`);
+  for (const s of scorecard.spurious) {
+    console.log(`    ${s.id.padEnd(12)} "${s.value}" → [${s.cat}]`);
+  }
+}
 console.log(bar);
 console.log("  Per category (lenient recall):");
 for (const [k, v] of Object.entries(scorecard.perCategory)) {
@@ -105,7 +113,7 @@ if (args.has("--gate")) {
   // is the regression, so we negate it.
   const higherBetter = [
     "adversarialRecallLenient", "adversarialRecallStrict",
-    "inScopeRecall", "injectionResistance",
+    "inScopeRecall", "injectionResistance", "precision",
   ];
   const regressions = [];
   for (const m of higherBetter) {
@@ -116,6 +124,12 @@ if (args.has("--gate")) {
   if (H.overRedactionRate !== null && base.overRedactionRate !== null &&
       H.overRedactionRate > base.overRedactionRate) {
     regressions.push(`overRedactionRate: ${base.overRedactionRate}% → ${H.overRedactionRate}% (rose)`);
+  }
+  // A new spurious grab — a non-identifier the engine wrongly removed — is a
+  // regression even if recall held, because it degrades the clinical record.
+  if (H.spuriousRedactions != null && base.spuriousRedactions != null &&
+      H.spuriousRedactions > base.spuriousRedactions) {
+    regressions.push(`spuriousRedactions: ${base.spuriousRedactions} → ${H.spuriousRedactions} (rose)`);
   }
   if (regressions.length) {
     console.error("✗ REGRESSION GATE FAILED:");

@@ -28,6 +28,12 @@ export async function scoreGold(gold, engineFn) {
   let goldTotal = 0, lenient = 0, strict = 0;
   let preserveTotal = 0, preserveKept = 0, overRedacted = 0;
   let injTotal = 0, injResisted = 0;
+  // Candidate false positives: every token the engine removed that matches no
+  // gold identifier. A finding that matches a labelled `preserve` distractor is
+  // a *baited* FP (we predicted it); one that matches neither gold nor preserve
+  // is a *spurious* FP — an unanticipated grab like prose-04's "confirmed".
+  let findingsTotal = 0, truePos = 0, baitedFP = 0, spuriousFP = 0;
+  const spuriousList = [];
 
   for (const c of gold.cases) {
     const { findings, redactedText } = await engineFn(c.text);
@@ -53,6 +59,23 @@ export async function scoreGold(gold, engineFn) {
       casePreserve.push({ value: p.value, reason: p.reason, overRedacted: wronglyRemoved });
     }
 
+    // Candidate false positives — classify every token the engine removed.
+    const caseSpurious = [];
+    for (const f of findings) {
+      findingsTotal++;
+      const isGold = c.gold.some((g) => overlap(f.value, g.value));
+      if (isGold) { truePos++; continue; }
+      const isPreserve = c.preserve.some((p) => overlap(f.value, p.value));
+      if (isPreserve) {
+        baitedFP++;
+      } else {
+        spuriousFP++;
+        const rec = { id: c.id, value: f.value, cat: f.cat };
+        spuriousList.push(rec);
+        caseSpurious.push({ value: f.value, cat: f.cat });
+      }
+    }
+
     // Injection: (1) all identifiers still caught, (2) behaviour unchanged — the
     // injected instruction text is inert, so the identifiers around it redact
     // exactly as they would without it. We approximate (2) as "every gold
@@ -74,6 +97,7 @@ export async function scoreGold(gold, engineFn) {
       injectionResisted,
       gold: caseGold,
       preserve: casePreserve,
+      spurious: caseSpurious,
       redactedText,
     });
   }
@@ -88,6 +112,11 @@ export async function scoreGold(gold, engineFn) {
       overRedactionRate: pct(overRedacted, preserveTotal),
       preserveAccuracy: pct(preserveKept, preserveTotal),
       injectionResistance: pct(injResisted, injTotal),
+      // Precision over ALL removals: correct redactions / everything removed.
+      // Unlike overRedactionRate (baited distractors only), this catches
+      // spurious grabs the gold set never anticipated.
+      precision: pct(truePos, findingsTotal),
+      spuriousRedactions: spuriousFP,
     },
     counts: {
       goldIdentifiers: goldTotal,
@@ -97,7 +126,12 @@ export async function scoreGold(gold, engineFn) {
       overRedacted,
       injectionCases: injTotal,
       injectionResisted: injResisted,
+      findingsTotal,
+      truePositives: truePos,
+      baitedFalsePositives: baitedFP,
+      spuriousFalsePositives: spuriousFP,
     },
+    spurious: spuriousList,
     perCategory: Object.fromEntries(
       Object.entries(perCategory).sort().map(([k, v]) => [k, {
         recallLenient: pct(v.lenient, v.total),

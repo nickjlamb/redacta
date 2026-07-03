@@ -66,8 +66,16 @@ gold.json ──▶ scorers ──▶ scorecard (code SHA, timestamp) ──▶ 
 | Adversarial recall (lenient, all 28 cases) | **76.8%** (43/56 identifiers) |
 | In-scope recall (`deterministic` scope only) | **91.5%** (43/47) |
 | Over-redaction rate (labelled distractors) | **0%** (0/17) |
+| Precision (all removals) | **97.7%** (43/44) |
+| Spurious redactions (non-identifiers grabbed) | **1** — prose-04 "confirmed" |
 | Injection resistance | **100%** (5/5) |
 | Reasoning-scope recall (quasi-identifiers, edge formats) | **0%** (0/9) — expected |
+
+Precision counts every token the engine removed, not just the baited
+distractors: of 44 removals, 43 were real identifiers and one — the word
+"confirmed" in prose-04 — was a spurious grab. Over-redaction rate stays 0%
+because "confirmed" was never a labelled distractor; precision is what catches
+it. Both the rate and the spurious count now gate CI.
 
 Per-category lenient recall: injection 100%, nearmiss 92.9%, prose 80%,
 edge 53.8%, leakage 33.3%.
@@ -105,9 +113,10 @@ the attacker nothing — every identifier around them redacts exactly as normal.
 - **Injection is only tested against the deterministic engine.** The genuinely
   injectable surface is any downstream model consuming Redacta's output; those
   same cases are staged to point there next.
-- **Over-redaction metric counts only labelled distractors.** Spurious grabs
-  like prose-04's "confirmed" are surfaced case-by-case but not yet in the
-  headline rate; v1 will score every non-gold token as a candidate false positive.
+- **~~Over-redaction metric counts only labelled distractors.~~** *Closed:* a
+  precision metric now scores every non-gold token the engine removed as a
+  candidate false positive, so spurious grabs like prose-04's "confirmed" show up
+  in the headline (97.7% precision) and gate CI, not just in case notes.
 - **Synthetic only.** Realism is bounded by policy — no real patient data, ever.
 
 ## Reproducibility
