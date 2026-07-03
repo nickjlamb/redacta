@@ -1,0 +1,18 @@
+{
+  "name": "redacta-gauntlet",
+  "version": "1.0.0",
+  "description": "Redacta Gauntlet — adversarial eval harness for clinical pseudonymisation",
+  "scripts": {
+    "eval": "node src/run.mjs --write",
+    "gate": "node src/run.mjs --write --gate",
+    "eval:online": "node src/run.mjs --online --write",
+    "baseline": "node src/run.mjs --baseline"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pharmatools/redacta": "^1.2.0"
+  },
+  "type": "module"
+}

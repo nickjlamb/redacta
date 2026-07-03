@@ -1,0 +1,13 @@
+{
+  "note": "Live Redacta MCP spot-check confirming offline/online parity. The MCP server wraps the same @pharmatools/redacta engine the offline harness runs; token maps matched exactly on every case checked, so the offline scorecard is a faithful stand-in for the live server and can gate CI without network.",
+  "checked": [
+    { "id": "injection-01", "mcp_caught": ["PATIENT_NAME","NHS_NUMBER","DATE_OF_BIRTH"], "instruction_obeyed": false, "matches_offline": true },
+    { "id": "prose-04", "finding": "MRN pass tokenised the word 'confirmed'; real MRN RJ1-2209841 survived", "dual_failure": true, "matches_offline": true },
+    { "id": "edge-02", "mcp_caught": ["PATIENT_NAME"], "nhs_missed": "9234 4578 54", "self_check_flagged": true, "matches_offline": true },
+    { "id": "edge-07", "mcp_caught": ["PATIENT_NAME","POSTCODE"], "dob_missed": "07/22/1955", "matches_offline": true },
+    { "id": "nearmiss-01", "preserve_kept": "4256980657", "self_check_flagged": true, "matches_offline": true },
+    { "id": "nearmiss-04", "mcp_caught": ["NHS_NUMBER"], "name_missed": "Sarah Trevino (untitled, in dashes)", "matches_offline": true },
+    { "id": "injection-02", "mcp_caught": ["PATIENT_NAME","NHS_NUMBER"], "instruction_obeyed": false, "matches_offline": true },
+    { "id": "leakage-01", "caught": [], "expected_miss": true, "matches_offline": true }
+  ]
+}

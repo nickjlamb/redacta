@@ -1,0 +1,127 @@
+#!/usr/bin/env node
+// run.mjs — the Redacta Gauntlet driver.
+//
+//   node src/run.mjs                 offline engine, print scorecard
+//   node src/run.mjs --write         also write results/latest.json (SHA-stamped)
+//   node src/run.mjs --baseline      write results/baseline.json (accept new baseline)
+//   node src/run.mjs --gate          diff against baseline; exit 1 on regression
+//   node src/run.mjs --online        use the live Redacta MCP (needs REDACTA_MCP_URL)
+//
+// One command, deterministic suite needs no API key: `npm run eval`.
+
+import fs from "node:fs";
+import path from "node:path";
+import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { offlineEngine, onlineEngine } from "./engine.mjs";
+import { scoreGold } from "./score.mjs";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const args = new Set(process.argv.slice(2));
+const useOnline = args.has("--online");
+
+const gold = JSON.parse(fs.readFileSync(path.join(root, "gold.json"), "utf8"));
+
+function codeSha() {
+  try {
+    return execSync("git rev-parse --short HEAD", { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
+      .toString().trim();
+  } catch {
+    return "nogit";
+  }
+}
+
+function engineVersion() {
+  try {
+    return JSON.parse(fs.readFileSync(
+      path.join(root, "node_modules/@pharmatools/redacta/package.json"), "utf8")).version;
+  } catch {
+    return "unknown";
+  }
+}
+
+const engineFn = useOnline
+  ? (t) => onlineEngine(t)
+  : (t) => Promise.resolve(offlineEngine(t));
+
+const scored = await scoreGold(gold, engineFn);
+
+const scorecard = {
+  harness: "redacta-gauntlet",
+  goldVersion: gold.meta.version,
+  engine: useOnline ? "live-mcp" : `@pharmatools/redacta@${engineVersion()}`,
+  codeSha: codeSha(),
+  timestamp: new Date().toISOString(),
+  caseCount: gold.cases.length,
+  ...scored,
+};
+
+// ── Print ─────────────────────────────────────────────────────────────────
+const H = scorecard.headline;
+const bar = "─".repeat(58);
+console.log(`\nRedacta Gauntlet — gold ${scorecard.goldVersion} · ${scorecard.caseCount} cases · ${scorecard.engine}`);
+console.log(`code ${scorecard.codeSha}\n${bar}`);
+const line = (label, val, unit = "%") =>
+  console.log(`  ${label.padEnd(34)} ${val === null ? "n/a" : val + unit}`);
+line("Adversarial recall (lenient)", H.adversarialRecallLenient);
+line("Adversarial recall (strict)", H.adversarialRecallStrict);
+line("In-scope recall (deterministic)", H.inScopeRecall);
+line("Over-redaction rate  (lower=better)", H.overRedactionRate);
+line("Injection resistance", H.injectionResistance);
+console.log(bar);
+console.log("  Per category (lenient recall):");
+for (const [k, v] of Object.entries(scorecard.perCategory)) {
+  console.log(`    ${k.padEnd(12)} ${String(v.recallLenient).padStart(5)}%  (n=${v.n})`);
+}
+console.log(bar);
+console.log("  Per scope (lenient recall):");
+for (const [k, v] of Object.entries(scorecard.perScope)) {
+  console.log(`    ${k.padEnd(14)} ${String(v.recallLenient).padStart(5)}%  (n=${v.n})`);
+}
+console.log(bar + "\n");
+
+// ── Persist ─────────────────────────────────────────────────────────────────
+const resultsDir = path.join(root, "results");
+fs.mkdirSync(resultsDir, { recursive: true });
+
+if (args.has("--baseline")) {
+  fs.writeFileSync(path.join(resultsDir, "baseline.json"), JSON.stringify(scorecard, null, 2));
+  console.log("→ wrote results/baseline.json (new accepted baseline)\n");
+}
+if (args.has("--write")) {
+  fs.writeFileSync(path.join(resultsDir, "latest.json"), JSON.stringify(scorecard, null, 2));
+  console.log("→ wrote results/latest.json\n");
+}
+
+// ── Regression gate ─────────────────────────────────────────────────────────
+if (args.has("--gate")) {
+  const baselinePath = path.join(resultsDir, "baseline.json");
+  if (!fs.existsSync(baselinePath)) {
+    console.error("✗ no baseline to gate against. Run with --baseline first.");
+    process.exit(2);
+  }
+  const base = JSON.parse(fs.readFileSync(baselinePath, "utf8")).headline;
+  // Metrics where a DROP is a regression. Over-redaction is inverted: a RISE
+  // is the regression, so we negate it.
+  const higherBetter = [
+    "adversarialRecallLenient", "adversarialRecallStrict",
+    "inScopeRecall", "injectionResistance",
+  ];
+  const regressions = [];
+  for (const m of higherBetter) {
+    if (H[m] !== null && base[m] !== null && H[m] < base[m]) {
+      regressions.push(`${m}: ${base[m]}% → ${H[m]}%`);
+    }
+  }
+  if (H.overRedactionRate !== null && base.overRedactionRate !== null &&
+      H.overRedactionRate > base.overRedactionRate) {
+    regressions.push(`overRedactionRate: ${base.overRedactionRate}% → ${H.overRedactionRate}% (rose)`);
+  }
+  if (regressions.length) {
+    console.error("✗ REGRESSION GATE FAILED:");
+    for (const r of regressions) console.error("    " + r);
+    console.error("");
+    process.exit(1);
+  }
+  console.log("✓ regression gate passed — no metric worse than baseline\n");
+}
