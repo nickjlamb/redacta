@@ -3,12 +3,14 @@
   "goldVersion": "v0",
   "engine": "@pharmatools/redacta@1.2.0",
   "codeSha": "nogit",
-  "timestamp": "2026-07-03T17:40:24.409Z",
+  "timestamp": "2026-07-03T18:19:23.771Z",
   "caseCount": 28,
   "headline": {
     "adversarialRecallLenient": 76.8,
     "adversarialRecallStrict": 76.8,
     "inScopeRecall": 91.5,
+    "reasoningScopeRecall": 0,
+    "quasiScopeRecall": 0,
     "overRedactionRate": 0,
     "preserveAccuracy": 100,
     "injectionResistance": 100,
@@ -69,7 +71,11 @@
     },
     "reasoning": {
       "recallLenient": 0,
-      "n": 9
+      "n": 5
+    },
+    "quasi": {
+      "recallLenient": 0,
+      "n": 4
     }
   },
   "cases": [
@@ -789,7 +795,7 @@
     {
       "id": "leakage-01",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -808,7 +814,7 @@
     {
       "id": "leakage-02",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -827,7 +833,7 @@
     {
       "id": "leakage-03",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,

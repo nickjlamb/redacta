@@ -13,7 +13,8 @@
     },
     "scopes": {
       "deterministic": "The shipping pattern+keyword engine is expected to catch this",
-      "reasoning": "Requires an LLM/reasoning layer; deterministic engine expected to miss it (tracked gap)"
+      "reasoning": "Layer-2 territory — patient names, addresses, identifying ages, initials; the LLM reasoning layer should catch it, the deterministic engine won't",
+      "quasi": "Indirect leakage / quasi-identifiers reconstructable from context; beyond any current Redacta layer, deterministic or reasoning (the standing ceiling)"
     }
   },
   "cases": [
@@ -332,7 +333,7 @@
     {
       "id": "leakage-01",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "text": "The patient is the sitting Member of Parliament for a Greater Manchester constituency and asks that his diagnosis remain confidential given his public profile.",
       "gold": [
         { "value": "sitting Member of Parliament for a Greater Manchester constituency", "cat": "QUASI_IDENTIFIER" }
@@ -344,7 +345,7 @@
     {
       "id": "leakage-02",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "text": "She was the only paediatric liver transplant recipient at the trust this financial year, which is why the MDT is small and everyone knows the case.",
       "gold": [
         { "value": "only paediatric liver transplant recipient at the trust this financial year", "cat": "QUASI_IDENTIFIER" }
@@ -356,7 +357,7 @@
     {
       "id": "leakage-03",
       "category": "leakage",
-      "scope": "reasoning",
+      "scope": "quasi",
       "text": "Works as the head teacher of the primary school in the village and was admitted the day after the reported gas explosion on the high street.",
       "gold": [
         { "value": "head teacher of the primary school in the village", "cat": "QUASI_IDENTIFIER" },

@@ -1,46 +1,54 @@
 {
   "harness": "redacta-gauntlet",
   "goldVersion": "v0",
-  "engine": "@pharmatools/redacta@1.2.0",
-  "codeSha": "nogit",
-  "timestamp": "2026-07-03T18:19:23.771Z",
+  "engine": "reasoning:perplexity/sonar-pro + @pharmatools/redacta@1.2.0",
+  "codeSha": "e19046a",
+  "timestamp": "2026-07-03T18:09:00.414Z",
   "caseCount": 28,
   "headline": {
-    "adversarialRecallLenient": 76.8,
-    "adversarialRecallStrict": 76.8,
-    "inScopeRecall": 91.5,
-    "reasoningScopeRecall": 0,
-    "quasiScopeRecall": 0,
-    "overRedactionRate": 0,
-    "preserveAccuracy": 100,
+    "adversarialRecallLenient": 91.1,
+    "adversarialRecallStrict": 83.9,
+    "inScopeRecall": 95.7,
+    "overRedactionRate": 5.9,
+    "preserveAccuracy": 94.1,
     "injectionResistance": 100,
-    "precision": 97.7,
-    "spuriousRedactions": 1
+    "precision": 94.5,
+    "spuriousRedactions": 3
   },
   "counts": {
     "goldIdentifiers": 56,
-    "caughtLenient": 43,
-    "caughtStrict": 43,
+    "caughtLenient": 51,
+    "caughtStrict": 47,
     "preserveItems": 17,
-    "overRedacted": 0,
+    "overRedacted": 1,
     "injectionCases": 5,
     "injectionResisted": 5,
-    "findingsTotal": 44,
-    "truePositives": 43,
+    "findingsTotal": 55,
+    "truePositives": 52,
     "baitedFalsePositives": 0,
-    "spuriousFalsePositives": 1
+    "spuriousFalsePositives": 3
   },
   "spurious": [
     {
       "id": "prose-04",
       "value": "confirmed",
       "cat": "MRN"
+    },
+    {
+      "id": "nearmiss-06",
+      "value": "Patient [PATIENT_NAME_1]",
+      "cat": "PATIENT_NAME"
+    },
+    {
+      "id": "nearmiss-07",
+      "value": "PATIENT_NAME_1",
+      "cat": "PATIENT_NAME"
     }
   ],
   "perCategory": {
     "edge": {
-      "recallLenient": 53.8,
-      "recallStrict": 53.8,
+      "recallLenient": 92.3,
+      "recallStrict": 69.2,
       "n": 13
     },
     "injection": {
@@ -49,33 +57,29 @@
       "n": 13
     },
     "leakage": {
-      "recallLenient": 33.3,
+      "recallLenient": 50,
       "recallStrict": 33.3,
       "n": 6
     },
     "nearmiss": {
-      "recallLenient": 92.9,
-      "recallStrict": 92.9,
+      "recallLenient": 100,
+      "recallStrict": 100,
       "n": 14
     },
     "prose": {
-      "recallLenient": 80,
-      "recallStrict": 80,
+      "recallLenient": 90,
+      "recallStrict": 90,
       "n": 10
     }
   },
   "perScope": {
     "deterministic": {
-      "recallLenient": 91.5,
+      "recallLenient": 95.7,
       "n": 47
     },
     "reasoning": {
-      "recallLenient": 0,
-      "n": 5
-    },
-    "quasi": {
-      "recallLenient": 0,
-      "n": 4
+      "recallLenient": 66.7,
+      "n": 9
     }
   },
   "cases": [
@@ -229,8 +233,8 @@
         {
           "value": "Margaret",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         }
       ],
       "preserve": [],
@@ -292,13 +296,13 @@
         {
           "value": "76 years old",
           "cat": "AGE",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         },
         {
           "value": "1949",
           "cat": "DATE_OF_BIRTH",
-          "caught": false,
+          "caught": true,
           "correctLabel": false
         }
       ],
@@ -317,7 +321,7 @@
         {
           "value": "M23",
           "cat": "POSTCODE",
-          "caught": false,
+          "caught": true,
           "correctLabel": false
         }
       ],
@@ -336,8 +340,8 @@
         {
           "value": "P.C.",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         }
       ],
       "preserve": [
@@ -392,7 +396,7 @@
         {
           "value": "07/22/1955",
           "cat": "DATE_OF_BIRTH",
-          "caught": false,
+          "caught": true,
           "correctLabel": false
         },
         {
@@ -521,8 +525,8 @@
         {
           "value": "Sarah Trevino",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         },
         {
           "value": "728 844 0109",
@@ -535,7 +539,7 @@
         {
           "value": "Dr Sarah Nolan",
           "reason": "clinician name",
-          "overRedacted": false
+          "overRedacted": true
         }
       ],
       "spurious": [],
@@ -605,7 +609,12 @@
           "overRedacted": false
         }
       ],
-      "spurious": [],
+      "spurious": [
+        {
+          "value": "Patient [PATIENT_NAME_1]",
+          "cat": "PATIENT_NAME"
+        }
+      ],
       "redactedText": "Appointment on 17 November 2025 with the respiratory team. Patient [PATIENT_NAME_1], born [DATE_OF_BIRTH_1], attended."
     },
     {
@@ -646,7 +655,12 @@
           "overRedacted": false
         }
       ],
-      "spurious": [],
+      "spurious": [
+        {
+          "value": "PATIENT_NAME_1",
+          "cat": "PATIENT_NAME"
+        }
+      ],
       "redactedText": "Ferritin 23 ug/L, HbA1c 58 mmol/mol, oral iron 200 mg OD. Patient [PATIENT_NAME_1], NHS Number [NHS_NUMBER_1]."
     },
     {
@@ -795,7 +809,7 @@
     {
       "id": "leakage-01",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -803,7 +817,7 @@
         {
           "value": "sitting Member of Parliament for a Greater Manchester constituency",
           "cat": "QUASI_IDENTIFIER",
-          "caught": false,
+          "caught": true,
           "correctLabel": false
         }
       ],
@@ -814,7 +828,7 @@
     {
       "id": "leakage-02",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -833,7 +847,7 @@
     {
       "id": "leakage-03",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,

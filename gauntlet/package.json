@@ -6,6 +6,9 @@
     "eval": "node src/run.mjs --write",
     "gate": "node src/run.mjs --write --gate",
     "eval:online": "node src/run.mjs --online --write",
+    "eval:reasoning": "node src/run.mjs --reasoning --write",
+    "reasoning:baseline": "node src/run.mjs --reasoning --baseline",
+    "reasoning:gate": "node src/run.mjs --reasoning --write --gate",
     "baseline": "node src/run.mjs --baseline"
   },
   "keywords": [],
@@ -13,6 +16,9 @@
   "license": "ISC",
   "dependencies": {
     "@pharmatools/redacta": "^1.2.0"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
   },
   "type": "module"
 }

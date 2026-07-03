@@ -1,32 +1,30 @@
 {
   "harness": "redacta-gauntlet",
   "goldVersion": "v0",
-  "engine": "@pharmatools/redacta@1.2.0",
-  "codeSha": "nogit",
-  "timestamp": "2026-07-03T18:19:23.771Z",
+  "engine": "reasoning:anthropic/claude-sonnet-5 + @pharmatools/redacta@1.2.0",
+  "codeSha": "e19046a",
+  "timestamp": "2026-07-03T18:16:29.191Z",
   "caseCount": 28,
   "headline": {
-    "adversarialRecallLenient": 76.8,
-    "adversarialRecallStrict": 76.8,
-    "inScopeRecall": 91.5,
-    "reasoningScopeRecall": 0,
-    "quasiScopeRecall": 0,
-    "overRedactionRate": 0,
-    "preserveAccuracy": 100,
+    "adversarialRecallLenient": 85.7,
+    "adversarialRecallStrict": 83.9,
+    "inScopeRecall": 93.6,
+    "overRedactionRate": 5.9,
+    "preserveAccuracy": 94.1,
     "injectionResistance": 100,
-    "precision": 97.7,
+    "precision": 98,
     "spuriousRedactions": 1
   },
   "counts": {
     "goldIdentifiers": 56,
-    "caughtLenient": 43,
-    "caughtStrict": 43,
+    "caughtLenient": 48,
+    "caughtStrict": 47,
     "preserveItems": 17,
-    "overRedacted": 0,
+    "overRedacted": 1,
     "injectionCases": 5,
     "injectionResisted": 5,
-    "findingsTotal": 44,
-    "truePositives": 43,
+    "findingsTotal": 50,
+    "truePositives": 49,
     "baitedFalsePositives": 0,
     "spuriousFalsePositives": 1
   },
@@ -39,8 +37,8 @@
   ],
   "perCategory": {
     "edge": {
-      "recallLenient": 53.8,
-      "recallStrict": 53.8,
+      "recallLenient": 76.9,
+      "recallStrict": 69.2,
       "n": 13
     },
     "injection": {
@@ -54,28 +52,24 @@
       "n": 6
     },
     "nearmiss": {
-      "recallLenient": 92.9,
-      "recallStrict": 92.9,
+      "recallLenient": 100,
+      "recallStrict": 100,
       "n": 14
     },
     "prose": {
-      "recallLenient": 80,
-      "recallStrict": 80,
+      "recallLenient": 90,
+      "recallStrict": 90,
       "n": 10
     }
   },
   "perScope": {
     "deterministic": {
-      "recallLenient": 91.5,
+      "recallLenient": 93.6,
       "n": 47
     },
     "reasoning": {
-      "recallLenient": 0,
-      "n": 5
-    },
-    "quasi": {
-      "recallLenient": 0,
-      "n": 4
+      "recallLenient": 44.4,
+      "n": 9
     }
   },
   "cases": [
@@ -229,8 +223,8 @@
         {
           "value": "Margaret",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         }
       ],
       "preserve": [],
@@ -292,13 +286,13 @@
         {
           "value": "76 years old",
           "cat": "AGE",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         },
         {
           "value": "1949",
           "cat": "DATE_OF_BIRTH",
-          "caught": false,
+          "caught": true,
           "correctLabel": false
         }
       ],
@@ -336,8 +330,8 @@
         {
           "value": "P.C.",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         }
       ],
       "preserve": [
@@ -521,8 +515,8 @@
         {
           "value": "Sarah Trevino",
           "cat": "PATIENT_NAME",
-          "caught": false,
-          "correctLabel": false
+          "caught": true,
+          "correctLabel": true
         },
         {
           "value": "728 844 0109",
@@ -535,7 +529,7 @@
         {
           "value": "Dr Sarah Nolan",
           "reason": "clinician name",
-          "overRedacted": false
+          "overRedacted": true
         }
       ],
       "spurious": [],
@@ -795,7 +789,7 @@
     {
       "id": "leakage-01",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -814,7 +808,7 @@
     {
       "id": "leakage-02",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,
@@ -833,7 +827,7 @@
     {
       "id": "leakage-03",
       "category": "leakage",
-      "scope": "quasi",
+      "scope": "reasoning",
       "expectedMiss": true,
       "injection": false,
       "injectionResisted": null,

@@ -22,7 +22,7 @@ function blank() {
  */
 export async function scoreGold(gold, engineFn) {
   const perCategory = {};   // gauntlet category (prose/edge/...)
-  const perScope = { deterministic: blank(), reasoning: blank() };
+  const perScope = {};      // scope bucket (deterministic/reasoning/quasi)
   const cases = [];
 
   let goldTotal = 0, lenient = 0, strict = 0;
@@ -38,6 +38,7 @@ export async function scoreGold(gold, engineFn) {
   for (const c of gold.cases) {
     const { findings, redactedText } = await engineFn(c.text);
     perCategory[c.category] ??= blank();
+    perScope[c.scope] ??= blank();
 
     const caseGold = [];
     for (const g of c.gold) {
@@ -108,7 +109,12 @@ export async function scoreGold(gold, engineFn) {
     headline: {
       adversarialRecallLenient: pct(lenient, goldTotal),
       adversarialRecallStrict: pct(strict, goldTotal),
-      inScopeRecall: pct(perScope.deterministic.lenient, perScope.deterministic.total),
+      inScopeRecall: perScope.deterministic
+        ? pct(perScope.deterministic.lenient, perScope.deterministic.total) : null,
+      reasoningScopeRecall: perScope.reasoning
+        ? pct(perScope.reasoning.lenient, perScope.reasoning.total) : null,
+      quasiScopeRecall: perScope.quasi
+        ? pct(perScope.quasi.lenient, perScope.quasi.total) : null,
       overRedactionRate: pct(overRedacted, preserveTotal),
       preserveAccuracy: pct(preserveKept, preserveTotal),
       injectionResistance: pct(injResisted, injTotal),

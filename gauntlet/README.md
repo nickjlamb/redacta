@@ -27,12 +27,41 @@ npm run eval          # offline: the shipping engine, no API key, no network
 npm run gate          # offline + regression gate (exit 1 on any drop) — for CI
 npm run baseline      # accept the current scorecard as the new baseline
 npm run eval:online   # exercise the live Redacta MCP (needs REDACTA_MCP_URL)
+
+# Reasoning layer (Layer 2) — needs an API key; keeps its own scorecard.
+# Provider auto-detected from whichever key is set (Perplexity wins if both):
+export ANTHROPIC_API_KEY=sk-ant-...      # → provider anthropic, model claude-sonnet-5
+export PERPLEXITY_API_KEY=pplx-...       # → provider perplexity, model sonar-pro
+# force it: REDACTA_REASONING_PROVIDER=anthropic|perplexity
+# pick model: REDACTA_REASONING_MODEL=sonar-reasoning-pro
+
+npm run eval:reasoning        # deterministic Layer 1 + LLM Layer 2, combined
+npm run reasoning:baseline    # accept a reasoning baseline (results/reasoning-baseline.json)
+npm run reasoning:gate        # gate the reasoning run against its own baseline
 ```
 
 `npm run eval` runs the deterministic engine that ships in the iPhone app, CLI,
 libraries and MCP server (`@pharmatools/redacta`), so it is fast enough to gate
 every commit. The online engine points at the live MCP for parity checks; the
 two agree token-for-token (see [`results/mcp-parity.json`](./results/mcp-parity.json)).
+
+**The reasoning scorer** reproduces Redacta's Layer 2 — which, in the product, is
+the host LLM applying the [skill's](https://github.com/nickjlamb/redacta/blob/main/SKILL.md)
+reasoning rules (patient names, addresses, identifying ages) to the
+already-redacted text. `npm run eval:reasoning` runs Layer 1, then an LLM pass
+with those exact rules, and combines both layers' findings before scoring. It is
+**provider-agnostic**: Anthropic (tool-use, via the lazy-loaded SDK) or Perplexity
+(JSON-schema output, via plain `fetch` — no SDK). Provider is auto-detected from
+whichever key is set, or forced with `REDACTA_REASONING_PROVIDER`; model defaults
+per provider and is overridable with `REDACTA_REASONING_MODEL`. The reasoning run
+writes `results/reasoning-*.json` and gates against its own baseline — it never
+touches the deterministic one, which stays keyless and network-free.
+
+> **Perplexity caveat.** Sonar models are search-augmented — they hit the web on
+> every call. That is fine for this synthetic gold set, but it is not a production
+> reasoning-layer choice for real clinical text: you would never route PHI through
+> a search model. A Perplexity run measures "Sonar as the reasoning layer", and
+> nothing about the run should be read as shipping guidance for real records.
 
 ## Architecture
 
@@ -107,9 +136,16 @@ the attacker nothing — every identifier around them redacts exactly as normal.
 
 ## Known gaps (tracked, not hidden)
 
-- **No reasoning layer yet.** The `reasoning`-scope cases (indirect leakage,
-  partial postcodes, initials, DOB-as-age) score 0% by design; catching them
-  needs the LLM-assisted layer, which is Gauntlet v1's target.
+- **Reasoning layer wired; run it for numbers.** The `reasoning`-scope cases
+  score 0% on the deterministic engine by design. The Layer-2 reasoning scorer
+  (`npm run eval:reasoning`) now measures them — but only against what the
+  skill's Layer 2 actually targets. A faithful run is expected to lift the
+  name/age/initials cases and to *still miss* the quasi-identifiers (indirect
+  leakage), partial postcodes and DOB-as-age, because those are beyond the
+  reasoning layer's remit, not just beyond the patterns. That residual is the
+  next honest gap: the gold set's `reasoning` scope currently mixes "Layer-2
+  territory" with "beyond any Redacta layer", and should be split so each is
+  measured against the right bar.
 - **Injection is only tested against the deterministic engine.** The genuinely
   injectable surface is any downstream model consuming Redacta's output; those
   same cases are staged to point there next.

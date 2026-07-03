@@ -14,13 +14,31 @@ import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { offlineEngine, onlineEngine } from "./engine.mjs";
+import { reasoningEngine, detectProvider, keyEnvFor, DEFAULT_MODELS } from "./reasoning.mjs";
 import { scoreGold } from "./score.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = new Set(process.argv.slice(2));
 const useOnline = args.has("--online");
+const useReasoning = args.has("--reasoning");
+const reasoningProvider = detectProvider();
+const reasoningModel = process.env.REDACTA_REASONING_MODEL || DEFAULT_MODELS[reasoningProvider];
 
 const gold = JSON.parse(fs.readFileSync(path.join(root, "gold.json"), "utf8"));
+
+if (useReasoning) {
+  const keyEnv = keyEnvFor(reasoningProvider);
+  if (!process.env[keyEnv]) {
+    console.error(
+      `\n✗ The reasoning scorer (provider: ${reasoningProvider}) needs an API key.\n` +
+      `    export ${keyEnv}=...\n` +
+      `    model: ${reasoningModel}  ·  override with REDACTA_REASONING_MODEL\n` +
+      "    switch provider with REDACTA_REASONING_PROVIDER=anthropic|perplexity\n" +
+      "  The deterministic suite — npm run eval / npm run gate — needs no key.\n"
+    );
+    process.exit(2);
+  }
+}
 
 function codeSha() {
   try {
@@ -40,16 +58,22 @@ function engineVersion() {
   }
 }
 
-const engineFn = useOnline
-  ? (t) => onlineEngine(t)
-  : (t) => Promise.resolve(offlineEngine(t));
+const engineFn = useReasoning
+  ? (t) => reasoningEngine(t, { model: reasoningModel })
+  : useOnline
+    ? (t) => onlineEngine(t)
+    : (t) => Promise.resolve(offlineEngine(t));
+
+const engineLabel = useReasoning
+  ? `reasoning:${reasoningProvider}/${reasoningModel} + @pharmatools/redacta@${engineVersion()}`
+  : useOnline ? "live-mcp" : `@pharmatools/redacta@${engineVersion()}`;
 
 const scored = await scoreGold(gold, engineFn);
 
 const scorecard = {
   harness: "redacta-gauntlet",
   goldVersion: gold.meta.version,
-  engine: useOnline ? "live-mcp" : `@pharmatools/redacta@${engineVersion()}`,
+  engine: engineLabel,
   codeSha: codeSha(),
   timestamp: new Date().toISOString(),
   caseCount: gold.cases.length,
@@ -89,21 +113,29 @@ for (const [k, v] of Object.entries(scorecard.perScope)) {
 console.log(bar + "\n");
 
 // ── Persist ─────────────────────────────────────────────────────────────────
+// The reasoning run is a different engine, so it keeps its own scorecard files
+// and its own baseline — it must never overwrite or gate against the
+// deterministic ones.
 const resultsDir = path.join(root, "results");
 fs.mkdirSync(resultsDir, { recursive: true });
+// Reasoning scorecards are namespaced by provider so a Perplexity comparison
+// run keeps its own baseline/latest and never collides with Claude's.
+const prefix = useReasoning ? `reasoning-${reasoningProvider}-` : "";
+const baselineFile = path.join(resultsDir, `${prefix}baseline.json`);
+const latestFile = path.join(resultsDir, `${prefix}latest.json`);
 
 if (args.has("--baseline")) {
-  fs.writeFileSync(path.join(resultsDir, "baseline.json"), JSON.stringify(scorecard, null, 2));
-  console.log("→ wrote results/baseline.json (new accepted baseline)\n");
+  fs.writeFileSync(baselineFile, JSON.stringify(scorecard, null, 2));
+  console.log(`→ wrote ${path.relative(root, baselineFile)} (new accepted baseline)\n`);
 }
 if (args.has("--write")) {
-  fs.writeFileSync(path.join(resultsDir, "latest.json"), JSON.stringify(scorecard, null, 2));
-  console.log("→ wrote results/latest.json\n");
+  fs.writeFileSync(latestFile, JSON.stringify(scorecard, null, 2));
+  console.log(`→ wrote ${path.relative(root, latestFile)}\n`);
 }
 
 // ── Regression gate ─────────────────────────────────────────────────────────
 if (args.has("--gate")) {
-  const baselinePath = path.join(resultsDir, "baseline.json");
+  const baselinePath = baselineFile;
   if (!fs.existsSync(baselinePath)) {
     console.error("✗ no baseline to gate against. Run with --baseline first.");
     process.exit(2);
