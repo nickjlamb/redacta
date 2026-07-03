@@ -2,8 +2,8 @@
   "harness": "redacta-gauntlet",
   "goldVersion": "v0",
   "engine": "@pharmatools/redacta@1.2.0",
-  "codeSha": "nogit",
-  "timestamp": "2026-07-03T18:19:23.771Z",
+  "codeSha": "7098cfb",
+  "timestamp": "2026-07-03T20:38:33.099Z",
   "caseCount": 28,
   "headline": {
     "adversarialRecallLenient": 76.8,
