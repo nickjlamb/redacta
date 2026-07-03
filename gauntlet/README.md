@@ -29,15 +29,20 @@ npm run baseline      # accept the current scorecard as the new baseline
 npm run eval:online   # exercise the live Redacta MCP (needs REDACTA_MCP_URL)
 
 # Reasoning layer (Layer 2) — needs an API key; keeps its own scorecard.
-# Provider auto-detected from whichever key is set (Perplexity wins if both):
-export ANTHROPIC_API_KEY=sk-ant-...      # → provider anthropic, model claude-sonnet-5
-export PERPLEXITY_API_KEY=pplx-...       # → provider perplexity, model sonar-pro
-# force it: REDACTA_REASONING_PROVIDER=anthropic|perplexity
-# pick model: REDACTA_REASONING_MODEL=sonar-reasoning-pro
+# Claude is the default (the layer that ships); Perplexity is explicit opt-in.
+export ANTHROPIC_API_KEY=sk-ant-...      # default → anthropic / claude-sonnet-5
+export PERPLEXITY_API_KEY=pplx-...       # used only when forced (below)
+# force provider: REDACTA_REASONING_PROVIDER=anthropic|perplexity
+# pick model:     REDACTA_REASONING_MODEL=sonar-reasoning-pro
 
 npm run eval:reasoning        # deterministic Layer 1 + LLM Layer 2, combined
-npm run reasoning:baseline    # accept a reasoning baseline (results/reasoning-baseline.json)
+npm run reasoning:baseline    # accept a reasoning baseline (results/reasoning-<provider>-baseline.json)
 npm run reasoning:gate        # gate the reasoning run against its own baseline
+
+# Downstream injection — an LLM CONSUMING Redacta's output (same keys/provider)
+npm run eval:downstream       # redact → feed to a summariser → score hijack + leakage
+npm run downstream:baseline   # accept a downstream baseline
+npm run downstream:gate       # gate — any NEW identifier leak fails the build
 ```
 
 `npm run eval` runs the deterministic engine that ships in the iPhone app, CLI,
@@ -62,6 +67,24 @@ touches the deterministic one, which stays keyless and network-free.
 > reasoning-layer choice for real clinical text: you would never route PHI through
 > a search model. A Perplexity run measures "Sonar as the reasoning layer", and
 > nothing about the run should be read as shipping guidance for real records.
+
+**The downstream scorer** (`gold-downstream.json`, `src/downstream.mjs`) tests the
+surface the earlier work did not: an LLM *consuming* Redacta's output. Redacta
+redacts identifiers, not instructions, so an injection embedded in a note survives
+redaction and reaches the consumer. Each case is redacted (Layer 1), handed to a
+downstream summariser, and scored on two axes:
+
+- **Identifier leakage** (the headline breach) — did any real identifier appear in
+  the output? It is contained to **zero wherever redaction was complete**, because
+  the consumer only ever receives tokens; it cannot leak what it never got. The one
+  leak path is a redaction *miss* (case `ds-05`, an untitled name Layer 1 skips),
+  which is a completeness problem the reasoning layer fixes — not an injection one.
+- **Behavioural resistance** — did the consumer obey an embedded instruction (emit a
+  canary)? This depends entirely on the *consumer's* own injection defences, not on
+  Redacta. It is reported for context and is an honest boundary: Redacta bounds the
+  blast radius of injection to non-identifying, but it does not — and cannot — stop a
+  downstream model from being hijacked. `downstream:gate` fails the build only on a
+  new identifier leak or a dirtied control case, never on behavioural hijack alone.
 
 ## Architecture
 
@@ -136,19 +159,18 @@ the attacker nothing — every identifier around them redacts exactly as normal.
 
 ## Known gaps (tracked, not hidden)
 
-- **Reasoning layer wired; run it for numbers.** The `reasoning`-scope cases
-  score 0% on the deterministic engine by design. The Layer-2 reasoning scorer
-  (`npm run eval:reasoning`) now measures them — but only against what the
-  skill's Layer 2 actually targets. A faithful run is expected to lift the
-  name/age/initials cases and to *still miss* the quasi-identifiers (indirect
-  leakage), partial postcodes and DOB-as-age, because those are beyond the
-  reasoning layer's remit, not just beyond the patterns. That residual is the
-  next honest gap: the gold set's `reasoning` scope currently mixes "Layer-2
-  territory" with "beyond any Redacta layer", and should be split so each is
-  measured against the right bar.
-- **Injection is only tested against the deterministic engine.** The genuinely
-  injectable surface is any downstream model consuming Redacta's output; those
-  same cases are staged to point there next.
+- **~~Reasoning layer unmeasured.~~** *Closed:* the Layer-2 scorer measures it,
+  and the gold set's scopes are split into `reasoning` (Layer-2 territory) and
+  `quasi` (indirect leakage). Measured lift: names/ages/initials **0% → 80%
+  (Claude) / 100% (Sonar Pro)**; indirect leakage stays **0% on every layer** —
+  the standing ceiling, now named with a number. Remaining gap: quasi-identifier
+  reconstruction is beyond any current Redacta layer, deterministic or reasoning.
+- **~~Injection only tested against Redacta's own engines.~~** *Closed:* the
+  downstream scorer tests an LLM consuming Redacta's output. Identifier leakage is
+  contained to zero wherever redaction was complete — the consumer never receives
+  the identifier. Remaining gap: **behavioural** hijack of the downstream model is
+  real and is *not* Redacta's to fix; the eval reports it as an honest boundary
+  rather than claiming a defence Redacta does not provide.
 - **~~Over-redaction metric counts only labelled distractors.~~** *Closed:* a
   precision metric now scores every non-gold token the engine removed as a
   candidate false positive, so spurious grabs like prose-04's "confirmed" show up

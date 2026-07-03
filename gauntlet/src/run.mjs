@@ -15,30 +15,16 @@ import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { offlineEngine, onlineEngine } from "./engine.mjs";
 import { reasoningEngine, detectProvider, keyEnvFor, DEFAULT_MODELS } from "./reasoning.mjs";
+import { runDownstreamEval, formatDownstream } from "./downstream.mjs";
 import { scoreGold } from "./score.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = new Set(process.argv.slice(2));
 const useOnline = args.has("--online");
 const useReasoning = args.has("--reasoning");
+const useDownstream = args.has("--downstream");
 const reasoningProvider = detectProvider();
 const reasoningModel = process.env.REDACTA_REASONING_MODEL || DEFAULT_MODELS[reasoningProvider];
-
-const gold = JSON.parse(fs.readFileSync(path.join(root, "gold.json"), "utf8"));
-
-if (useReasoning) {
-  const keyEnv = keyEnvFor(reasoningProvider);
-  if (!process.env[keyEnv]) {
-    console.error(
-      `\n✗ The reasoning scorer (provider: ${reasoningProvider}) needs an API key.\n` +
-      `    export ${keyEnv}=...\n` +
-      `    model: ${reasoningModel}  ·  override with REDACTA_REASONING_MODEL\n` +
-      "    switch provider with REDACTA_REASONING_PROVIDER=anthropic|perplexity\n" +
-      "  The deterministic suite — npm run eval / npm run gate — needs no key.\n"
-    );
-    process.exit(2);
-  }
-}
 
 function codeSha() {
   try {
@@ -48,6 +34,68 @@ function codeSha() {
     return "nogit";
   }
 }
+
+// LLM-backed modes (reasoning, downstream) need a provider key.
+if (useReasoning || useDownstream) {
+  const keyEnv = keyEnvFor(reasoningProvider);
+  if (!process.env[keyEnv]) {
+    console.error(
+      `\n✗ This mode (provider: ${reasoningProvider}) needs an API key.\n` +
+      `    export ${keyEnv}=...\n` +
+      `    model: ${reasoningModel}  ·  override with REDACTA_REASONING_MODEL\n` +
+      "    switch provider with REDACTA_REASONING_PROVIDER=anthropic|perplexity\n" +
+      "  The deterministic suite — npm run eval / npm run gate — needs no key.\n"
+    );
+    process.exit(2);
+  }
+}
+
+// ── Downstream-injection eval — separate scorecard, own gate ────────────────
+if (useDownstream) {
+  const dsGold = JSON.parse(fs.readFileSync(path.join(root, "gold-downstream.json"), "utf8"));
+  const scored = await runDownstreamEval(dsGold, { provider: reasoningProvider, model: reasoningModel });
+  const scorecard = {
+    harness: "redacta-gauntlet-downstream",
+    goldVersion: dsGold.meta.version,
+    codeSha: codeSha(),
+    timestamp: new Date().toISOString(),
+    ...scored,
+  };
+  console.log(formatDownstream(scorecard));
+
+  const resultsDir = path.join(root, "results");
+  fs.mkdirSync(resultsDir, { recursive: true });
+  const pfx = `downstream-${reasoningProvider}-`;
+  if (args.has("--baseline")) {
+    fs.writeFileSync(path.join(resultsDir, `${pfx}baseline.json`), JSON.stringify(scorecard, null, 2));
+    console.log(`→ wrote results/${pfx}baseline.json (new accepted baseline)\n`);
+  }
+  if (args.has("--write")) {
+    fs.writeFileSync(path.join(resultsDir, `${pfx}latest.json`), JSON.stringify(scorecard, null, 2));
+    console.log(`→ wrote results/${pfx}latest.json\n`);
+  }
+  if (args.has("--gate")) {
+    const basePath = path.join(resultsDir, `${pfx}baseline.json`);
+    if (!fs.existsSync(basePath)) { console.error("✗ no downstream baseline. Run --baseline first."); process.exit(2); }
+    const base = JSON.parse(fs.readFileSync(basePath, "utf8")).headline;
+    const H = scorecard.headline;
+    const regressions = [];
+    // Any new identifier leak is the cardinal regression.
+    if (H.identifierLeakage > base.identifierLeakage)
+      regressions.push(`identifierLeakage: ${base.identifierLeakage} → ${H.identifierLeakage} (rose)`);
+    if (H.controlClean === false) regressions.push("control case is no longer clean");
+    if (regressions.length) {
+      console.error("✗ DOWNSTREAM GATE FAILED:");
+      for (const r of regressions) console.error("    " + r);
+      console.error("");
+      process.exit(1);
+    }
+    console.log("✓ downstream gate passed — no new identifier leakage\n");
+  }
+  process.exit(0);
+}
+
+const gold = JSON.parse(fs.readFileSync(path.join(root, "gold.json"), "utf8"));
 
 function engineVersion() {
   try {

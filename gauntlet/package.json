@@ -9,6 +9,9 @@
     "eval:reasoning": "node src/run.mjs --reasoning --write",
     "reasoning:baseline": "node src/run.mjs --reasoning --baseline",
     "reasoning:gate": "node src/run.mjs --reasoning --write --gate",
+    "eval:downstream": "node src/run.mjs --downstream --write",
+    "downstream:baseline": "node src/run.mjs --downstream --baseline",
+    "downstream:gate": "node src/run.mjs --downstream --write --gate",
     "baseline": "node src/run.mjs --baseline"
   },
   "keywords": [],
