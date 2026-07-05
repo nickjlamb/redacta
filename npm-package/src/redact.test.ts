@@ -235,6 +235,40 @@ describe("apostrophe and hyphenated surnames", () => {
   });
 });
 
+describe("street addresses", () => {
+  it("redacts a basic street line and keeps the city for the postcode pass", () => {
+    const r = both();
+    const { text } = r.redactText("Address on file: 42 Maple Road, Oxford OX2 6JX.");
+    expect(text).toContain("[STREET_ADDRESS_1], Oxford [POSTCODE_1]");
+    expect(text).not.toContain("42 Maple Road");
+    expect(r.tokenMap["[STREET_ADDRESS_1]"]).toBe("42 Maple Road");
+  });
+
+  it("handles number ranges, apostrophes, and flat prefixes", () => {
+    const r = both();
+    const { text } = r.redactText(
+      "Lives at 12-14 King's Lane. Sister at Flat 3, 42 Chestnut Grove."
+    );
+    expect(text).not.toContain("King's Lane");
+    expect(text).not.toContain("Chestnut Grove");
+    expect(r.tokenMap["[STREET_ADDRESS_2]"]).toBe("Flat 3, 42 Chestnut Grove");
+  });
+
+  it("handles suffix abbreviations anchored by a house number", () => {
+    const r = both();
+    const { text } = r.redactText("Discharged to 10 Priory Dr and later 7 Baker St.");
+    expect(text).not.toContain("Priory Dr");
+    expect(text).not.toContain("Baker St");
+  });
+
+  it("does not fire without a house number or street suffix", () => {
+    const r = both();
+    const input =
+      "Seen at St Mary's Hospital by the 24 hour pharmacy team on 4 June 2026. Score was 2 overall.";
+    expect(r.redactText(input).text).toBe(input);
+  });
+});
+
 describe("self-check", () => {
   it("flags an identifier that survived redaction", () => {
     const findings = selfCheck("Contact 07700 900123 or visit https://example.com");

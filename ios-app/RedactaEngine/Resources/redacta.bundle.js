@@ -88,6 +88,9 @@
   var IBAN_RE = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,7}(?:\s?[A-Z0-9]{1,3})?\b/g;
   var ACCOUNT_KW_RE = /((?:Account|Acct\.?|Member\s*ID|Policy\s*(?:No\.?|Number)|Insurance\s*ID)\s*(?:No\.?|Number|#)?[\s:]*)((?=[A-Z0-9-]*\d)[A-Z0-9-]{5,17})/gi;
   var UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
+  var STREET_SUFFIX_FULL = "Road|Street|Avenue|Lane|Close|Drive|Way|Court|Place|Gardens|Grove|Terrace|Crescent|Square|Row|Hill|Rise|Mews|Walk|Green|Park";
+  var STREET_SUFFIX_ABBR = "Rd|Ave|Ln|Dr|Cl|Ct|Pl|Gdns|Cres|Sq|St";
+  var STREET_RE = new RegExp(String.raw`\b(?:(?:Flat|Apartment|Apt\.?|Unit)[ \t]+[A-Za-z0-9]{1,6},?[ \t]+)?` + String.raw`\d{1,4}[a-z]?(?:[ \t]?[-‐‑‒–][ \t]?\d{1,4}[a-z]?)?,?[ \t]+` + String.raw`(?:[A-Z][A-Za-z'’\-]+[ \t]+){1,3}` + String.raw`(?:(?:${STREET_SUFFIX_FULL})\b|(?:${STREET_SUFFIX_ABBR})\b\.?)`, "g");
   var NAME_WORD = String.raw`[A-Z](?:[a-z]+|['’][A-Z][a-z]+)(?:['’\-][A-Za-z]+)?`;
   var NAME = String.raw`${NAME_WORD}(?:[ \t]+${NAME_WORD}){0,2}`;
   var STRICT_NAME_RE = new RegExp("^" + NAME);
@@ -160,6 +163,7 @@
     out = out.replace(/(?<!\d)\(?[2-9]\d{2}\)?[\s\-.][2-9]\d{2}[\s\-.]\d{4}(?!\d)/g, mk);
     return out;
   };
+  var redactStreet = (text, tok) => text.replace(STREET_RE, (m) => tok.tokenFor("STREET_ADDRESS", m.trim(), m.trim().toLowerCase().replace(/\s+/g, " ")));
   var redactPostcode = (text, tok) => text.replace(POSTCODE_RE, (m) => {
     const clean = m.replace(/\s/g, "");
     if (clean.length >= 5 && clean.length <= 7) {
@@ -235,6 +239,7 @@
     redactSsn,
     redactEmail,
     redactPhone,
+    redactStreet,
     redactPostcode,
     redactZip,
     redactRelative,
@@ -247,6 +252,7 @@
     redactUrl,
     redactEmail,
     redactPhone,
+    redactStreet,
     redactPostcode,
     redactZip,
     redactIp,

@@ -140,6 +140,27 @@ const ACCOUNT_KW_RE =
 
 const UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
 
+// --- Street addresses (UK-style) --------------------------------------------
+// A house number followed by 1–3 capitalised words ending in a street suffix:
+// "42 Maple Road", "12-14 King's Lane", "Flat 3, 42 Maple Road", "10 Priory Dr".
+// Anchored on the number + suffix PAIR, so "St Mary's Hospital" (no house
+// number) and "24 hour pharmacy" (no suffix) are untouched, and dates like
+// "4 June 2026" don't match (no suffix word). Cities after the street line are
+// left alone — the postcode pass handles the precise locator.
+const STREET_SUFFIX_FULL =
+  "Road|Street|Avenue|Lane|Close|Drive|Way|Court|Place|Gardens|Grove|" +
+  "Terrace|Crescent|Square|Row|Hill|Rise|Mews|Walk|Green|Park";
+// Abbreviations may carry their own period ("Baker St."); full words must not
+// swallow the sentence's full stop ("Chestnut Grove.").
+const STREET_SUFFIX_ABBR = "Rd|Ave|Ln|Dr|Cl|Ct|Pl|Gdns|Cres|Sq|St";
+const STREET_RE = new RegExp(
+  String.raw`\b(?:(?:Flat|Apartment|Apt\.?|Unit)[ \t]+[A-Za-z0-9]{1,6},?[ \t]+)?` +
+  String.raw`\d{1,4}[a-z]?(?:[ \t]?[-‐‑‒–][ \t]?\d{1,4}[a-z]?)?,?[ \t]+` +
+  String.raw`(?:[A-Z][A-Za-z'’\-]+[ \t]+){1,3}` +
+  String.raw`(?:(?:${STREET_SUFFIX_FULL})\b|(?:${STREET_SUFFIX_ABBR})\b\.?)`,
+  "g"
+);
+
 // --- Names (keyword-anchored) ----------------------------------------------
 // Names need contextual judgement, which a client-side deterministic engine
 // can't fully do. We catch the high-confidence cases — names introduced by a
@@ -280,6 +301,11 @@ const redactPhone: Pass = (text, tok) => {
   out = out.replace(/(?<!\d)\(?[2-9]\d{2}\)?[\s\-.][2-9]\d{2}[\s\-.]\d{4}(?!\d)/g, mk);
   return out;
 };
+
+const redactStreet: Pass = (text, tok) =>
+  text.replace(STREET_RE, (m) =>
+    tok.tokenFor("STREET_ADDRESS", m.trim(), m.trim().toLowerCase().replace(/\s+/g, " "))
+  );
 
 const redactPostcode: Pass = (text, tok) =>
   text.replace(POSTCODE_RE, (m) => {
@@ -427,6 +453,7 @@ const CLINICAL_PASSES: Pass[] = [
   redactSsn,
   redactEmail,
   redactPhone,
+  redactStreet,
   redactPostcode,
   redactZip,
   redactRelative,
@@ -440,6 +467,7 @@ const GENERAL_PASSES: Pass[] = [
   redactUrl,
   redactEmail,
   redactPhone,
+  redactStreet,
   redactPostcode,
   redactZip,
   redactIp,

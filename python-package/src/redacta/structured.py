@@ -167,6 +167,23 @@ _ACCOUNT_RE = re.compile(
     re.IGNORECASE)
 _PLATE_RE = re.compile(r"\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b")
 
+# --- Street addresses (UK-style) -------------------------------------------
+# A house number followed by 1-3 capitalised words ending in a street suffix:
+# "42 Maple Road", "12-14 King's Lane", "Flat 3, 42 Chestnut Grove",
+# "10 Priory Dr". Anchored on the number + suffix PAIR, so "St Mary's
+# Hospital" (no house number) and "24 hour pharmacy" (no suffix) are
+# untouched. Abbreviations may carry their own period ("Baker St."); full
+# suffix words must not swallow the sentence's full stop.
+_STREET_SUFFIX_FULL = ("Road|Street|Avenue|Lane|Close|Drive|Way|Court|Place|"
+                       "Gardens|Grove|Terrace|Crescent|Square|Row|Hill|Rise|"
+                       "Mews|Walk|Green|Park")
+_STREET_SUFFIX_ABBR = "Rd|Ave|Ln|Dr|Cl|Ct|Pl|Gdns|Cres|Sq|St"
+_STREET_RE = re.compile(
+    r"\b(?:(?:Flat|Apartment|Apt\.?|Unit)[ \t]+[A-Za-z0-9]{1,6},?[ \t]+)?"
+    r"\d{1,4}[a-z]?(?:[ \t]?[-\u2010\u2011\u2012\u2013][ \t]?\d{1,4}[a-z]?)?,?[ \t]+"
+    r"(?:[A-Z][A-Za-z'\u2019\-]+[ \t]+){1,3}"
+    r"(?:(?:%s)\b|(?:%s)\b\.?)" % (_STREET_SUFFIX_FULL, _STREET_SUFFIX_ABBR))
+
 # --- Names (keyword-anchored) ---------------------------------------------
 # A single name word: "Eileen", "O'Brien" (apostrophe directly after the
 # initial capital), "Kowalski-Nowak", "O'Brien-Smith".
@@ -296,6 +313,13 @@ def redact_phone(text, tok):
     text = re.sub(
         r"(?<!\d)\(?[2-9]\d{2}\)?[\s\-.][2-9]\d{2}[\s\-.]\d{4}(?!\d)", mk, text)
     return text
+
+
+def redact_street(text, tok):
+    return _STREET_RE.sub(
+        lambda m: tok.token_for(
+            "STREET_ADDRESS", m.group(0).strip(),
+            key=re.sub(r"\s+", " ", m.group(0).strip().lower())), text)
 
 
 def redact_postcode(text, tok):
@@ -473,7 +497,8 @@ def redact_health_plan(text, tok):
 # last, so high-confidence matches win any overlap.
 _DEFAULT_PASSES = [
     redact_mrn, redact_dob, redact_nhs, redact_ni, redact_ssn, redact_email,
-    redact_phone, redact_postcode, redact_zip, redact_relative, redact_name,
+    redact_phone, redact_street, redact_postcode, redact_zip, redact_relative,
+    redact_name,
     redact_account, redact_card, redact_iban, redact_url, redact_ip,
     redact_plate,
 ]

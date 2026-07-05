@@ -78,6 +78,15 @@ check("apostrophe surnames captured", "O'Brien" not in c)
 c, _, _ = redact("Her daughter Sarah is the main contact. The patient has a daughter and two sons.")
 check("no over-capture regressions", "Sarah" not in c and "two sons" in c)
 
+# --- street addresses -------------------------------------------------------
+c, _, tm = redact("Address on file: 42 Maple Road, Oxford OX2 6JX.")
+check("street line redacted", "42 Maple Road" not in c and "[STREET_ADDRESS_1]" in c)
+check("city kept, postcode tokenised", "Oxford" in c and "[POSTCODE_1]" in c)
+c, _, _ = redact("Lives at Flat 3, 42 Chestnut Grove. Also 10 Priory Dr and 7 Baker St.")
+check("flat prefix and abbreviations", "Chestnut Grove" not in c and "Priory Dr" not in c and "Baker St" not in c)
+c, _, _ = redact("Seen at St Mary's Hospital by the 24 hour pharmacy team on 4 June 2026.")
+check("no street false positives", "St Mary's Hospital" in c and "24 hour pharmacy" in c and "4 June 2026" in c)
+
 # --- validators ------------------------------------------------------------
 check("nhs validator", is_valid_nhs("9434765919") and not is_valid_nhs("9434765918"))
 check("luhn validator", is_valid_luhn("4111111111111111") and not is_valid_luhn("4111111111111112"))
