@@ -88,7 +88,8 @@
   var IBAN_RE = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,7}(?:\s?[A-Z0-9]{1,3})?\b/g;
   var ACCOUNT_KW_RE = /((?:Account|Acct\.?|Member\s*ID|Policy\s*(?:No\.?|Number)|Insurance\s*ID)\s*(?:No\.?|Number|#)?[\s:]*)((?=[A-Z0-9-]*\d)[A-Z0-9-]{5,17})/gi;
   var UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
-  var NAME = String.raw`[A-Z][a-z]+(?:['’\-][A-Za-z]+)?(?:[ \t]+[A-Z][a-z]+(?:['’\-][A-Za-z]+)?){0,2}`;
+  var NAME_WORD = String.raw`[A-Z](?:[a-z]+|['’][A-Z][a-z]+)(?:['’\-][A-Za-z]+)?`;
+  var NAME = String.raw`${NAME_WORD}(?:[ \t]+${NAME_WORD}){0,2}`;
   var STRICT_NAME_RE = new RegExp("^" + NAME);
   function leadingName(s) {
     const m = s.match(STRICT_NAME_RE);
@@ -173,12 +174,24 @@
   };
   var redactIp = (text, tok) => text.replace(IP_RE, (m) => tok.tokenFor("IP_ADDRESS", m));
   var redactPlate = (text, tok) => text.replace(UK_PLATE_RE, (m) => tok.tokenFor("VEHICLE_REG", m, m.replace(/\s/g, "").toUpperCase()));
-  var redactRelative = (text, tok) => text.replace(RELATIVE_NAME_RE, (m, rel, sep, name) => {
-    const split = leadingName(name);
-    if (!split)
-      return m;
-    return rel + sep + tok.tokenFor("RELATIVE_NAME", split.name, split.name.toLowerCase()) + split.rest;
-  });
+  var redactRelative = (text, tok) => {
+    let out = "";
+    let last = 0;
+    RELATIVE_NAME_RE.lastIndex = 0;
+    let m;
+    while ((m = RELATIVE_NAME_RE.exec(text)) !== null) {
+      const [, rel, sep, name] = m;
+      const split = leadingName(name);
+      if (!split) {
+        RELATIVE_NAME_RE.lastIndex = m.index + rel.length;
+        continue;
+      }
+      out += text.slice(last, m.index) + rel + sep + tok.tokenFor("RELATIVE_NAME", split.name, split.name.toLowerCase());
+      last = m.index + rel.length + sep.length + split.name.length;
+      RELATIVE_NAME_RE.lastIndex = last;
+    }
+    return out + text.slice(last);
+  };
   var redactName = (text, tok) => {
     const nameToken = (raw) => tok.tokenFor("PATIENT_NAME", raw.trim(), raw.trim().toLowerCase().replace(/\s+/g, " "));
     let out = text.replace(NAME_TITLE_RE, (m, name) => tok.tokenFor("PATIENT_NAME", m.trim(), name.trim().toLowerCase().replace(/\s+/g, " ")));
