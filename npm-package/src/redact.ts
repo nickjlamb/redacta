@@ -147,7 +147,10 @@ const UK_PLATE_RE = /\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b/g;
 // carrying a clinical title (Dr, Consultant, Nurse, ...), matching the Redacta
 // skill's "don't redact the treating clinician" rule. Names buried in free
 // prose are NOT caught; the UI tells users to review.
-const NAME = String.raw`[A-Z][a-z]+(?:['’\-][A-Za-z]+)?(?:[ \t]+[A-Z][a-z]+(?:['’\-][A-Za-z]+)?){0,2}`;
+// A single name word: "Eileen", "O'Brien" (apostrophe directly after the
+// initial capital), "Kowalski-Nowak", "O'Brien-Smith".
+const NAME_WORD = String.raw`[A-Z](?:[a-z]+|['’][A-Z][a-z]+)(?:['’\-][A-Za-z]+)?`;
+const NAME = String.raw`${NAME_WORD}(?:[ \t]+${NAME_WORD}){0,2}`;
 // Case-sensitive, anchored version. Used to trim a loosely-captured name down
 // to its leading run of properly capitalised words — necessary because the
 // label/relative regexes carry the `i` flag (for the keyword), which would
@@ -305,19 +308,34 @@ const redactPlate: Pass = (text, tok) =>
     tok.tokenFor("VEHICLE_REG", m, m.replace(/\s/g, "").toUpperCase())
   );
 
-const redactRelative: Pass = (text, tok) =>
-  text.replace(RELATIVE_NAME_RE, (m, rel: string, sep: string, name: string) => {
-    // The `i` flag (for the relationship word) relaxes the name's
-    // capitalisation, so trim to the leading capitalised run — this both
-    // rejects "daughter and two sons" and stops "Sarah is the" over-capturing.
+const redactRelative: Pass = (text, tok) => {
+  // Manual exec loop rather than String.replace: when the strict-name trim
+  // fails (the `i` flag lets the loose capture open with lowercase words, e.g.
+  // "Next of kin: her daughter Anita" captured after "next of kin"), a replace
+  // callback would consume the whole region and swallow the inner
+  // "daughter Anita" match. Here we roll the scan back to just after the
+  // relation word instead, so nested relation phrases still match.
+  let out = "";
+  let last = 0;
+  RELATIVE_NAME_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = RELATIVE_NAME_RE.exec(text)) !== null) {
+    const [, rel, sep, name] = m;
+    // Trim to the leading capitalised run — this both rejects "daughter and
+    // two sons" and stops "Sarah is the" over-capturing.
     const split = leadingName(name);
-    if (!split) return m;
-    return (
-      rel + sep +
-      tok.tokenFor("RELATIVE_NAME", split.name, split.name.toLowerCase()) +
-      split.rest
-    );
-  });
+    if (!split) {
+      RELATIVE_NAME_RE.lastIndex = m.index + rel.length;
+      continue;
+    }
+    out +=
+      text.slice(last, m.index) + rel + sep +
+      tok.tokenFor("RELATIVE_NAME", split.name, split.name.toLowerCase());
+    last = m.index + rel.length + sep.length + split.name.length;
+    RELATIVE_NAME_RE.lastIndex = last;
+  }
+  return out + text.slice(last);
+};
 
 const redactName: Pass = (text, tok) => {
   const nameToken = (raw: string) =>

@@ -190,6 +190,49 @@ describe("relative and carer names", () => {
     expect(text).toBe("Patient: [PATIENT_NAME_1] is doing well.");
     expect(r.tokenMap["[PATIENT_NAME_1]"]).toBe("John");
   });
+
+  // Regression: found by the OpenGATE redaction eval. "Next of kin" matched
+  // first, loosely captured "her daughter Anita", failed the strict-name trim,
+  // and swallowed the region — so the inner "daughter Anita" never matched.
+  it("catches a relative nested inside a next-of-kin phrase", () => {
+    const r = clinical();
+    const { text } = r.redactText("Next of kin: her daughter Anita (07700 900456) was updated.");
+    expect(text).not.toContain("Anita");
+    expect(r.tokenMap["[RELATIVE_NAME_1]"]).toBe("Anita");
+  });
+
+  it("still catches direct next-of-kin and carer names after the rollback fix", () => {
+    const r = clinical();
+    const { text } = r.redactText("NOK: John Hartley. Her son Daniel visited.");
+    expect(text).not.toContain("John Hartley");
+    expect(text).not.toContain("Daniel");
+  });
+});
+
+describe("apostrophe and hyphenated surnames", () => {
+  // Regression: found by the OpenGATE redaction eval. The NAME word pattern
+  // required a lowercase letter directly after the initial capital, so
+  // "O'Brien" fell out of the capture: "Mrs Eileen O'Brien" → "Mrs Eileen".
+  it("captures an apostrophe surname in a titled name", () => {
+    const r = clinical();
+    const { text } = r.redactText("Mrs Eileen O'Brien was admitted.");
+    expect(text).not.toContain("O'Brien");
+    expect(r.tokenMap["[PATIENT_NAME_1]"]).toBe("Mrs Eileen O'Brien");
+  });
+
+  it("captures an apostrophe surname for a relative", () => {
+    const r = clinical();
+    const { text } = r.redactText("His daughter Mary O'Brien attended.");
+    expect(text).not.toContain("Mary");
+    expect(text).not.toContain("O'Brien");
+  });
+
+  it("still captures hyphenated and combined surnames", () => {
+    const r = clinical();
+    const { text } = r.redactText("Mr Tomasz Kowalski-Nowak and Ms Aoife O'Brien-Smith attended.");
+    expect(text).not.toContain("Kowalski-Nowak");
+    expect(text).not.toContain("O'Brien-Smith");
+  });
 });
 
 describe("self-check", () => {

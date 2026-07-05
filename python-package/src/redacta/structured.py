@@ -168,8 +168,10 @@ _ACCOUNT_RE = re.compile(
 _PLATE_RE = re.compile(r"\b[A-Z]{2}\d{2}\s?[A-Z]{3}\b")
 
 # --- Names (keyword-anchored) ---------------------------------------------
-_NAME = (r"[A-Z][a-z]+(?:['’\-][A-Za-z]+)?"
-         r"(?:[ \t]+[A-Z][a-z]+(?:['’\-][A-Za-z]+)?){0,2}")
+# A single name word: "Eileen", "O'Brien" (apostrophe directly after the
+# initial capital), "Kowalski-Nowak", "O'Brien-Smith".
+_NAME_WORD = r"[A-Z](?:[a-z]+|['’][A-Z][a-z]+)(?:['’\-][A-Za-z]+)?"
+_NAME = r"%s(?:[ \t]+%s){0,2}" % (_NAME_WORD, _NAME_WORD)
 _STRICT_NAME_RE = re.compile("^" + _NAME)
 _COURTESY = "Mr|Mrs|Ms|Miss|Mx"
 _CLINICAL_TITLE = ("Dr|Doctor|Prof|Professor|Consultant|Nurse|Sister|Matron|"
@@ -360,15 +362,31 @@ def redact_plate(text, tok):
 
 
 def redact_relative(text, tok):
-    def repl(m):
+    # Manual scan rather than re.sub: when the strict-name trim fails (the
+    # IGNORECASE flag lets the loose capture open with lowercase words, e.g.
+    # "Next of kin: her daughter Anita" captured after "next of kin"), a sub
+    # callback would consume the whole region and swallow the inner
+    # "daughter Anita" match. Roll the scan back to just after the relation
+    # word instead, so nested relation phrases still match.
+    out = []
+    last = 0
+    pos = 0
+    while True:
+        m = _RELATIVE_NAME_RE.search(text, pos)
+        if not m:
+            break
         rel, sep, name = m.group(1), m.group(2), m.group(3)
         split = _leading_name(name)
         if not split:
-            return m.group(0)
-        nm, rest = split
-        return rel + sep + tok.token_for(
-            "RELATIVE_NAME", nm, key=nm.lower()) + rest
-    return _RELATIVE_NAME_RE.sub(repl, text)
+            pos = m.start() + len(rel)
+            continue
+        nm, _rest = split
+        out.append(text[last:m.start()])
+        out.append(rel + sep + tok.token_for("RELATIVE_NAME", nm, key=nm.lower()))
+        last = m.start() + len(rel) + len(sep) + len(nm)
+        pos = last
+    out.append(text[last:])
+    return "".join(out)
 
 
 def redact_name(text, tok):

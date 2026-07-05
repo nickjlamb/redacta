@@ -70,6 +70,14 @@ check("self-check flags leftover", any(
     f["label"] == "URL" for f in self_check("see https://example.com")))
 check("self-check ignores tokens", self_check("NHS: [NHS_NUMBER_1]") == [])
 
+# --- regressions found by the OpenGATE redaction eval ----------------------
+c, _, tm = redact("Next of kin: her daughter Anita (07700 900456) was updated.")
+check("relative nested in next-of-kin phrase is caught", "Anita" not in c)
+c, _, _ = redact("Mrs Eileen O'Brien was admitted. His daughter Mary O'Brien attended.")
+check("apostrophe surnames captured", "O'Brien" not in c)
+c, _, _ = redact("Her daughter Sarah is the main contact. The patient has a daughter and two sons.")
+check("no over-capture regressions", "Sarah" not in c and "two sons" in c)
+
 # --- validators ------------------------------------------------------------
 check("nhs validator", is_valid_nhs("9434765919") and not is_valid_nhs("9434765918"))
 check("luhn validator", is_valid_luhn("4111111111111111") and not is_valid_luhn("4111111111111112"))
