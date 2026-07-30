@@ -1,6 +1,8 @@
 # Redacta
 
 [![DOI](https://zenodo.org/badge/1250708518.svg)](https://doi.org/10.5281/zenodo.21115605)
+[![npm](https://img.shields.io/npm/v/%40pharmatools%2Fredacta?label=npm&logo=npm&color=cb3837)](https://www.npmjs.com/package/@pharmatools/redacta)
+[![npm downloads](https://img.shields.io/npm/dm/%40pharmatools%2Fredacta?color=cb3837)](https://www.npmjs.com/package/@pharmatools/redacta)
 
 
 Pseudonymise medical and clinical documents before they're processed by AI or
