@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - run: pip install ./python-package pytest
-      - run: pytest python-package/tests
+      - run: pip install ./python-package
+      - run: python3 python-package/tests/test_redacta.py
       - run: python3 scripts/test_redact_structured.py
       - run: python3 scripts/test_reinstate.py
