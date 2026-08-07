@@ -2,9 +2,9 @@
   "manifest_version": "0.2",
   "name": "redacta",
   "display_name": "Redacta",
-  "version": "1.2.2",
-  "description": "Pseudonymise patient identifiers and PII in text, and restore them — on-device, nothing leaves your machine.",
-  "long_description": "Redacta replaces patient identifiers and personal data (NHS numbers with Modulus-11 validation, names, dates of birth, MRNs, emails, phones, postcodes, plus general PII like URLs, IPs, payment cards and account numbers) with labelled tokens, so text can be safely shared or processed by AI. It includes a HIPAA Safe Harbor mode and is fully reversible via a token map. All processing happens locally in the server process — it makes no network calls and stores nothing.",
+  "version": "2.0.0",
+  "description": "Keep patient identifiers out of AI agent context — pseudonymise clinical text at a local privacy boundary, restore it only on your terms.",
+  "long_description": "Redacta is a stateful privacy boundary between clinical text and AI agents. The protect tool replaces patient identifiers and personal data (NHS numbers with Modulus-11 validation, names, dates of birth, MRNs, emails, phones, postcodes, plus general PII like URLs, IPs, payment cards and account numbers) with labelled tokens — and keeps the reversal mapping inside the local server process, so it never enters the model context. Restoration happens at the boundary: release_to_file writes re-identified output to a folder you choose and returns only a receipt, while check_output catches identifiers leaking back verbatim in model output. Sessions expire automatically. Includes a HIPAA Safe Harbor mode. All processing happens locally — no network calls, nothing transmitted.",
   "author": {
     "name": "Nick Lamb",
     "email": "info@pharmatools.ai",
@@ -19,32 +19,61 @@
     "redaction",
     "pseudonymisation",
     "de-identification",
+    "privacy boundary",
     "pii",
     "phi",
     "healthcare",
     "nhs",
     "hipaa",
-    "privacy"
+    "privacy",
+    "agents"
   ],
   "privacy_policies": [
     "https://www.pharmatools.ai/privacy-policy"
   ],
+  "user_config": {
+    "release_dir": {
+      "type": "directory",
+      "title": "Release folder",
+      "description": "Folder where re-identified output may be written by release_to_file. Leave unset to keep restoration disabled.",
+      "required": false
+    }
+  },
   "server": {
     "type": "node",
     "entry_point": "server.mjs",
     "mcp_config": {
       "command": "node",
-      "args": ["${__dirname}/server.mjs"]
+      "args": ["${__dirname}/server.mjs"],
+      "env": {
+        "REDACTA_RELEASE_DIR": "${user_config.release_dir}"
+      }
     }
   },
   "tools": [
     {
+      "name": "protect",
+      "description": "Redact patient identifiers and PII into labelled tokens; the reversal mapping stays inside the local server and is never returned. Gives back protected text, an opaque session ID, a report, and a self-check."
+    },
+    {
+      "name": "release_to_file",
+      "description": "Restore identifiers into text from a protected session, writing the result to your configured release folder. Returns a receipt only — restored data never enters the conversation."
+    },
+    {
+      "name": "check_output",
+      "description": "Scan model output for verbatim reappearance of a session's original values and re-tokenise anything found. Reports leaked categories, never the raw values."
+    },
+    {
+      "name": "discard_session",
+      "description": "Delete a session's private mapping immediately instead of waiting for expiry."
+    },
+    {
       "name": "redact",
-      "description": "Replace patient identifiers and PII in text with labelled tokens; returns redacted text, a report, and a token map. Modes: clinical, general, safeharbor."
+      "description": "Legacy: redact text and return the token map to the caller (the map enters the conversation). Prefer protect. Modes: clinical, general, safeharbor."
     },
     {
       "name": "reinstate",
-      "description": "Reverse a redaction: restore original values from a token map."
+      "description": "Legacy: reverse a redaction using a caller-held token map."
     },
     {
       "name": "self_check",

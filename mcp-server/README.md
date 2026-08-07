@@ -1,23 +1,50 @@
 # Redacta MCP server
 
-An [MCP](https://modelcontextprotocol.io) server that pseudonymises patient
-identifiers and PII in text — and restores them. Gives any MCP client (Claude
-Desktop, Cursor, etc.) three tools:
+**Keep patient identifiers out of AI agent context.**
 
-- **`redact`** — replace identifiers with labelled tokens (`[NHS_NUMBER_1]`,
-  `[PATIENT_NAME_1]`, …). Returns the redacted text, a report, a `token_map`
-  (token → original, for re-identification), and a self-check.
-- **`reinstate`** — reverse a redaction using a token map, to put real values
-  back into output generated from redacted text.
-- **`self_check`** — re-scan redacted text for anything that still looks like an
-  identifier.
+An [MCP](https://modelcontextprotocol.io) server that acts as a **stateful
+privacy boundary** between clinical text and AI agents. `protect` replaces
+patient identifiers with labelled tokens (`[NHS_NUMBER_1]`,
+`[PATIENT_NAME_1]`, …) and keeps the reversal mapping **inside the server
+process** — the agent receives only the protected text and an opaque session
+ID. Restoration happens at the boundary, on your terms.
 
-Everything runs locally in the server process: **no network calls, no storage.**
-Same engine as the [Redacta skill](https://clawhub.ai/nickjlamb/redacta) and the
-Redacta for Miro app.
+```text
+clinical text ──▶ protect ──▶ agent sees tokens only
+                     │
+                     └─ token map stays in server memory
+                        (never in the tool result, never in model context)
 
-Listed in [Anthropic's MCP Directory](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)
+agent output ──▶ release_to_file ──▶ restored text lands in a folder
+                                     you configured; the agent gets a
+                                     receipt, not the identifiers
+```
+
+Everything runs locally in the server process: **no network calls, no
+persistent storage.** Same deterministic engine as the
+[Redacta skill](https://clawhub.ai/nickjlamb/redacta), libraries, CLI and iOS
+app. Listed in
+[Anthropic's MCP Directory](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)
 — one-click install in Claude Desktop.
+
+## Tools
+
+| Tool | What it does |
+|------|--------------|
+| `protect` | Redact text; the token map stays server-side. Returns protected text, an opaque `session_id`, a category report, and a self-check. |
+| `release_to_file` | Restore identifiers into text from a protected session, writing the result to a file inside `REDACTA_RELEASE_DIR` (atomic, `0600`, generated filename). Returns a receipt only — restored data never enters the model context. |
+| `release_to_client` | Opt-in (`REDACTA_RELEASE=client\|both`): returns restored text in the tool result, for trusted environments. Carries an explicit warning. |
+| `check_output` | Scan model output for verbatim reappearance of a session's original values (spacing/dash/case tolerant) and re-tokenise anything found. Reports leaked categories — never the raw values. |
+| `discard_session` | Delete a session's mapping immediately instead of waiting for expiry. |
+| `redact`, `reinstate`, `self_check` | **Legacy (v1)** — unchanged, for backward compatibility and client-managed workflows. `redact` returns the token map to the caller, which places the reversal key in the client and potentially the model context; prefer `protect`. Hide with `REDACTA_LEGACY_TOOLS=0`. |
+
+## Sessions
+
+Mappings live in server memory only: sessions expire after
+`REDACTA_SESSION_TTL_MINUTES` (default 60), are capped at
+`REDACTA_MAX_SESSIONS` (default 64, oldest evicted), and disappear when the
+server exits — the safe failure direction. Any invalid, expired or discarded
+session yields the same generic error, so session IDs cannot be probed.
 
 ## Detection
 
@@ -37,24 +64,52 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "redacta": {
       "command": "npx",
-      "args": ["-y", "redacta-mcp"]
+      "args": ["-y", "redacta-mcp"],
+      "env": {
+        "REDACTA_RELEASE_DIR": "/Users/you/Documents/Redacta"
+      }
     }
   }
 }
 ```
 
-Restart Claude Desktop. Then: *"Redact this letter before I share it"* → the
-`redact` tool runs; *"put the real details back using this token map"* →
-`reinstate`.
+Restart Claude Desktop. Then: *"Protect this letter before you summarise it"*
+→ `protect` runs and Claude works on tokens only; *"restore the real details
+into a file"* → `release_to_file` writes the re-identified result to your
+release folder and Claude sees only the receipt.
+
+## Configuration
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `REDACTA_RELEASE` | `file` | Where restored output may go: `file`, `client`, `both`, or `off` (no release tools at all) |
+| `REDACTA_RELEASE_DIR` | *(unset)* | Existing directory where `release_to_file` may write. Unset → the tool explains how to configure it |
+| `REDACTA_SESSION_TTL_MINUTES` | `60` | Session lifetime |
+| `REDACTA_MAX_SESSIONS` | `64` | Concurrent session cap |
+| `REDACTA_AUDIT_LOG` | *(unset)* | Path to a JSONL audit log (events + category counts + hashed session IDs; never source text, values, or mappings) |
+| `REDACTA_LEGACY_TOOLS` | `1` | `0` hides the v1 `redact` / `reinstate` / `self_check` tools |
+
+## Migrating from v1
+
+Nothing breaks: the v1 tools keep their exact schemas and behaviour. The
+difference is what you should reach for. In v1, `redact` handed the token map
+back to the MCP client — fine when a human drives the round trip, but in an
+agent workflow it puts the reversal key into the model's context. In v2,
+`protect` + `release_to_file` keep the mapping at the boundary. See
+[`DESIGN.md`](DESIGN.md) for the full design, threat notes and test strategy.
 
 ## Local development
 
 ```bash
 npm install
 npm run build
-npm test          # engine tests (vitest)
+npm test          # engine + privacy-boundary tests (vitest)
 npm start         # run the server on stdio
 ```
+
+The acceptance tests run a real MCP client against the server over an
+in-memory transport and assert that no original identifier value and no token
+map ever appears in a `protect` or `release_to_file` response.
 
 ## Publishing
 
@@ -76,13 +131,15 @@ Then list it on the MCP registries for discovery:
 
 Redacta runs entirely on your device.
 
-- **Data collection:** none. Redacta does not collect, transmit, or log any of
-  the text you pass to it.
-- **Usage & storage:** input text is processed in memory to produce the redacted
-  output and token map, then discarded. Nothing is persisted by the server. The
-  token map is returned to you (the caller) and never stored or sent anywhere.
-- **Third-party sharing:** none. The server makes no network calls.
-- **Data retention:** none. No data is retained after a request completes.
+- **Data collection:** none. Redacta does not collect or transmit any of the
+  text you pass to it, and makes no network calls.
+- **Usage & storage:** input text is processed in memory. Token maps are held
+  in server memory for the session lifetime, then discarded; they are never
+  returned to the client by `protect` and never written to disk. The only
+  disk writes are the ones you configure: re-identified output into
+  `REDACTA_RELEASE_DIR` when you call `release_to_file`, and the optional
+  audit log (which contains no PHI, no values and no mappings).
+- **Third-party sharing:** none.
 - **Contact:** info@pharmatools.ai
 
 Full policy: https://www.pharmatools.ai/privacy-policy
@@ -97,8 +154,8 @@ npm run build:mcpb                      # bundles mcpb/server.mjs (+ icon)
 npx @anthropic-ai/mcpb pack mcpb        # produces redacta-<version>.mcpb
 ```
 
-All three tools are annotated `readOnlyHint: true` (no side effects), and the
-manifest declares no network access and links the privacy policy.
+The manifest declares no network access, links the privacy policy, and asks
+the user for an optional release folder at install time.
 
 ### Automated releases (Anthropic MCP Directory)
 
@@ -125,12 +182,12 @@ To cut the release:
 
 ```bash
 # from repo root, after bumping the version in mcp-server/package.json
-git tag redacta-1.3.0
-git push origin redacta-1.3.0
+git tag redacta-2.0.0
+git push origin redacta-2.0.0
 ```
 
 The workflow syncs `package.json` + `mcpb/manifest.json` to the tag version,
-builds, and publishes `redacta-1.3.0.mcpb` to the release. Tag convention:
+builds, and publishes `redacta-2.0.0.mcpb` to the release. Tag convention:
 `redacta-<version>` → asset `redacta-<version>.mcpb`.
 
 Registered with the directory as: **repo** `nickjlamb/redacta`, **tag pattern**
@@ -157,10 +214,14 @@ with tokenless GitHub OIDC (`id-token: write`):
 
 ## Limits
 
-Deterministic + keyword-anchored detection only — not a guarantee, and not a
-substitute for formal data-protection processes. Always review the result, and
-treat the `token_map` as the key that reverses the redaction: store it with the
-same care as the original data.
+Be precise about what the boundary does and doesn't give you. Detection is
+deterministic + keyword-anchored — not a guarantee, and not a substitute for
+formal data-protection processes. `check_output` detects **verbatim**
+reappearance of session values only: paraphrases, inferred identities and
+information the model learned elsewhere are out of scope. Sessions live in
+memory, so a server restart ends them (by design). And if you use the legacy
+`redact` tool, treat the `token_map` as the key that reverses the redaction:
+store it with the same care as the original data.
 
 ## License
 
