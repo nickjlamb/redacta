@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  engine:
+    name: engine (npm-package)
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: npm-package } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: npm-package/package-lock.json }
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  mcp-server:
+    name: privacy boundary (mcp-server)
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: mcp-server } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: mcp-server/package-lock.json }
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  python:
+    name: python mirror + skill scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install ./python-package pytest
+      - run: pytest python-package/tests
+      - run: python3 scripts/test_redact_structured.py
+      - run: python3 scripts/test_reinstate.py
