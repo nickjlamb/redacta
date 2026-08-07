@@ -1,8 +1,12 @@
 # Redacta
 
-[![DOI](https://zenodo.org/badge/1250708518.svg)](https://doi.org/10.5281/zenodo.21115605)
-[![npm](https://img.shields.io/npm/v/%40pharmatools%2Fredacta?label=npm&logo=npm&color=cb3837)](https://www.npmjs.com/package/@pharmatools/redacta)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21115605.svg)](https://doi.org/10.5281/zenodo.21115605)
+[![engine](https://img.shields.io/npm/v/%40pharmatools%2Fredacta?label=engine&logo=npm&color=cb3837)](https://www.npmjs.com/package/@pharmatools/redacta)
 [![npm downloads](https://img.shields.io/npm/dm/%40pharmatools%2Fredacta?color=cb3837)](https://www.npmjs.com/package/@pharmatools/redacta)
+[![redacta-mcp](https://img.shields.io/npm/v/redacta-mcp?label=redacta-mcp&logo=npm&color=cb3837)](https://www.npmjs.com/package/redacta-mcp)
+[![PyPI](https://img.shields.io/pypi/v/redacta?logo=pypi&logoColor=white&color=3775A9)](https://pypi.org/project/redacta/)
+[![App Store](https://img.shields.io/itunes/v/6784591850?label=App%20Store&logo=apple&color=0D96F6)](https://apps.apple.com/app/redacta-redact-for-ai/id6784591850)
+[![Anthropic MCP Directory](https://img.shields.io/badge/Anthropic_MCP_Directory-listed-d97757?logo=anthropic&logoColor=white)](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)
 
 
 Pseudonymise medical and clinical documents before they're processed by AI or
