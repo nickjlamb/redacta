@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" role="img" aria-labelledby="t d" font-family="Poppins, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
   <title id="t">Redacta — one engine, many surfaces</title>
-  <desc id="d">A single TypeScript redaction engine feeds eight surfaces: directly in Node/TS (MCP server, CLI, TypeScript library, FigJam plugin, Miro app), on-device via JavaScriptCore (iOS app, Share Extension, Home-Screen widget), mirrored in Python, and as a Claude agent skill.</desc>
+  <desc id="d">A single TypeScript redaction engine feeds eight surfaces: directly in Node/TS (MCP server — a v2 stateful privacy boundary — CLI, TypeScript library, FigJam plugin, Miro app), on-device via JavaScriptCore (iOS app, Share Extension, Home-Screen widget), mirrored in Python, and as a Claude agent skill.</desc>
 
   <rect x="1" y="1" width="1118" height="698" rx="24" fill="#FFFFFF" stroke="#E9EDF6"/>
 
@@ -43,7 +43,7 @@
   <g font-size="13" font-weight="600">
     <rect x="50" y="296" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
     <text x="155" y="317" text-anchor="middle" fill="#2A3247">MCP server</text>
-    <text x="155" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">npx redacta-mcp</text>
+    <text x="155" y="334" text-anchor="middle" font-size="10.5" font-weight="400" fill="#8B96AC">v2 privacy boundary · npx redacta-mcp</text>
 
     <rect x="50" y="364" width="210" height="52" rx="12" fill="#FFFFFF" stroke="#E9EDF6"/>
     <text x="155" y="385" text-anchor="middle" fill="#2A3247">CLI</text>
