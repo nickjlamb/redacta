@@ -1,8 +1,8 @@
 {
   "name": "redacta-mcp",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "mcpName": "io.github.nickjlamb/redacta-mcp",
-  "description": "MCP server that pseudonymises patient identifiers and PII in text, and restores them — runs locally, nothing leaves your machine.",
+  "description": "MCP server that acts as a stateful privacy boundary: pseudonymises patient identifiers and PII before they reach an AI agent, keeps the reversal mapping outside the model context, and restores identifiers only at the trusted boundary. Runs locally, nothing leaves your machine.",
   "license": "MIT-0",
   "author": "Nick Lamb (PharmaTools.AI)",
   "homepage": "https://www.pharmatools.ai/redacta",
