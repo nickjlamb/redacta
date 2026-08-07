@@ -7,7 +7,13 @@
  * release_to_file tool response.
  */
 
-import { mkdtempSync, readFileSync, readdirSync, statSync } from "node:fs";
+import {
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  statSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -115,7 +121,8 @@ describe("SessionStore", () => {
 
 describe("writeRelease", () => {
   it("writes atomically with 0600 permissions and a generated name", () => {
-    const dir = mkdtempSync(join(tmpdir(), "redacta-test-"));
+    // realpath: on macOS, tmpdir() is /var/folders/… → symlink to /private/var/…
+    const dir = realpathSync(mkdtempSync(join(tmpdir(), "redacta-test-")));
     const receipt = writeRelease(dir, "restored content");
     expect(receipt.file.startsWith(dir)).toBe(true);
     expect(receipt.file).toMatch(/redacta-release-[\d\-_]+-[0-9a-f]{6}\.txt$/);
