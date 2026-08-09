@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.nickjlamb/redacta-mcp",
-  "description": "Pseudonymise and restore patient identifiers & PII in text — local, HIPAA Safe Harbor mode.",
+  "description": "Keep patient identifiers out of AI agent context — a stateful local privacy boundary that pseudonymises PHI/PII and holds the reversal map outside the model.",
   "repository": {
     "url": "https://github.com/nickjlamb/redacta",
     "source": "github"
   },
-  "version": "1.2.1",
+  "version": "2.1.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "redacta-mcp",
-      "version": "1.2.1",
+      "version": "2.1.0",
       "transport": {
         "type": "stdio"
       }
