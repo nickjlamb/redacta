@@ -45,6 +45,35 @@ numbers, certificate/licence numbers, device serial numbers, VINs, and
 health-plan/beneficiary numbers. Over-redacts slightly versus the letter of the
 standard, on the safe side. Not legal advice.
 
+## PrivacyGateway — for agent workflows
+
+`redact()` hands you the token map; in an agent workflow that map is the key to
+the whole record, and it shouldn't travel with the text. `PrivacyGateway` keeps
+it inside expiring in-process sessions instead — the same loop the Redacta MCP
+server enforces across a process boundary.
+
+```python
+from redacta import PrivacyGateway
+
+gateway = PrivacyGateway()                 # PrivacyGateway(safe_harbor=True) for the strict pass
+
+protected = gateway.protect(clinical_note)  # .text, .session_id, .report — no token map
+response = my_agent(protected.text)         # the agent sees tokens only
+
+guard = gateway.check_output(response, protected.session_id)
+# {"safe": bool, "leaks": [{"token", "category"}], "sanitized_text": str}
+
+released = gateway.release(guard["sanitized_text"], protected.session_id)
+# .text with originals restored — restoration is an explicit act
+```
+
+Sessions expire (default 1 h, capped at 64, oldest evicted); any failed lookup
+raises `GatewayError("Unknown or expired session.")` — one generic message.
+`guard_output(text, token_map)` is also importable standalone. Honest scope: an
+in-process library is discipline, not enforcement — for enforcement against an
+untrusted consumer, use the Redacta MCP server, which holds the map in a
+separate process.
+
 ## Self-check
 
 ```python

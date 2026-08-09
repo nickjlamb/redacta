@@ -18,6 +18,17 @@ Quick start:
     'NHS Number: [NHS_NUMBER_1]'
     >>> reinstate(redacted, token_map)
     'NHS Number: 943 476 5919'
+
+Agent workflows — the PrivacyGateway keeps the token map inside the gateway's
+sessions instead of handing it back with the text:
+
+    >>> from redacta import PrivacyGateway
+    >>> gateway = PrivacyGateway()
+    >>> protected = gateway.protect("NHS Number: 943 476 5919")
+    >>> "[NHS_NUMBER_1]" in protected.text
+    True
+    >>> gateway.release("[NHS_NUMBER_1]", protected.session_id).text
+    '943 476 5919'
 """
 
 from .structured import (
@@ -28,8 +39,16 @@ from .structured import (
     is_valid_luhn,
 )
 from .reinstate import reinstate as _reinstate, load_token_map
+from .gateway import (
+    PrivacyGateway,
+    GatewayError,
+    ProtectResult,
+    ReleaseResult,
+    SESSION_ERROR,
+    guard_output,
+)
 
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 
 __all__ = [
     "redact",
@@ -40,6 +59,12 @@ __all__ = [
     "is_valid_nhs",
     "is_valid_ni",
     "is_valid_luhn",
+    "PrivacyGateway",
+    "GatewayError",
+    "ProtectResult",
+    "ReleaseResult",
+    "SESSION_ERROR",
+    "guard_output",
     "__version__",
 ]
 

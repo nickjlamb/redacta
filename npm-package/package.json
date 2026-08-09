@@ -1,7 +1,7 @@
 {
   "name": "@pharmatools/redacta",
-  "version": "1.3.0",
-  "description": "Pseudonymise patient identifiers and PII in text (and restore them) — a dependency-free TypeScript engine. Names, relatives, general PII, self-check, re-identification.",
+  "version": "1.4.0",
+  "description": "Pseudonymise patient identifiers and PII in text (and restore them) \u2014 a dependency-free TypeScript engine. Names, relatives, general PII, self-check, re-identification, and a PrivacyGateway for agent workflows.",
   "license": "MIT-0",
   "author": "Nick Lamb (PharmaTools.AI)",
   "homepage": "https://www.pharmatools.ai/redacta",
