@@ -143,6 +143,19 @@ describe("guardOutput (standalone)", () => {
   });
 });
 
+describe("per-call category override", () => {
+  it("applies safeharbor for one call without changing gateway defaults", () => {
+    const g = new PrivacyGateway(); // clinical + general defaults
+    const strict = g.protect("Aged 91, clinic 20 March 2026.", ["safeharbor"]);
+    expect(strict.text).toContain("[AGE_1]");
+    expect(strict.text).toContain("[DATE_1]");
+    const normal = g.protect("Aged 91, clinic 20 March 2026.");
+    expect(normal.text).toContain("Aged 91"); // defaults unchanged
+    // both sessions still release independently
+    expect(g.release("[AGE_1]", strict.sessionId!).changed).toBe(true);
+  });
+});
+
 describe("environment", () => {
   it("uses an injected idGenerator when provided", () => {
     let n = 0;

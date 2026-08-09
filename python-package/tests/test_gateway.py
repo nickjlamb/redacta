@@ -122,4 +122,11 @@ p5 = g5.protect("Aged 91, clinic 20 March 2026.")
 check("safe harbor gateway redacts ages and dates",
       "[AGE_1]" in p5.text and "[DATE_1]" in p5.text)
 
+# --- per-call override -----------------------------------------------------------
+g6 = PrivacyGateway()
+p6 = g6.protect("Aged 91, clinic 20 March 2026.", safe_harbor=True)
+check("per-call safe_harbor override", "[AGE_1]" in p6.text)
+p7 = g6.protect("Aged 91, clinic 20 March 2026.")
+check("gateway default unchanged after override", "Aged 91" in p7.text)
+
 print("All %d checks passed." % passed)

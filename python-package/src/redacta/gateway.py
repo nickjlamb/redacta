@@ -145,10 +145,15 @@ class PrivacyGateway:
             raise GatewayError(SESSION_ERROR)
         return entry[0]
 
-    def protect(self, text):
-        """Redact text; the token map stays inside the gateway's sessions."""
+    def protect(self, text, safe_harbor=None):
+        """Redact text; the token map stays inside the gateway's sessions.
+
+        Pass ``safe_harbor=True/False`` to override the gateway default for
+        this call only.
+        """
+        strict = self._safe_harbor if safe_harbor is None else safe_harbor
         redacted, report, token_map = redact_structured(
-            text, safe_harbor=self._safe_harbor)
+            text, safe_harbor=strict)
         residual = self_check(redacted)
         session_id = None
         expires_at = None

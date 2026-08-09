@@ -205,9 +205,15 @@ export class PrivacyGateway {
     return session;
   }
 
-  /** Redact text; the token map stays inside the gateway's session store. */
-  protect(text: string): ProtectResult {
-    const redactor = new Redactor([...this.categories]);
+  /**
+   * Redact text; the token map stays inside the gateway's session store.
+   * Pass `categories` to override the gateway's defaults for this call only
+   * (the session remembers nothing about categories — only the map).
+   */
+  protect(text: string, categories?: Category[]): ProtectResult {
+    const cats =
+      categories && categories.length ? categories : this.categories;
+    const redactor = new Redactor([...cats]);
     const { text: redacted } = redactor.redactText(text);
     const tokenMap = redactor.tokenMap;
     const residual = selfCheck(redacted);
