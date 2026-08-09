@@ -55,6 +55,42 @@ all specific ages and full dates rather than only ages 90+ and date elements
 beyond the year) — deliberately, on the safe side. Biometric and photographic
 identifiers are out of scope for a text engine. Not legal advice; review output.
 
+## PrivacyGateway — for agent workflows
+
+`Redactor` hands you the token map; in an agent workflow that map is the key to
+the whole record, and it shouldn't travel with the text. `PrivacyGateway` runs
+the same loop the [Redacta MCP server](https://www.npmjs.com/package/redacta-mcp)
+enforces: the map stays inside the gateway's expiring sessions, restoration is
+an explicit act, and output can be screened before release.
+
+```ts
+import { PrivacyGateway } from "@pharmatools/redacta";
+
+const gateway = new PrivacyGateway(); // clinical + general by default
+
+const protected_ = gateway.protect(clinicalNote);
+// { text, sessionId, expiresAt, report, selfCheck } — no token map
+
+const response = await agent.run(protected_.text); // agent sees tokens only
+
+const guard = gateway.checkOutput(response, protected_.sessionId!);
+// { safe, leaks: [{token, category}], sanitizedText } — never echoes raw values
+
+const released = gateway.release(guard.sanitizedText, protected_.sessionId!);
+// { text, changed, tokensRestored } — restoration is explicit
+```
+
+Sessions expire (default 60 min, capped at 64, oldest evicted); any failed
+lookup throws one generic `"Unknown or expired session."`. Options:
+`categories`, `sessionTtlMs`, `maxSessions`, `idGenerator` (for hosts without
+Web Crypto). `guardOutput(text, tokenMap)` is also exported standalone.
+
+Honest scope: an in-process library is discipline, not enforcement — the
+caller's process holds the sessions. For enforcement against an untrusted
+consumer, put a process boundary in between: the
+[Redacta MCP server](https://www.npmjs.com/package/redacta-mcp) keeps the map
+in a separate process and out of the model's context entirely.
+
 ## API
 
 - `new Redactor(categories: ("clinical" | "general")[])` — `.redactText(s)`,
@@ -62,6 +98,9 @@ identifiers are out of scope for a text engine. Not legal advice; review output.
 - `reinstate(text, tokenMap)` → `{ text, changed }`
 - `selfCheck(text)` → `ResidualFinding[]`
 - `isValidNhs`, `isValidNi`, `isValidLuhn`, `isValidTokenMap`
+- `new PrivacyGateway(opts?)` — `.protect(s)`, `.release(s, sessionId)`,
+  `.checkOutput(s, sessionId)`, `.discardSession(sessionId)`, `.sessionCount`
+- `guardOutput(text, tokenMap)` → `{ safe, leaks, sanitizedText }`
 
 This is the same engine that powers the
 [Redacta for Miro app](https://www.pharmatools.ai/redacta) and the
