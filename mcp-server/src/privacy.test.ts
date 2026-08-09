@@ -20,12 +20,10 @@ import { describe, expect, it } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { makeAuditSink } from "./audit.js";
-import { Boundary, BoundaryError } from "./boundary.js";
+import { Boundary, BoundaryError, SESSION_ERROR } from "./boundary.js";
 import type { Config } from "./config.js";
-import { guardOutput } from "./guard.js";
 import { createServer } from "./index.js";
 import { ReleaseError, writeRelease } from "./release.js";
-import { SESSION_ERROR, SessionStore } from "./sessions.js";
 
 // ---------------------------------------------------------------------------
 // Fixtures (synthetic only — no real patient data)
@@ -74,46 +72,6 @@ function testConfig(overrides: Partial<Config> = {}): Config {
 
 const noopAudit = makeAuditSink(null);
 
-// ---------------------------------------------------------------------------
-// Session store
-// ---------------------------------------------------------------------------
-
-describe("SessionStore", () => {
-  it("issues opaque crypto-random ids", () => {
-    const store = new SessionStore(60_000, 10);
-    const a = store.create({ "[EMAIL_1]": "x@y.com" }, ["clinical"]);
-    const b = store.create({ "[EMAIL_1]": "x@y.com" }, ["clinical"]);
-    expect(a.id).toMatch(/^rdx_[0-9a-f]{32}$/);
-    expect(a.id).not.toBe(b.id);
-  });
-
-  it("expires sessions after the TTL", () => {
-    let now = 1_000;
-    const store = new SessionStore(500, 10, () => now);
-    const s = store.create({ "[EMAIL_1]": "x@y.com" }, ["clinical"]);
-    expect(store.get(s.id)).not.toBeNull();
-    now += 501;
-    expect(store.get(s.id)).toBeNull();
-    expect(store.size).toBe(0);
-  });
-
-  it("evicts the oldest session at the cap", () => {
-    const store = new SessionStore(60_000, 2);
-    const a = store.create({ "[EMAIL_1]": "a" }, []);
-    const b = store.create({ "[EMAIL_1]": "b" }, []);
-    const c = store.create({ "[EMAIL_1]": "c" }, []);
-    expect(store.get(a.id)).toBeNull();
-    expect(store.get(b.id)).not.toBeNull();
-    expect(store.get(c.id)).not.toBeNull();
-  });
-
-  it("returns null for malformed or unknown ids and discards idempotently", () => {
-    const store = new SessionStore(60_000, 10);
-    expect(store.get("nonsense")).toBeNull();
-    expect(store.get("rdx_" + "0".repeat(32))).toBeNull();
-    store.discard("rdx_" + "0".repeat(32)); // no throw
-  });
-});
 
 // ---------------------------------------------------------------------------
 // File release
@@ -139,39 +97,6 @@ describe("writeRelease", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Output guard
-// ---------------------------------------------------------------------------
-
-describe("guardOutput", () => {
-  const tokenMap = {
-    "[NHS_NUMBER_1]": "943 476 5919",
-    "[PATIENT_NAME_1]": "Patricia Hartley",
-  };
-
-  it("catches spacing/dash variants of numeric identifiers", () => {
-    for (const variant of ["9434765919", "943-476-5919", "943 476 5919"]) {
-      const r = guardOutput(`The number is ${variant}.`, tokenMap);
-      expect(r.safe).toBe(false);
-      expect(r.sanitized_text).toContain("[NHS_NUMBER_1]");
-      expect(norm(JSON.stringify(r))).not.toContain(norm(variant));
-    }
-  });
-
-  it("catches names case-insensitively and never echoes raw values", () => {
-    const r = guardOutput("patient PATRICIA HARTLEY was seen", tokenMap);
-    expect(r.leaks).toEqual([
-      { token: "[PATIENT_NAME_1]", category: "PATIENT_NAME" },
-    ]);
-    expect(norm(JSON.stringify(r))).not.toContain(norm("Patricia Hartley"));
-  });
-
-  it("passes clean text through unchanged", () => {
-    const r = guardOutput("Patient [PATIENT_NAME_1] is stable.", tokenMap);
-    expect(r.safe).toBe(true);
-    expect(r.sanitized_text).toBe("Patient [PATIENT_NAME_1] is stable.");
-  });
-});
 
 // ---------------------------------------------------------------------------
 // Boundary handlers
@@ -182,7 +107,7 @@ describe("Boundary", () => {
     const b = new Boundary(testConfig(), noopAudit);
     const r = b.protect("The quick brown fox.");
     expect(r.session_id).toBeNull();
-    expect(b.sessions.size).toBe(0);
+    expect(b.sessionCount).toBe(0);
   });
 
   it("uses one generic error for unknown and expired sessions", () => {

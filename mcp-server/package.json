@@ -1,19 +1,11 @@
 {
   "name": "redacta-mcp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mcpName": "io.github.nickjlamb/redacta-mcp",
   "description": "MCP server that acts as a stateful privacy boundary: pseudonymises patient identifiers and PII before they reach an AI agent, keeps the reversal mapping outside the model context, and restores identifiers only at the trusted boundary. Runs locally, nothing leaves your machine.",
   "license": "MIT-0",
   "author": "Nick Lamb (PharmaTools.AI)",
   "homepage": "https://www.pharmatools.ai/redacta",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nickjlamb/redacta.git",
-    "directory": "mcp-server"
-  },
-  "bugs": {
-    "url": "https://github.com/nickjlamb/redacta/issues"
-  },
   "type": "module",
   "bin": {
     "redacta-mcp": "dist/index.js"
@@ -42,7 +34,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "@pharmatools/redacta": "^1.2.0",
+    "@pharmatools/redacta": "^1.4.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

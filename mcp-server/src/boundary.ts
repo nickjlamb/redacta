@@ -2,6 +2,11 @@
  * The privacy boundary: protect / release / check_output / discard handlers,
  * independent of MCP wiring so they can be tested directly.
  *
+ * As of 2.1.0 the session store and output guard live in the engine package
+ * (@pharmatools/redacta's PrivacyGateway) — one source of truth across the
+ * libraries and this server. What stays here is everything host-specific:
+ * release modes, file writing, auditing, and the MCP wire shapes.
+ *
  * Invariant enforced here and verified by tests: no handler result on the
  * protect path ever contains a token map or an original detected value.
  * Restored content appears ONLY in release_to_client results (explicitly
@@ -9,14 +14,19 @@
  * directory.
  */
 
-import { Redactor, reinstate, selfCheck } from "@pharmatools/redacta";
+import {
+  GatewayError,
+  PrivacyGateway,
+  SESSION_ERROR,
+  selfCheck,
+} from "@pharmatools/redacta";
+import type { Category, ResidualFinding } from "@pharmatools/redacta";
 import type { AuditSink } from "./audit.js";
 import type { Config } from "./config.js";
-import { guardOutput, type GuardResult } from "./guard.js";
 import { writeRelease } from "./release.js";
-import { SESSION_ERROR, SessionStore } from "./sessions.js";
 
-export type Category = "clinical" | "general" | "safeharbor";
+export { SESSION_ERROR };
+export type { Category };
 export const DEFAULT_CATEGORIES: Category[] = ["clinical", "general"];
 
 export class BoundaryError extends Error {}
@@ -26,7 +36,7 @@ export interface ProtectResult {
   session_id: string | null;
   expires_at: string | null;
   report: Record<string, number>;
-  self_check: unknown[];
+  self_check: ResidualFinding[];
 }
 
 export interface FileReleaseResult {
@@ -42,61 +52,60 @@ export interface ClientReleaseResult {
   warning: string;
 }
 
+export interface CheckOutputResult {
+  safe: boolean;
+  leaks: { token: string; category: string }[];
+  sanitized_text: string;
+  self_check: ResidualFinding[];
+}
+
 export const CLIENT_RELEASE_WARNING =
   "Restored identifiers are now present in this tool result and may enter " +
   "the model context. Handle downstream with care.";
 
 export class Boundary {
-  readonly sessions: SessionStore;
+  private gateway: PrivacyGateway;
 
   constructor(private config: Config, private audit: AuditSink) {
-    this.sessions = new SessionStore(config.sessionTtlMs, config.maxSessions);
+    this.gateway = new PrivacyGateway({
+      categories: DEFAULT_CATEGORIES,
+      sessionTtlMs: config.sessionTtlMs,
+      maxSessions: config.maxSessions,
+    });
+  }
+
+  /** Live session count (used by tests). */
+  get sessionCount(): number {
+    return this.gateway.sessionCount;
+  }
+
+  /** Run a gateway call, translating session failures to the generic error. */
+  private guardSession<T>(fn: () => T): T {
+    try {
+      return fn();
+    } catch (err) {
+      if (err instanceof GatewayError) {
+        this.audit.record("release_denied", null, { reason: "unknown_session" });
+        throw new BoundaryError(SESSION_ERROR);
+      }
+      throw err;
+    }
   }
 
   protect(text: string, categories?: Category[]): ProtectResult {
-    const cats =
-      categories && categories.length ? categories : DEFAULT_CATEGORIES;
-    const redactor = new Redactor([...cats]);
-    const { text: redacted } = redactor.redactText(text);
-    const tokenMap = redactor.tokenMap;
-    const report = redactor.report;
-    const residual = selfCheck(redacted);
-
-    let sessionId: string | null = null;
-    let expiresAt: string | null = null;
-    if (Object.keys(tokenMap).length > 0) {
-      const session = this.sessions.create(tokenMap, cats);
-      sessionId = session.id;
-      expiresAt = new Date(session.expiresAt).toISOString();
-    }
-    this.audit.record("protect", sessionId, {
-      categories: report,
+    const result = this.gateway.protect(text, categories);
+    this.audit.record("protect", result.sessionId, {
+      categories: result.report,
       status: "ok",
     });
     return {
-      text: redacted,
-      session_id: sessionId,
-      expires_at: expiresAt,
-      report,
-      self_check: residual,
+      text: result.text,
+      session_id: result.sessionId,
+      expires_at:
+        result.expiresAt === null ? null : new Date(result.expiresAt).toISOString(),
+      report: result.report,
+      self_check: result.selfCheck,
     };
-  }
-
-  private requireSession(sessionId: string) {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
-      this.audit.record("release_denied", null, { reason: "unknown_session" });
-      throw new BoundaryError(SESSION_ERROR);
-    }
-    return session;
-  }
-
-  private restore(text: string, tokenMap: Record<string, string>) {
-    const tokensRestored = Object.keys(tokenMap).filter((t) =>
-      text.includes(t)
-    ).length;
-    const { text: restored, changed } = reinstate(text, tokenMap);
-    return { restored, changed, tokensRestored };
   }
 
   releaseToFile(text: string, sessionId: string): FileReleaseResult {
@@ -110,22 +119,20 @@ export class Boundary {
           "existing directory where restored output may be written."
       );
     }
-    const session = this.requireSession(sessionId);
-    const { restored, changed, tokensRestored } = this.restore(
-      text,
-      session.tokenMap
+    const released = this.guardSession(() =>
+      this.gateway.release(text, sessionId)
     );
-    const receipt = writeRelease(this.config.releaseDir, restored);
+    const receipt = writeRelease(this.config.releaseDir, released.text);
     this.audit.record("release_file", sessionId, {
-      tokens_restored: tokensRestored,
+      tokens_restored: released.tokensRestored,
       bytes: receipt.bytes,
       status: "ok",
     });
     return {
       file: receipt.file,
       bytes: receipt.bytes,
-      tokens_restored: tokensRestored,
-      changed,
+      tokens_restored: released.tokensRestored,
+      changed: released.changed,
     };
   }
 
@@ -134,34 +141,39 @@ export class Boundary {
       this.audit.record("release_denied", null, { reason: "mode" });
       throw new BoundaryError("Client release is disabled on this server.");
     }
-    const session = this.requireSession(sessionId);
-    const { restored, changed, tokensRestored } = this.restore(
-      text,
-      session.tokenMap
+    const released = this.guardSession(() =>
+      this.gateway.release(text, sessionId)
     );
     this.audit.record("release_client", sessionId, {
-      tokens_restored: tokensRestored,
+      tokens_restored: released.tokensRestored,
       status: "ok",
     });
-    return { text: restored, changed, warning: CLIENT_RELEASE_WARNING };
+    return {
+      text: released.text,
+      changed: released.changed,
+      warning: CLIENT_RELEASE_WARNING,
+    };
   }
 
-  checkOutput(
-    text: string,
-    sessionId: string
-  ): GuardResult & { self_check: unknown[] } {
-    const session = this.requireSession(sessionId);
-    const result = guardOutput(text, session.tokenMap);
+  checkOutput(text: string, sessionId: string): CheckOutputResult {
+    const result = this.guardSession(() =>
+      this.gateway.checkOutput(text, sessionId)
+    );
     this.audit.record("check_output", sessionId, {
       leaks: result.leaks.length,
       categories: result.leaks.map((l) => l.category),
       status: result.safe ? "clean" : "leaks_sanitized",
     });
-    return { ...result, self_check: selfCheck(result.sanitized_text) };
+    return {
+      safe: result.safe,
+      leaks: result.leaks,
+      sanitized_text: result.sanitizedText,
+      self_check: selfCheck(result.sanitizedText),
+    };
   }
 
   discard(sessionId: string): { discarded: true } {
-    this.sessions.discard(sessionId);
+    this.gateway.discardSession(sessionId);
     this.audit.record("discard", sessionId, { status: "ok" });
     return { discarded: true };
   }
