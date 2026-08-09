@@ -17,8 +17,9 @@ clinical meaning intact, and returns a redaction report alongside the cleaned
 text.
 
 It started as an [Agent Skill](https://agentskills.io) and is now one engine
-shipped across eight surfaces — an iOS app, agent skill, MCP server, two
-libraries, a CLI, and two whiteboard apps.
+shipped across nine surfaces — an iOS app, agent skill, MCP server, a
+self-hosted HTTP service with a Kubernetes deployment, two libraries, a CLI,
+and two whiteboard apps.
 
 ## One engine, many surfaces
 
@@ -34,6 +35,7 @@ libraries, a CLI, and two whiteboard apps.
 | TypeScript library | `npm-package/` | `npm i @pharmatools/redacta` ([npm](https://www.npmjs.com/package/@pharmatools/redacta)) |
 | Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
 | Command-line tool | `cli-package/` | `npx redacta-cli` ([npm](https://www.npmjs.com/package/redacta-cli)) |
+| Self-hosted HTTP service + Kubernetes | [`gateway-service/`](gateway-service/) | `docker build` — see [`gateway-service/README.md`](gateway-service/README.md) |
 | Miro app | `miro-app/` | [getpatiently.ai → Redacta](https://www.pharmatools.ai/redacta) |
 | FigJam plugin | `figjam-plugin/` | [Figma Community](https://www.figma.com/community/plugin/1647311189828426124) |
 
@@ -68,6 +70,20 @@ only ever exist on your machine.
 Redacta applies a stricter pass: *all* dates (not just the date of birth), all
 specific ages, and the remaining HIPAA identifiers — fax, certificate/licence,
 device serial, VIN, and health-plan beneficiary numbers.
+
+## Self-hosting on Kubernetes
+
+Organisations that can't let identifiable text leave their environment can
+run Redacta inside their own infrastructure: a small HTTP service
+([`gateway-service/`](gateway-service/)) deployable into an existing
+Kubernetes cluster with plain YAML — two stateless replicas behind a
+Service for redact/reinstate, an optional single-replica session boundary
+for the protect → release loop, health probes, resource limits, restrictive
+security defaults, and no-PHI logging. Text is pseudonymised before it
+reaches any external AI service, and the processing boundary stays under
+your control. Walkthrough (local `kind` cluster included):
+[`gateway-service/k8s/README.md`](gateway-service/k8s/README.md) ·
+concepts: [`docs/KUBERNETES.md`](docs/KUBERNETES.md).
 
 ## Install
 

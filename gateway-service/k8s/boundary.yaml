@@ -1,0 +1,116 @@
+# The privacy-boundary profile: the stateful protect → release loop,
+# EXACTLY ONE replica, by design.
+#
+# Sessions (token mappings) live in this process's memory. That is the
+# simplest defensible architecture for a privacy boundary: nothing sensitive
+# is ever written anywhere, and a dead pod means sessions are GONE — the safe
+# failure direction (the same restart semantics the Redacta MCP server
+# documents). The alternatives were considered and rejected for now:
+#   - multiple replicas + sticky sessions: breaks on every rollout/scale
+#     event and fails intermittently — worse than failing honestly;
+#   - a shared session store (Redis etc.): PHI mappings leaving process
+#     memory demand real encryption and key management — deferred until the
+#     encrypted-vault work exists to back it.
+#
+# strategy: Recreate, because a RollingUpdate would briefly run two pods and
+# route new sessions to a pod about to be killed — and every update drops all
+# sessions whichever strategy is used. Recreate states what actually happens.
+#
+# Consequences for callers: brief downtime during updates, and any restart
+# invalidates open sessions ("Unknown or expired session."). Callers must
+# treat that error as "re-protect and retry", and should release promptly
+# rather than holding sessions open.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redacta-boundary
+  namespace: redacta
+  labels:
+    app.kubernetes.io/name: redacta-boundary
+    app.kubernetes.io/part-of: redacta
+spec:
+  replicas: 1  # NOT a tuning knob — see the header comment.
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redacta-boundary
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redacta-boundary
+        app.kubernetes.io/part-of: redacta
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: boundary
+          image: redacta-gateway:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: redacta-gateway-config
+          env:
+            # The one difference from the gateway deployment: session
+            # endpoints (protect/release/check-output/discard) are served.
+            - name: REDACTA_SESSIONS
+              value: "1"
+            - name: REDACTA_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: redacta-gateway-token
+                  key: REDACTA_API_TOKEN
+                  optional: true
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            # The memory limit is ALSO the real ceiling on live sessions:
+            # REDACTA_MAX_SESSIONS * typical map size must fit here, or the
+            # kernel OOM-kills the pod and takes every session with it.
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+# A separate stable name for the boundary, so callers choose explicitly:
+#   redacta-gateway  -> stateless, scaled, token map returned to caller
+#   redacta-boundary -> stateful sessions, single pod, mappings stay inside
+apiVersion: v1
+kind: Service
+metadata:
+  name: redacta-boundary
+  namespace: redacta
+  labels:
+    app.kubernetes.io/name: redacta-boundary
+    app.kubernetes.io/part-of: redacta
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: redacta-boundary
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

@@ -1,0 +1,35 @@
+# Horizontal Pod Autoscaler — for the STATELESS gateway deployment only.
+# Never point an HPA at redacta-boundary: scaling it up breaks session
+# routing, and scaling it down destroys live sessions.
+#
+# CPU is used here because it is the metric every cluster has (via
+# metrics-server) and text redaction is CPU-bound — but it is not
+# automatically the right production signal. Request rate, queue depth or
+# p99 latency are often better; those need a metrics pipeline
+# (custom/external metrics) that would be ceremony in this repo today.
+#
+# Requires metrics-server (kind doesn't ship it; k3s does). Without it the
+# HPA simply reports <unknown> and takes no action.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: redacta-gateway
+  namespace: redacta
+  labels:
+    app.kubernetes.io/name: redacta-gateway
+    app.kubernetes.io/part-of: redacta
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: redacta-gateway
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # % of the pods' CPU *request* (50m), not of the limit or the node.
+          averageUtilization: 70

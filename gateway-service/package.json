@@ -1,0 +1,28 @@
+{
+  "name": "redacta-gateway-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted HTTP privacy boundary for Kubernetes: pseudonymise patient identifiers and PII inside your own cluster before text reaches an AI service. Thin wrapper over PrivacyGateway from @pharmatools/redacta.",
+  "license": "MIT-0",
+  "author": "Nick Lamb (PharmaTools.AI)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickjlamb/redacta.git",
+    "directory": "gateway-service"
+  },
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pharmatools/redacta": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.8"
+  }
+}
