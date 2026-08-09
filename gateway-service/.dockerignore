@@ -1,0 +1,7 @@
+node_modules
+dist
+k8s
+*.md
+.gitignore
+.dockerignore
+Dockerfile

@@ -36,6 +36,29 @@ jobs:
       - run: npm run build
       - run: npm test
 
+  gateway-service:
+    name: gateway service (http boundary)
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: gateway-service } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: gateway-service/package-lock.json }
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      # Build the production image so a broken Dockerfile fails CI.
+      # Publishing is deferred until there is a registry to publish to.
+      - run: docker build -t redacta-gateway:ci .
+      - name: Smoke-test the image (health + a real redaction)
+        run: |
+          docker run -d --name rg -p 8080:8080 --read-only redacta-gateway:ci
+          for i in $(seq 20); do curl -sf localhost:8080/healthz && break; sleep 1; done
+          curl -sf -X POST localhost:8080/v1/redact \
+            -H 'content-type: application/json' \
+            -d '{"text":"NHS Number: 943 476 5919"}' | grep -q NHS_NUMBER_1
+          docker rm -f rg
+
   python:
     name: python mirror + skill scripts
     runs-on: ubuntu-latest

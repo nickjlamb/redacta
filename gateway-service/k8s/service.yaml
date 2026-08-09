@@ -1,0 +1,21 @@
+# One stable name and virtual IP in front of however many gateway pods exist.
+# In-cluster callers use http://redacta-gateway.redacta.svc.cluster.local
+# (or just http://redacta-gateway from inside the namespace). ClusterIP =
+# internal only, which matches the positioning: Redacta sits INSIDE your
+# infrastructure; nothing here is exposed to the internet.
+apiVersion: v1
+kind: Service
+metadata:
+  name: redacta-gateway
+  namespace: redacta
+  labels:
+    app.kubernetes.io/name: redacta-gateway
+    app.kubernetes.io/part-of: redacta
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: redacta-gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

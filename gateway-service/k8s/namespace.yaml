@@ -1,0 +1,8 @@
+# A namespace keeps Redacta's objects (and later, its access rules) grouped
+# and separately deletable from everything else in the cluster.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: redacta
+  labels:
+    app.kubernetes.io/part-of: redacta

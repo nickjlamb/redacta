@@ -1,0 +1,27 @@
+# Non-secret configuration, injected as environment variables.
+# Changing these does NOT restart pods by itself: apply the ConfigMap, then
+# `kubectl -n redacta rollout restart deployment/redacta-gateway`.
+#
+# The variable names are the same ones the Redacta MCP server uses, so an
+# operator configures both surfaces with one vocabulary.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redacta-gateway-config
+  namespace: redacta
+  labels:
+    app.kubernetes.io/part-of: redacta
+data:
+  # Reject request bodies over this many bytes (1 MiB).
+  REDACTA_MAX_BODY_BYTES: "1048576"
+  # One JSON log line per request: method/path/status/duration. Never bodies,
+  # never PHI, never session IDs.
+  REDACTA_REQUEST_LOGS: "1"
+  # Session settings — only read by the boundary deployment (REDACTA_SESSIONS=1).
+  # TTL: how long a protect session can be released before it expires.
+  REDACTA_SESSION_TTL_MINUTES: "60"
+  # Cap on concurrent sessions. At the cap the OLDEST session is evicted and
+  # its later release fails with the generic session error — size this to
+  # your workload, and remember sessions live in the pod's memory (see the
+  # boundary Deployment's memory limit).
+  REDACTA_MAX_SESSIONS: "256"
