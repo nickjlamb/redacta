@@ -31,6 +31,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm', cache-dependency-path: mcp-server/package-lock.json }
       - run: npm ci
+      - name: Guard publish metadata (provenance needs repository.url)
+        run: node -e "const p=require('./package.json'); if(!p.repository||!p.repository.url){console.error('package.json missing repository.url - npm provenance will reject the publish');process.exit(1)}"
       - run: npm run build
       - run: npm test
 
