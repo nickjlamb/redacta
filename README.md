@@ -47,6 +47,11 @@ for free-text names on top of the deterministic patterns.
 
 ## How it works
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/boundary-dark.svg">
+  <img src="docs/boundary-light.svg" alt="The Redacta privacy boundary: a clinical document is redacted inside your boundary — deterministic patterns plus reasoning plus a self-check — producing tokenised text and a token map. Only the tokenised text crosses to the AI tool; the token map never leaves. The processed output comes back and reinstate restores the original identifiers locally. Raw identifiers never cross the boundary." width="100%">
+</picture>
+
 Two layers:
 
 - **Patterns (deterministic).** A bundled script (`scripts/redact_structured.py`,

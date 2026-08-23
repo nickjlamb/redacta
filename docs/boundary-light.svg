@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-label="The Redacta privacy boundary: a clinical document is redacted inside your boundary — deterministic patterns plus reasoning plus a self-check — producing tokenised text and a token map; only the tokenised text crosses to the AI tool, the token map never leaves; the processed output comes back and reinstate restores the original identifiers locally. Raw identifiers never cross the boundary.">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8c959f"/></marker><marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker></defs>
+<rect x="16" y="52" width="600" height="448" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="34" y="78" font-size="11" font-weight="600" letter-spacing="1.5" fill="#59636e">YOUR BOUNDARY &#183; IDENTIFIERS STAY HERE</text>
+<rect x="60.0" y="92" width="280" height="48" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<text x="200" y="114" font-size="13" font-weight="600" text-anchor="middle" fill="#1f2328">Clinical document</text>
+<text x="200" y="132" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">names &#183; NHS numbers &#183; dates of birth</text>
+<polyline points="200,140 200,166" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="50.0" y="168" width="300" height="56" rx="8" fill="#fbf0ff" stroke="#8250df"/>
+<text x="200" y="190" font-size="13" font-weight="600" text-anchor="middle" fill="#8250df">Redacta engine</text>
+<text x="200" y="208" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">deterministic patterns + reasoning + self-check</text>
+<polyline points="150,224 150,254" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="30.0" y="256" width="200" height="52" rx="8" fill="#dafbe1" stroke="#aceebb"/>
+<text x="130" y="278" font-size="13" font-weight="600" text-anchor="middle" fill="#1a7f37">Token map</text>
+<text x="130" y="296" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">never leaves this boundary</text>
+<polyline points="250,224 250,240 430,240 430,254" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="300.0" y="256" width="260" height="52" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<text x="430" y="278" font-size="13" font-weight="600" text-anchor="middle" fill="#1f2328">Tokenised text</text>
+<text x="430" y="296" font-size="10.5" font-family="ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace" text-anchor="middle" fill="#59636e">[PATIENT_NAME_1] &#183; [NHS_NUMBER_1]</text>
+<rect x="300.0" y="340" width="260" height="52" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<text x="430" y="362" font-size="13" font-weight="600" text-anchor="middle" fill="#1f2328">Reinstate</text>
+<text x="430" y="380" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">restore originals from the map</text>
+<polyline points="430,392 430,420" fill="none" stroke="#1a7f37" stroke-width="1.5" marker-end="url(#arr-green)"/>
+<rect x="300.0" y="424" width="260" height="52" rx="8" fill="#dafbe1" stroke="#aceebb"/>
+<text x="430" y="446" font-size="13" font-weight="600" text-anchor="middle" fill="#1a7f37">Restored document</text>
+<text x="430" y="464" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">originals back &#8212; locally</text>
+<polyline points="130,308 130,366 298,366" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="140" y="358" font-size="11" fill="#59636e">token map</text>
+<rect x="660" y="52" width="284" height="448" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="678" y="78" font-size="11" font-weight="600" letter-spacing="1.5" fill="#59636e">OUTSIDE &#183; ANY AI TOOL</text>
+<rect x="682.0" y="256" width="240" height="56" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<text x="802" y="278" font-size="13" font-weight="600" text-anchor="middle" fill="#1f2328">LLM / agent</text>
+<text x="802" y="296" font-size="11" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" text-anchor="middle" fill="#59636e">sees only labelled tokens</text>
+<text x="678" y="482" font-size="11" font-style="italic" fill="#59636e">Claude &#183; GPT &#183; your internal model</text>
+<polyline points="560,282 680,282" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="620" y="274" font-size="11" fill="#59636e" text-anchor="middle">tokens out</text>
+<polyline points="802,312 802,366 562,366" fill="none" stroke="#8c959f" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="700" y="358" font-size="11" fill="#59636e" text-anchor="middle">processed output</text>
+<text x="638" y="168" font-size="11" font-weight="600" fill="#cf222e" text-anchor="middle" transform="rotate(-90 638 168)">&#10005; raw identifiers never cross</text>
+</svg>
