@@ -17,14 +17,20 @@ clinical meaning intact, and returns a redaction report alongside the cleaned
 text.
 
 It started as an [Agent Skill](https://agentskills.io) and is now one engine
-shipped across nine surfaces — an iOS app, agent skill, MCP server, a
+shipped across eight surfaces — an iOS app, agent skill, MCP server, a
 self-hosted HTTP service with a Kubernetes deployment, two libraries, a CLI,
-and two whiteboard apps.
+and a FigJam whiteboard plugin.
+
+> **Running this in production?** Redacta offers a small number of fixed-price
+> design-partner integrations for teams shipping AI agents on clinical or patient
+> data — deployment in your environment, one real workflow integrated, and a
+> data-flow document written for your DPO.
+> [Details →](https://www.pharmatools.ai/redacta#partners)
 
 ## One engine, many surfaces
 
 <p align="center">
-  <img src="ios-app/docs/architecture.svg" width="100%" alt="One detection engine feeds eight surfaces: the iOS app, Share Extension and widget run it on-device via JavaScriptCore; the MCP server, CLI, TypeScript library and FigJam/Miro plugins consume it directly; a Python package mirrors it; and the agent skill adds LLM reasoning." />
+  <img src="ios-app/docs/architecture.svg" width="100%" alt="One detection engine feeds eight surfaces: the iOS app, Share Extension and widget run it on-device via JavaScriptCore; the MCP server, CLI, TypeScript library and FigJam plugin consume it directly; a Python package mirrors it; and the agent skill adds LLM reasoning." />
 </p>
 
 | Surface | Folder | Get it |
@@ -36,12 +42,11 @@ and two whiteboard apps.
 | Python library | `python-package/` | `pip install redacta` ([PyPI](https://pypi.org/project/redacta/)) |
 | Command-line tool | `cli-package/` | `npx redacta-cli` ([npm](https://www.npmjs.com/package/redacta-cli)) |
 | Self-hosted HTTP service + Kubernetes | [`gateway-service/`](gateway-service/) | `docker build` — see [`gateway-service/README.md`](gateway-service/README.md) |
-| Miro app | `miro-app/` | [getpatiently.ai → Redacta](https://www.pharmatools.ai/redacta) |
 | FigJam plugin | `figjam-plugin/` | [Figma Community](https://www.figma.com/community/plugin/1647311189828426124) |
 
 The detection logic lives in one place — the TypeScript engine
-(`@pharmatools/redacta`, in `npm-package/`), which the MCP server and both
-whiteboard apps consume, and which the iOS app runs on-device via JavaScriptCore.
+(`@pharmatools/redacta`, in `npm-package/`), which the MCP server and the
+FigJam plugin consume, and which the iOS app runs on-device via JavaScriptCore.
 The Python package mirrors it for `pip` users; the agent skill adds LLM reasoning
 for free-text names on top of the deterministic patterns.
 
@@ -89,6 +94,9 @@ reaches any external AI service, and the processing boundary stays under
 your control. Walkthrough (local `kind` cluster included):
 [`gateway-service/k8s/README.md`](gateway-service/k8s/README.md) ·
 concepts: [`docs/KUBERNETES.md`](docs/KUBERNETES.md).
+Deploying somewhere a DPO will ask questions? There's a one-page security &
+data-protection summary at
+[pharmatools.ai/redacta-security](https://www.pharmatools.ai/redacta-security).
 
 ## Install
 
