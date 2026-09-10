@@ -41,5 +41,5 @@ globalThis.Redacta = {
   isValidNhs,
   isValidNi,
   isValidLuhn,
-  version: "1.0.0-ios-proto",
+  version: "1.4.0-ios",
 };
