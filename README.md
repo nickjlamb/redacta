@@ -9,6 +9,7 @@
 [![App Store](https://img.shields.io/itunes/v/6784591850?label=App%20Store&logo=apple&color=0D96F6)](https://apps.apple.com/app/redacta-redact-for-ai/id6784591850)
 [![Anthropic MCP Directory](https://img.shields.io/badge/Anthropic_MCP_Directory-listed-d97757?logo=anthropic&logoColor=white)](https://claude.ai/directory/connectors/ant.dir.gh.nickjlamb.redacta)
 [![Glama MCP server](https://glama.ai/mcp/servers/nickjlamb/redacta/badges/score.svg)](https://glama.ai/mcp/servers/nickjlamb/redacta)
+[![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/nickjlamb/redacta)
 [![self-hosted](https://img.shields.io/badge/self--hosted-Kubernetes-326CE5?logo=kubernetes&logoColor=white)](gateway-service/k8s/README.md)
 
 Pseudonymise medical and clinical documents before they're processed by AI or
