@@ -57,7 +57,7 @@ const CATEGORIES_SCHEMA = z
   );
 
 export function createServer(config: Config = loadConfig()): McpServer {
-  const server = new McpServer({ name: "redacta", version: "2.1.0" });
+  const server = new McpServer({ name: "redacta", version: "2.1.1" });
   const boundary = new Boundary(config, makeAuditSink(config.auditLog));
 
   // ---------------------------------------------------------------------

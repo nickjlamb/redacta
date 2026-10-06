@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "redacta",
   "display_name": "Redacta",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "Keep patient identifiers out of AI agent context — pseudonymise clinical text at a local privacy boundary, restore it only on your terms.",
   "long_description": "Redacta is a stateful privacy boundary between clinical text and AI agents. The protect tool replaces patient identifiers and personal data (NHS numbers with Modulus-11 validation, names, dates of birth, MRNs, emails, phones, postcodes, plus general PII like URLs, IPs, payment cards and account numbers) with labelled tokens — and keeps the reversal mapping inside the local server process, so it never enters the model context. Restoration happens at the boundary: release_to_file writes re-identified output to a folder you choose and returns only a receipt, while check_output catches identifiers leaking back verbatim in model output. Sessions expire automatically. Includes a HIPAA Safe Harbor mode. All processing happens locally — no network calls, nothing transmitted.",
   "author": {
