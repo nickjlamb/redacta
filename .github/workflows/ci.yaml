@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: npm-package } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: '22', cache: 'npm', cache-dependency-path: npm-package/package-lock.json }
       - run: npm ci
       - run: npm run build
@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: mcp-server } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: '22', cache: 'npm', cache-dependency-path: mcp-server/package-lock.json }
       - run: npm ci
       - name: Guard publish metadata (provenance needs repository.url)
@@ -41,8 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: gateway-service } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: '22', cache: 'npm', cache-dependency-path: gateway-service/package-lock.json }
       - run: npm ci
       - run: npm run build
@@ -63,8 +63,8 @@ jobs:
     name: python mirror + skill scripts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: { python-version: '3.12' }
       - run: pip install ./python-package
       - run: python3 python-package/tests/test_redacta.py
