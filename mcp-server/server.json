@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.nickjlamb/redacta-mcp",
-  "description": "Keep patient identifiers out of AI agent context — a stateful local privacy boundary that pseudonymises PHI/PII and holds the reversal map outside the model.",
+  "description": "Keep patient identifiers out of AI agent context — a local privacy boundary for healthcare agents.",
   "repository": {
     "url": "https://github.com/nickjlamb/redacta",
     "source": "github"
